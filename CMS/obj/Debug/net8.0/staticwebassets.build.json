@@ -1,0 +1,20 @@
+{
+  "Version": 1,
+  "Hash": "0dOOBwSjB61yBMog/sqmcTjVZdAXQNKuoT0rxaX83Dk=",
+  "Source": "CMS",
+  "BasePath": "_content/CMS",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "CMS\\wwwroot",
+      "Source": "CMS",
+      "ContentRoot": "C:\\Users\\orbanb\\Downloads\\V3_Consumption_Management_System\\Consumption_Management_System\\CMS\\wwwroot\\",
+      "BasePath": "_content/CMS",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [],
+  "Endpoints": []
+}

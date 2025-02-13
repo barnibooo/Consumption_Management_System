@@ -1,0 +1,82 @@
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\appsettings.Development.json
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\appsettings.json
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\CMS.staticwebassets.runtime.json
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\CMS.exe
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\CMS.deps.json
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\CMS.runtimeconfig.json
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\CMS.dll
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\CMS.pdb
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\Microsoft.OpenApi.dll
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.csproj.AssemblyReference.cache
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.GeneratedMSBuildEditorConfig.editorconfig
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.AssemblyInfoInputs.cache
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.AssemblyInfo.cs
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.csproj.CoreCompileInputs.cache
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.MvcApplicationPartsAssemblyInfo.cs
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.MvcApplicationPartsAssemblyInfo.cache
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.sourcelink.json
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets.build.json
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets.development.json
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets\msbuild.CMS.Microsoft.AspNetCore.StaticWebAssets.props
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets\msbuild.build.CMS.props
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.CMS.props
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.CMS.props
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets.pack.json
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\scopedcss\bundle\CMS.styles.css
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.csproj.Up2Date
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.dll
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\refint\CMS.dll
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.pdb
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.genruntimeconfig.cache
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\obj\Debug\net8.0\ref\CMS.dll
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\CMSReact\package-lock.json
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\CMSReact\package.json
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\CMSReact\tsconfig.app.json
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\CMSReact\tsconfig.json
+D:\! SULIS FELADATAIM\13. osztály\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\CMSReact\tsconfig.node.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\appsettings.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\CMSReact\package-lock.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\CMSReact\package.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\CMSReact\tsconfig.app.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\CMSReact\tsconfig.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\CMSReact\tsconfig.node.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\CMS.staticwebassets.runtime.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\CMS.staticwebassets.endpoints.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\CMS.exe
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\CMS.deps.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\CMS.runtimeconfig.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\CMS.dll
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\CMS.pdb
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\Microsoft.OpenApi.dll
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.csproj.AssemblyReference.cache
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.AssemblyInfoInputs.cache
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.AssemblyInfo.cs
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.csproj.CoreCompileInputs.cache
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.sourcelink.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\scopedcss\bundle\CMS.styles.css
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets.build.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets.development.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets\msbuild.CMS.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets\msbuild.CMS.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets\msbuild.build.CMS.props
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.CMS.props
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.CMS.props
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets.pack.json
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.csproj.Up2Date
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.dll
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\refint\CMS.dll
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.pdb
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.genruntimeconfig.cache
+C:\Users\orbanb\Downloads\V3_Consumption_Management_System\Consumption_Management_System\CMS\obj\Debug\net8.0\ref\CMS.dll
