@@ -20,5 +20,8 @@ namespace CMS.Model
         [JsonIgnore]
         [ForeignKey("CustomerId")]
         public Customer? Customer { get; set; }
+        [JsonIgnore]
+        [ForeignKey("EmployeeId")]
+        public Employee? Employee { get; set; }
     }
 }
