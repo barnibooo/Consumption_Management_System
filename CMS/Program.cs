@@ -1,3 +1,5 @@
+using CMS.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.Diagnostics;
 
@@ -7,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<CMSContext>(db => db.UseSqlServer(
+builder.Configuration.GetConnectionString("CMSContext")));
 
 var app = builder.Build();
 
