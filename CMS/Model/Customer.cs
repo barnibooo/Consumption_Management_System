@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace CMS.Model
@@ -13,5 +14,8 @@ namespace CMS.Model
         public DateTime CreatedAt { get; set; }
         [JsonIgnore]
         public List<Order>? Orders { get; set; }
+        [JsonIgnore]
+        [InverseProperty("Customers")]
+        public List<CustomerAdmission>? CustomerAdmissions { get; set; }
     }
 }

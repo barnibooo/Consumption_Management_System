@@ -17,6 +17,10 @@ namespace CMS.Model
 
         public DbSet<Employee> Employees { get; set; } = null!;
 
+        public DbSet<Admission> Admissions { get; set; } = null!;
+
+        public DbSet<CustomerAdmission> CustomerAdmissions { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MenuItem>()
