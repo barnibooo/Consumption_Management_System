@@ -17,5 +17,8 @@ namespace CMS.Model
         [JsonIgnore]
         [InverseProperty("Orders")]
         public List<MenuItemOrder>? MenuItemOrders { get; set; }
+        [JsonIgnore]
+        [ForeignKey("CustomerId")]
+        public Customer? Customer { get; set; }
     }
 }
