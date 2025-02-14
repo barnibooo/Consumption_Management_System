@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "omkcxdWNFg8=",
+  "dgSpecHash": "X0T/plQM8RU=",
   "success": true,
-  "projectFilePath": "C:\\Users\\orbanb\\Downloads\\V4_Consumption_Management_System\\Consumption_Management_System\\CMS\\CMS.csproj",
+  "projectFilePath": "D:\\! SULIS FELADATAIM\\13. osztály\\ZARO\\gites\\Consumption_Management_System\\CMS\\CMS.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\orbanb\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\orbanb\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\7.0.0\\microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",
