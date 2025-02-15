@@ -1,35 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import { Grid, Card, CardContent, Typography } from "@mui/material";
 
-function App() {
-  const [count, setCount] = useState(0)
+const cards = Array.from({ length: 12 }, (_, index) => ({
+  id: index + 1,
+  title: `Card ${index + 1}`,
+  description: `This is the description for card ${index + 1}.`,
+}));
 
+const ResponsiveGrid: React.FC = () => {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Grid container spacing={2} padding={2}>
+      {cards.map((card) => (
+        <Grid item key={card.id} xs={12} sm={6} md={4} lg={3}>
+          <Card
+            sx={{
+              minHeight: 150,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <CardContent>
+              <Typography variant="h6" component="div">
+                {card.title}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {card.description}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      ))}
+    </Grid>
+  );
+};
 
-export default App
+export default ResponsiveGrid;
