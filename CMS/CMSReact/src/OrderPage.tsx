@@ -34,6 +34,11 @@ import {
 } from "@mui/icons-material";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import EmojiFoodBeverageOutlinedIcon from "@mui/icons-material/EmojiFoodBeverageOutlined";
+import LocalPizzaOutlinedIcon from "@mui/icons-material/LocalPizzaOutlined";
+import BakeryDiningOutlinedIcon from "@mui/icons-material/BakeryDiningOutlined";
+import AppsIcon from "@mui/icons-material/Apps";
 import axios from "axios";
 
 interface MenuItem {
@@ -48,9 +53,28 @@ interface MenuItem {
 const pages = ["Home", "Menu"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
+const categoryIcons: { [key: string]: React.ReactElement } = {
+  Leves: <RamenDiningOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Előétel: <BakeryDiningOutlinedIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Főétel: <DinnerDiningOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Hamburger: <LunchDiningOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Pizza: <LocalPizzaOutlinedIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Desszert: <CookieOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Menü: <FastfoodOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Ital: <LocalBarOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Kávé: (
+    <EmojiFoodBeverageOutlinedIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />
+  ),
+  Egyéb: <MoreHorizIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+};
+
 const Dashboard: React.FC = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]); // Menü elemek típusa
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -78,6 +102,10 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleCategoryClick = (category: string | null) => {
+    setSelectedCategory(category);
+  };
+
   function generate(element: React.ReactElement<unknown>) {
     return [0, 1, 2].map((value) =>
       React.cloneElement(element, {
@@ -85,10 +113,6 @@ const Dashboard: React.FC = () => {
       })
     );
   }
-
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]); // Menü elemek típusa
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     axios
@@ -146,6 +170,19 @@ const Dashboard: React.FC = () => {
   };
 
   const categoryCounts = countItemsInCategories();
+
+  // Filter out the "Egyéb" category
+  const filteredCategories = uniqueCategories.filter(
+    (category) => category !== "Egyéb"
+  );
+
+  // Check if there are any items in the "Egyéb" category
+  const hasEgyebItems = menuItems.some((item) => item.category === "Egyéb");
+
+  // Filter menu items based on the selected category
+  const filteredMenuItems = selectedCategory
+    ? menuItems.filter((item) => item.category === selectedCategory)
+    : menuItems;
 
   return (
     <>
@@ -245,7 +282,7 @@ const Dashboard: React.FC = () => {
                 flexGrow: { xs: 1, sm: 1 },
               }}
             >
-              Consupmtion Management System
+              Consumption Management System
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               {pages.map((page) => (
@@ -319,23 +356,22 @@ const Dashboard: React.FC = () => {
           }}
         >
           <Stack direction={{ xs: "row", md: "column" }} spacing={2}>
-            <IconButton>
-              <RamenDiningOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />
+            <IconButton onClick={() => handleCategoryClick(null)}>
+              <AppsIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />
             </IconButton>
-            <IconButton>
-              <LunchDiningOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />
-            </IconButton>
-            <IconButton>
-              <DinnerDiningOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />
-            </IconButton>
-            <IconButton>
-              <CookieOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />
-            </IconButton>
-            <IconButton>
-              <FastfoodOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />
-            </IconButton>
-            <IconButton>
-              <LocalBarOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />
+            {filteredCategories.map((category) => (
+              <IconButton
+                key={category}
+                onClick={() => handleCategoryClick(category)}
+              >
+                {categoryIcons[category]}
+              </IconButton>
+            ))}
+            <IconButton
+              onClick={() => handleCategoryClick("Egyéb")}
+              disabled={!hasEgyebItems}
+            >
+              {categoryIcons["Egyéb"]}
             </IconButton>
           </Stack>
         </Box>
@@ -392,28 +428,6 @@ const Dashboard: React.FC = () => {
                 </ListItem>
               )}
             </List>
-            {/*
-            <CardContent>
-              {[...Array(5)].map((_, index) => (
-                <Box
-                  key={index}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    paddingBottom: "4px",
-                    marginBottom: "4px",
-                  }}
-                >
-                  <Typography variant="body2" color="#e7e6dd" fontSize={16}>
-                    1x Étel név
-                  </Typography>
-                  <Typography variant="body2" color="#e7e6dd" fontSize={16}>
-                    Ár XX
-                  </Typography>
-                </Box>
-              ))}
-            </CardContent>*/}
           </Card>
         </Box>
 
@@ -434,7 +448,7 @@ const Dashboard: React.FC = () => {
               justifyContent={{ xs: "center", sm: "flex-start" }}
               margin={2}
             >
-              {menuItems.map((item) => (
+              {filteredMenuItems.map((item) => (
                 <Card
                   sx={{
                     width: {
