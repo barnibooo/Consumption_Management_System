@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "2DZL1V82/zfM/LKPCJnjyQm/IdevTOJXJmjsXrw5Tcc=",
+  "Hash": "wvGdSBsbAHkqVJBY3XtYEqaIqARJxK7g7+Sn23+onOw=",
   "Source": "CMS",
   "BasePath": "_content/CMS",
   "Mode": "Default",
@@ -10,7 +10,7 @@
     {
       "Name": "CMS\\wwwroot",
       "Source": "CMS",
-      "ContentRoot": "C:\\git\\Consumption_Management_System\\CMS\\wwwroot\\",
+      "ContentRoot": "D:\\iskola\\projekt\\CommuistaMissionSisitemme\\Consumption_Management_System\\CMS\\wwwroot\\",
       "BasePath": "_content/CMS",
       "Pattern": "**"
     }

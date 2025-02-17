@@ -75,6 +75,7 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [orders, setOrders] = useState<MenuItem[]>([]);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -106,13 +107,23 @@ const Dashboard: React.FC = () => {
     setSelectedCategory(category);
   };
 
-  function generate(element: React.ReactElement<unknown>) {
-    return [0, 1, 2].map((value) =>
-      React.cloneElement(element, {
-        key: value,
-      })
-    );
-  }
+  const handleAddToOrder = (item: MenuItem) => {
+    setOrders((prevOrders) => [...prevOrders, item]);
+  };
+
+  const handleRemoveFromOrder = (item: MenuItem) => {
+    setOrders((prevOrders) => {
+      const index = prevOrders.findIndex(
+        (orderItem) => orderItem.itemId === item.itemId
+      );
+      if (index !== -1) {
+        const newOrders = [...prevOrders];
+        newOrders.splice(index, 1);
+        return newOrders;
+      }
+      return prevOrders;
+    });
+  };
 
   useEffect(() => {
     axios
@@ -396,7 +407,7 @@ const Dashboard: React.FC = () => {
           >
             <CardHeader
               title="Orders"
-              subheader="Total:"
+              subheader={`Total: ${orders.length}`}
               sx={{
                 "& .MuiCardHeader-subheader": {
                   color: "#d5d6d6",
@@ -407,10 +418,15 @@ const Dashboard: React.FC = () => {
               }}
             />
             <List dense>
-              {generate(
+              {orders.map((orderItem, index) => (
                 <ListItem
+                  key={index}
                   secondaryAction={
-                    <IconButton edge="end" aria-label="delete">
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => handleRemoveFromOrder(orderItem)}
+                    >
                       <DeleteOutlineOutlinedIcon
                         sx={{ fontSize: 35, color: "#e7e6dd" }}
                       />
@@ -423,10 +439,10 @@ const Dashboard: React.FC = () => {
                     />
                   </ListItemAvatar>
                   <Typography variant="body2" color="#e7e6dd" fontSize={16}>
-                    1x Étel név
+                    1x {orderItem.name}
                   </Typography>
                 </ListItem>
-              )}
+              ))}
             </List>
           </Card>
         </Box>
@@ -477,19 +493,16 @@ const Dashboard: React.FC = () => {
                     alt="Kép"
                   />
                   <CardContent>
-                    <Typography>
-                      Desciption: Opus igitur est dicere possit dura dfzhdg
-                      dfgdfgd sdfd fdg wetfgdfg sdfsdfgsg
-                    </Typography>
-                    <Typography>IsAvailable: True</Typography>
+                    <Typography>{item.description}</Typography>
+                    <Typography>IsAvailable: {item.isAvailable ? "True" : "False"}</Typography>
                   </CardContent>
                   <CardActions disableSpacing>
-                    <IconButton>
+                    <IconButton onClick={() => handleAddToOrder(item)}>
                       <AddCircleOutlineIcon
                         sx={{ fontSize: 35, color: "#e7e6dd" }}
                       />
                     </IconButton>
-                    <IconButton>
+                    <IconButton onClick={() => handleRemoveFromOrder(item)}>
                       <RemoveCircleOutlineIcon
                         sx={{ fontSize: 35, color: "#e7e6dd" }}
                       />
