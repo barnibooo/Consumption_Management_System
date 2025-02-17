@@ -434,9 +434,7 @@ const Dashboard: React.FC = () => {
                   }
                 >
                   <ListItemAvatar>
-                    <LunchDiningOutlined
-                      sx={{ fontSize: 35, color: "#e7e6dd" }}
-                    />
+                    {categoryIcons[orderItem.category]}
                   </ListItemAvatar>
                   <Typography variant="body2" color="#e7e6dd" fontSize={16}>
                     1x {orderItem.name}
