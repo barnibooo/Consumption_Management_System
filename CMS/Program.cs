@@ -13,7 +13,23 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CMSContext>(db => db.UseSqlServer(
 builder.Configuration.GetConnectionString("CMSContext")));
 
+// CORS policy hozzáadása
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
+
 var app = builder.Build();
+
+// CORS middleware használata
+app.UseCors("AllowAllOrigins");
 
 if (app.Environment.IsDevelopment())
 {

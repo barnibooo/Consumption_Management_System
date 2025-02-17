@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -16,6 +16,10 @@ import {
   Tooltip,
   CardHeader,
   CardMedia,
+  Avatar,
+  List,
+  ListItem,
+  ListItemAvatar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -28,8 +32,18 @@ import {
   LocalBarOutlined,
   LunchDiningOutlined,
 } from "@mui/icons-material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import BarChartIcon from "@mui/icons-material/BarChart";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import axios from "axios";
+
+interface MenuItem {
+  itemId: number;
+  name: string;
+  category: string;
+  price: number;
+  description: string;
+  isAvailable: boolean;
+}
 
 const pages = ["Home", "Menu"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -64,6 +78,75 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  function generate(element: React.ReactElement<unknown>) {
+    return [0, 1, 2].map((value) =>
+      React.cloneElement(element, {
+        key: value,
+      })
+    );
+  }
+
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]); // Menü elemek típusa
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    axios
+      .get("https://localhost:5000/api/MenuItems") // Cseréld ki az API végpontot!
+      .then((response) => {
+        console.log(response.data); // Naplózza a teljes választ, hogy lássuk, mi érkezik
+        if (Array.isArray(response.data)) {
+          // Ha az adat egy tömb
+          setMenuItems(response.data); // A válasz tömböt közvetlenül beállítjuk
+        } else {
+          console.error("Hibás API válasz: nem tömb", response.data);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Hiba történt:", error);
+        setError(error.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Adatok betöltése...</p>;
+  if (error) return <p>Hiba történt: {error}</p>;
+
+  var l = menuItems.length;
+
+  // Az egyedi kategóriák meghatározása for ciklussal
+  const getUniqueCategories = () => {
+    const categories: string[] = []; // A kategóriákat tartalmazó tömb
+
+    // Végigiterálunk az items tömbön és hozzáadjuk a kategóriákat a categories tömbhöz
+    for (let i = 0; i < l; i++) {
+      const category = menuItems[i].category;
+      // Csak akkor adjuk hozzá a kategóriát, ha még nincs benne a categories tömbben
+      if (!categories.includes(category)) {
+        categories.push(category);
+      }
+    }
+    return categories;
+  };
+
+  const uniqueCategories = getUniqueCategories();
+
+  // Kategóriák elemeinek megszámlálása
+  const countItemsInCategories = () => {
+    const categoryCounts: { [key: string]: number } = {};
+    menuItems.forEach((item) => {
+      if (categoryCounts[item.category]) {
+        categoryCounts[item.category]++;
+      } else {
+        categoryCounts[item.category] = 1;
+      }
+    });
+    return categoryCounts;
+  };
+
+  const categoryCounts = countItemsInCategories();
+
   return (
     <>
       <AppBar position="static" sx={{ backgroundColor: "#202938" }}>
@@ -96,7 +179,7 @@ const Dashboard: React.FC = () => {
                 textDecoration: "none",
               }}
             >
-              Content Management System
+              Consumption Management System
             </Typography>
 
             <Box
@@ -162,7 +245,7 @@ const Dashboard: React.FC = () => {
                 flexGrow: { xs: 1, sm: 1 },
               }}
             >
-              Content Management System
+              Consupmtion Management System
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               {pages.map((page) => (
@@ -178,7 +261,11 @@ const Dashboard: React.FC = () => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <AccountCircleIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />
+                  <Avatar
+                    sx={{ fontSize: 25, color: "#e7e6dd", bgcolor: "#6d737d" }}
+                  >
+                    N
+                  </Avatar>
                 </IconButton>
               </Tooltip>
               <Menu
@@ -283,6 +370,29 @@ const Dashboard: React.FC = () => {
                 },
               }}
             />
+            <List dense>
+              {generate(
+                <ListItem
+                  secondaryAction={
+                    <IconButton edge="end" aria-label="delete">
+                      <DeleteOutlineOutlinedIcon
+                        sx={{ fontSize: 35, color: "#e7e6dd" }}
+                      />
+                    </IconButton>
+                  }
+                >
+                  <ListItemAvatar>
+                    <LunchDiningOutlined
+                      sx={{ fontSize: 35, color: "#e7e6dd" }}
+                    />
+                  </ListItemAvatar>
+                  <Typography variant="body2" color="#e7e6dd" fontSize={16}>
+                    1x Étel név
+                  </Typography>
+                </ListItem>
+              )}
+            </List>
+            {/*
             <CardContent>
               {[...Array(5)].map((_, index) => (
                 <Box
@@ -303,7 +413,7 @@ const Dashboard: React.FC = () => {
                   </Typography>
                 </Box>
               ))}
-            </CardContent>
+            </CardContent>*/}
           </Card>
         </Box>
 
@@ -324,7 +434,7 @@ const Dashboard: React.FC = () => {
               justifyContent={{ xs: "center", sm: "flex-start" }}
               margin={2}
             >
-              {[...Array(12)].map((_, index) => (
+              {menuItems.map((item) => (
                 <Card
                   sx={{
                     width: {
@@ -337,12 +447,14 @@ const Dashboard: React.FC = () => {
                     background: "#202938",
                     color: "#e7e6dd",
                   }}
-                  key={index}
+                  key={item.itemId}
                 >
                   <CardHeader
-                    title="Étel név"
-                    subheader="Kategória név"
-                    sx={{ "& .MuiCardHeader-subheader": { color: "#d5d6d6" } }}
+                    title={item.name}
+                    subheader={item.category}
+                    sx={{
+                      "& .MuiCardHeader-subheader": { color: "#d5d6d6" },
+                    }}
                   />
                   <CardMedia
                     component="img"
