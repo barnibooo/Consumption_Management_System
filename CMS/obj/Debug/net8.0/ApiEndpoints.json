@@ -400,7 +400,7 @@
   },
   {
     "ContainingType": "CMS.Controllers.EmployeesController",
-    "Method": "PutEmployee",
+    "Method": "UpdateEmployee",
     "RelativePath": "api/Employees/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
@@ -412,12 +412,22 @@
         "IsRequired": true
       },
       {
-        "Name": "employee",
-        "Type": "CMS.Model.Employee",
+        "Name": "EmployeePutDto",
+        "Type": "CMS.Dtos.EmployeePutDto",
         "IsRequired": true
       }
     ],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "CMS.Model.Employee",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "CMS.Controllers.EmployeesController",

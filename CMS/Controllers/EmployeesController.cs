@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Model;
+using CMS.Dtos;
 
 namespace CMS.Controllers
 {
@@ -20,7 +21,7 @@ namespace CMS.Controllers
             _context = context;
         }
 
-        // GET: api/Employees
+        // GET: api/Employees 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
         {
@@ -44,33 +45,29 @@ namespace CMS.Controllers
         // PUT: api/Employees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployee(int id, Employee employee)
+        public async Task<ActionResult<Employee>> UpdateEmployee(int id, [FromBody] EmployeePutDto EmployeePutDto)
         {
-            if (id != employee.EmployeeId)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState); // Ha a DTO validációs hibát dob, itt visszaküldjük
             }
 
-            _context.Entry(employee).State = EntityState.Modified;
-
-            try
+            var employee = await _context.Employees.FindAsync(id);
+            if (employee == null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EmployeeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound(new { message = "Employee not found." });
             }
 
-            return NoContent();
+            // DTO alapján frissítés
+            employee.FirstName = EmployeePutDto.FirstName;
+            employee.LastName = EmployeePutDto.LastName;
+
+            _context.Employees.Update(employee);
+            await _context.SaveChangesAsync();
+
+            return Ok(new {message ="Employee was sucessfully updated."}); // 200 - sikeres frissítés, de nincs visszatérő adat
         }
+
 
         // POST: api/Employees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
