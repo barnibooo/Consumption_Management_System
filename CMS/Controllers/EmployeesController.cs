@@ -106,6 +106,7 @@ namespace CMS.Controllers
 
 
         // DELETE: api/Employees/5
+        // Only admin after authentication
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
