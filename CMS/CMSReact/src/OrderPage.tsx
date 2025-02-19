@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -16,6 +16,10 @@ import {
   Tooltip,
   CardHeader,
   CardMedia,
+  Avatar,
+  List,
+  ListItem,
+  ListItemAvatar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -28,15 +32,50 @@ import {
   LocalBarOutlined,
   LunchDiningOutlined,
 } from "@mui/icons-material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import BarChartIcon from "@mui/icons-material/BarChart";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import EmojiFoodBeverageOutlinedIcon from "@mui/icons-material/EmojiFoodBeverageOutlined";
+import LocalPizzaOutlinedIcon from "@mui/icons-material/LocalPizzaOutlined";
+import BakeryDiningOutlinedIcon from "@mui/icons-material/BakeryDiningOutlined";
+import AppsIcon from "@mui/icons-material/Apps";
+import axios from "axios";
+
+interface MenuItem {
+  itemId: number;
+  name: string;
+  category: string;
+  price: number;
+  description: string;
+  isAvailable: boolean;
+}
 
 const pages = ["Home", "Menu"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
+const categoryIcons: { [key: string]: React.ReactElement } = {
+  Leves: <RamenDiningOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Előétel: <BakeryDiningOutlinedIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Főétel: <DinnerDiningOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Hamburger: <LunchDiningOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Pizza: <LocalPizzaOutlinedIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Desszert: <CookieOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Menü: <FastfoodOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Ital: <LocalBarOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Kávé: (
+    <EmojiFoodBeverageOutlinedIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />
+  ),
+  Egyéb: <MoreHorizIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+};
+
 const Dashboard: React.FC = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]); // Menü elemek típusa
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [orders, setOrders] = useState<MenuItem[]>([]);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -63,6 +102,98 @@ const Dashboard: React.FC = () => {
       handleCloseNavMenu();
     }
   };
+
+  const handleCategoryClick = (category: string | null) => {
+    setSelectedCategory(category);
+  };
+
+  const handleAddToOrder = (item: MenuItem) => {
+    setOrders((prevOrders) => [...prevOrders, item]);
+  };
+
+  const handleRemoveFromOrder = (item: MenuItem) => {
+    setOrders((prevOrders) => {
+      const index = prevOrders.findIndex(
+        (orderItem) => orderItem.itemId === item.itemId
+      );
+      if (index !== -1) {
+        const newOrders = [...prevOrders];
+        newOrders.splice(index, 1);
+        return newOrders;
+      }
+      return prevOrders;
+    });
+  };
+
+  useEffect(() => {
+    axios
+      .get("https://localhost:5000/api/MenuItems") // Cseréld ki az API végpontot!
+      .then((response) => {
+        console.log(response.data); // Naplózza a teljes választ, hogy lássuk, mi érkezik
+        if (Array.isArray(response.data)) {
+          // Ha az adat egy tömb
+          setMenuItems(response.data); // A válasz tömböt közvetlenül beállítjuk
+        } else {
+          console.error("Hibás API válasz: nem tömb", response.data);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Hiba történt:", error);
+        setError(error.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Adatok betöltése...</p>;
+  if (error) return <p>Hiba történt: {error}</p>;
+
+  var l = menuItems.length;
+
+  // Az egyedi kategóriák meghatározása for ciklussal
+  const getUniqueCategories = () => {
+    const categories: string[] = []; // A kategóriákat tartalmazó tömb
+
+    // Végigiterálunk az items tömbön és hozzáadjuk a kategóriákat a categories tömbhöz
+    for (let i = 0; i < l; i++) {
+      const category = menuItems[i].category;
+      // Csak akkor adjuk hozzá a kategóriát, ha még nincs benne a categories tömbben
+      if (!categories.includes(category)) {
+        categories.push(category);
+      }
+    }
+    return categories;
+  };
+
+  const uniqueCategories = getUniqueCategories();
+
+  // Kategóriák elemeinek megszámlálása
+  const countItemsInCategories = () => {
+    const categoryCounts: { [key: string]: number } = {};
+    menuItems.forEach((item) => {
+      if (categoryCounts[item.category]) {
+        categoryCounts[item.category]++;
+      } else {
+        categoryCounts[item.category] = 1;
+      }
+    });
+    return categoryCounts;
+  };
+
+  const categoryCounts = countItemsInCategories();
+
+  // Filter out the "Egyéb" category
+  const filteredCategories = uniqueCategories.filter(
+    (category) => category !== "Egyéb"
+  );
+
+  // Check if there are any items in the "Egyéb" category
+  const hasEgyebItems = menuItems.some((item) => item.category === "Egyéb");
+
+  // Filter menu items based on the selected category
+  const filteredMenuItems = selectedCategory
+    ? menuItems.filter((item) => item.category === selectedCategory)
+    : menuItems;
 
   return (
     <>
@@ -96,7 +227,7 @@ const Dashboard: React.FC = () => {
                 textDecoration: "none",
               }}
             >
-              Content Management System
+              Consumption Management System
             </Typography>
 
             <Box
@@ -162,7 +293,7 @@ const Dashboard: React.FC = () => {
                 flexGrow: { xs: 1, sm: 1 },
               }}
             >
-              Content Management System
+              Consumption Management System
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               {pages.map((page) => (
@@ -178,7 +309,11 @@ const Dashboard: React.FC = () => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <AccountCircleIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />
+                  <Avatar
+                    sx={{ fontSize: 25, color: "#e7e6dd", bgcolor: "#6d737d" }}
+                  >
+                    N
+                  </Avatar>
                 </IconButton>
               </Tooltip>
               <Menu
@@ -232,23 +367,22 @@ const Dashboard: React.FC = () => {
           }}
         >
           <Stack direction={{ xs: "row", md: "column" }} spacing={2}>
-            <IconButton>
-              <RamenDiningOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />
+            <IconButton onClick={() => handleCategoryClick(null)}>
+              <AppsIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />
             </IconButton>
-            <IconButton>
-              <LunchDiningOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />
-            </IconButton>
-            <IconButton>
-              <DinnerDiningOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />
-            </IconButton>
-            <IconButton>
-              <CookieOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />
-            </IconButton>
-            <IconButton>
-              <FastfoodOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />
-            </IconButton>
-            <IconButton>
-              <LocalBarOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />
+            {filteredCategories.map((category) => (
+              <IconButton
+                key={category}
+                onClick={() => handleCategoryClick(category)}
+              >
+                {categoryIcons[category]}
+              </IconButton>
+            ))}
+            <IconButton
+              onClick={() => handleCategoryClick("Egyéb")}
+              disabled={!hasEgyebItems}
+            >
+              {categoryIcons["Egyéb"]}
             </IconButton>
           </Stack>
         </Box>
@@ -273,7 +407,7 @@ const Dashboard: React.FC = () => {
           >
             <CardHeader
               title="Orders"
-              subheader="Total:"
+              subheader={`Total: ${orders.length}`}
               sx={{
                 "& .MuiCardHeader-subheader": {
                   color: "#d5d6d6",
@@ -283,27 +417,31 @@ const Dashboard: React.FC = () => {
                 },
               }}
             />
-            <CardContent>
-              {[...Array(5)].map((_, index) => (
-                <Box
+            <List dense>
+              {orders.map((orderItem, index) => (
+                <ListItem
                   key={index}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    paddingBottom: "4px",
-                    marginBottom: "4px",
-                  }}
+                  secondaryAction={
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => handleRemoveFromOrder(orderItem)}
+                    >
+                      <DeleteOutlineOutlinedIcon
+                        sx={{ fontSize: 35, color: "#e7e6dd" }}
+                      />
+                    </IconButton>
+                  }
                 >
+                  <ListItemAvatar>
+                    {categoryIcons[orderItem.category]}
+                  </ListItemAvatar>
                   <Typography variant="body2" color="#e7e6dd" fontSize={16}>
-                    1x Étel név
+                    1x {orderItem.name}
                   </Typography>
-                  <Typography variant="body2" color="#e7e6dd" fontSize={16}>
-                    Ár XX
-                  </Typography>
-                </Box>
+                </ListItem>
               ))}
-            </CardContent>
+            </List>
           </Card>
         </Box>
 
@@ -324,7 +462,7 @@ const Dashboard: React.FC = () => {
               justifyContent={{ xs: "center", sm: "flex-start" }}
               margin={2}
             >
-              {[...Array(12)].map((_, index) => (
+              {filteredMenuItems.map((item) => (
                 <Card
                   sx={{
                     width: {
@@ -337,12 +475,14 @@ const Dashboard: React.FC = () => {
                     background: "#202938",
                     color: "#e7e6dd",
                   }}
-                  key={index}
+                  key={item.itemId}
                 >
                   <CardHeader
-                    title="Étel név"
-                    subheader="Kategória név"
-                    sx={{ "& .MuiCardHeader-subheader": { color: "#d5d6d6" } }}
+                    title={item.name}
+                    subheader={item.category}
+                    sx={{
+                      "& .MuiCardHeader-subheader": { color: "#d5d6d6" },
+                    }}
                   />
                   <CardMedia
                     component="img"
@@ -351,19 +491,16 @@ const Dashboard: React.FC = () => {
                     alt="Kép"
                   />
                   <CardContent>
-                    <Typography>
-                      Desciption: Opus igitur est dicere possit dura dfzhdg
-                      dfgdfgd sdfd fdg wetfgdfg sdfsdfgsg
-                    </Typography>
-                    <Typography>IsAvailable: True</Typography>
+                    <Typography>{item.description}</Typography>
+                    <Typography>IsAvailable: {item.isAvailable ? "True" : "False"}</Typography>
                   </CardContent>
                   <CardActions disableSpacing>
-                    <IconButton>
+                    <IconButton onClick={() => handleAddToOrder(item)}>
                       <AddCircleOutlineIcon
                         sx={{ fontSize: 35, color: "#e7e6dd" }}
                       />
                     </IconButton>
-                    <IconButton>
+                    <IconButton onClick={() => handleRemoveFromOrder(item)}>
                       <RemoveCircleOutlineIcon
                         sx={{ fontSize: 35, color: "#e7e6dd" }}
                       />

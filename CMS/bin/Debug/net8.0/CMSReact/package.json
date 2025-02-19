@@ -15,6 +15,10 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.4",
     "@mui/material": "^6.4.4",
+<<<<<<< HEAD
+=======
+    "axios": "^1.7.9",
+>>>>>>> 2b2a524b8243c03a4a638034ee8847dc1d7c259e
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
