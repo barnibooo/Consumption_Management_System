@@ -90,12 +90,30 @@ namespace CMS.Controllers
         // POST: api/Orders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
+        public async Task<IActionResult> CreateOrder([FromBody] OrderPostDto OrderPostDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // 400-as válasz, ha a DTO nem érvényes
+            }
+
+            var menuItems = _context.MenuItems.Where(c => OrderPostDto.MenuItemIds.Contains(c.ItemId)).ToList();
+
+            var order = new Order
+            {
+                CustomerId = OrderPostDto.CustomerId,
+                EmployeeId = OrderPostDto.EmployeeId,
+                CreatedAt = DateTime.Now,
+                MenuItems = menuItems,
+            };
+
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
+            return CreatedAtAction(nameof(CreateOrder), new { id = order.OrderId }, new
+            {
+                message = "Order created successfully.",
+            });
         }
 
         // DELETE: api/Orders/5
