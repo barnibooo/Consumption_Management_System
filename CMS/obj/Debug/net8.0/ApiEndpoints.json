@@ -348,29 +348,19 @@
   },
   {
     "ContainingType": "CMS.Controllers.EmployeesController",
-    "Method": "PostEmployee",
+    "Method": "CreateEmployee",
     "RelativePath": "api/Employees",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "employee",
-        "Type": "CMS.Model.Employee",
+        "Name": "EmployeePostDto",
+        "Type": "CMS.Dtos.EmployeePostDto",
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "CMS.Model.Employee",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "CMS.Controllers.EmployeesController",

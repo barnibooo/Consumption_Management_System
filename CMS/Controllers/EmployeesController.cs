@@ -79,13 +79,31 @@ namespace CMS.Controllers
         // POST: api/Employees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
+        public async Task<IActionResult> CreateEmployee([FromBody] EmployeePostDto EmployeePostDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // 400-as válasz, ha a DTO nem érvényes
+            }
+
+            var employee = new Employee
+            {
+                FirstName = EmployeePostDto.FirstName,
+                LastName = EmployeePostDto.LastName,
+                Role = EmployeePostDto.Role,
+                Username = EmployeePostDto.UserName,
+                Password = EmployeePostDto.Password,
+            };
+
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEmployee", new { id = employee.EmployeeId }, employee);
+            return CreatedAtAction(nameof(GetEmployeeById), new { id = employee.EmployeeId }, new
+            {
+                message = "Employee created successfully.",
+            });
         }
+
 
         // DELETE: api/Employees/5
         [HttpDelete("{id}")]
