@@ -86,6 +86,7 @@ namespace CMS.Controllers
         }
 
         // DELETE: api/Orders/5
+        //Customer id alapján
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {

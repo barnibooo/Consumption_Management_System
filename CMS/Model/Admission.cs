@@ -11,8 +11,6 @@ namespace CMS.Model
         [Required]
         public string AdmissionName { get; set; }
         [JsonIgnore]
-        public List<Customer>? Customers { get; set; }
-        [JsonIgnore]
         [InverseProperty("Admissions")]
         public List<CustomerAdmission>? CustomerAdmissions { get; set; }
     }
