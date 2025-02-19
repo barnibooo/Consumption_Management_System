@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Model;
+using CMS.Dtos;
 
 namespace CMS.Controllers
 {
@@ -22,10 +23,24 @@ namespace CMS.Controllers
 
         // GET: api/Orders
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+
+        public async Task<ActionResult<IEnumerable<Object>>> GetOrders()
         {
-            return await _context.Orders.ToListAsync();
+            return await _context.Orders.Select(item =>
+            new
+            {
+                OrderId = item.OrderId,
+                CutomerId = item.CustomerId,
+                EmployeeId = item.EmployeeId,
+                CreatedAt = item.CreatedAt,
+                MenuItems = item.MenuItems.Select(c => new { c.ItemId, c.Name }).ToList()
+
+            }
+            ).ToListAsync();
+
         }
+
+
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
