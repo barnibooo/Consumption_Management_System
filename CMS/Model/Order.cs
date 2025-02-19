@@ -12,6 +12,8 @@ namespace CMS.Model
         public int CustomerId { get; set; }
         [Required]
         public int EmployeeId { get; set; }
+        [Required]
+        public DateTime CreatedAt { get; set; }
         [JsonIgnore]
         public List<MenuItem>? MenuItems { get; set; }
         [JsonIgnore]

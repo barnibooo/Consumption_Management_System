@@ -89,6 +89,7 @@ namespace CMS.Controllers
         }
 
         // DELETE: api/MenuItems/5
+        //Admin only
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMenuItem(int id)
         {
