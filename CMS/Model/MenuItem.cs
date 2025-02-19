@@ -18,6 +18,8 @@ namespace CMS.Model
         public string Description { get; set; }
         [Required]
         public bool IsAvailable { get; set; }
+        [Required]
+        public string ImagePath { get; set; }
         [JsonIgnore]
         public List<Order>? Orders { get; set; }
         [JsonIgnore]

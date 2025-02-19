@@ -556,55 +556,19 @@
   },
   {
     "ContainingType": "CMS.Controllers.MenuItemsController",
-    "Method": "PostMenuItem",
+    "Method": "CreateMenuItem",
     "RelativePath": "api/MenuItems",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "menuItem",
-        "Type": "CMS.Model.MenuItem",
+        "Name": "MenuItemPostDto",
+        "Type": "CMS.Dtos.MenuItemPostDto",
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "CMS.Model.MenuItem",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "CMS.Controllers.MenuItemsController",
-    "Method": "GetMenuItem",
-    "RelativePath": "api/MenuItems/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "CMS.Model.MenuItem",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "CMS.Controllers.MenuItemsController",

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Model;
+using CMS.Dtos;
 
 namespace CMS.Controllers
 {
@@ -25,20 +26,6 @@ namespace CMS.Controllers
         public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenuItems()
         {
             return await _context.MenuItems.ToListAsync();
-        }
-
-        // GET: api/MenuItems/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<MenuItem>> GetMenuItem(int id)
-        {
-            var menuItem = await _context.MenuItems.FindAsync(id);
-
-            if (menuItem == null)
-            {
-                return NotFound();
-            }
-
-            return menuItem;
         }
 
         // PUT: api/MenuItems/5
@@ -75,12 +62,30 @@ namespace CMS.Controllers
         // POST: api/MenuItems
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<MenuItem>> PostMenuItem(MenuItem menuItem)
+        public async Task<IActionResult> CreateMenuItem([FromBody] MenuItemPostDto MenuItemPostDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // 400-as válasz, ha a DTO nem érvényes
+            }
+
+            var menuItem = new MenuItem
+            {
+                Name = MenuItemPostDto.Name,
+                Category = MenuItemPostDto.Category,
+                Price = MenuItemPostDto.Price,
+                Description = MenuItemPostDto.Description,
+                IsAvailable = MenuItemPostDto.IsAvailable,
+                ImagePath = MenuItemPostDto.ImagePath
+            };
+
             _context.MenuItems.Add(menuItem);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetMenuItem", new { id = menuItem.ItemId }, menuItem);
+            return CreatedAtAction(nameof(CreateMenuItem), new { id = menuItem.ItemId }, new
+            {
+                message = "Item created successfully.",
+            });
         }
 
         // DELETE: api/MenuItems/5
