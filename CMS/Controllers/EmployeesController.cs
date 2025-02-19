@@ -28,19 +28,26 @@ namespace CMS.Controllers
             return await _context.Employees.ToListAsync();
         }
 
-        // GET: api/Employees/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(int id)
+        public async Task<IActionResult> GetEmployeeById(int id)
         {
             var employee = await _context.Employees.FindAsync(id);
-
             if (employee == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Employee not found." });
             }
 
-            return employee;
+            // DTO-ba mapeljük az adatokat
+            var employeeDto = new EmployeeGetIdDto
+            {
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                Role = employee.Role
+            };
+
+            return Ok(employeeDto); // 200 OK és a keresett adat
         }
+
 
         // PUT: api/Employees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

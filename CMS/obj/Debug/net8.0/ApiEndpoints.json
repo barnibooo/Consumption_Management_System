@@ -374,7 +374,7 @@
   },
   {
     "ContainingType": "CMS.Controllers.EmployeesController",
-    "Method": "GetEmployee",
+    "Method": "GetEmployeeById",
     "RelativePath": "api/Employees/{id}",
     "HttpMethod": "GET",
     "IsController": true,
@@ -386,17 +386,7 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "CMS.Model.Employee",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "CMS.Controllers.EmployeesController",
