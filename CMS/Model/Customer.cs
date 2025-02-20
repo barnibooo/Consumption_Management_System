@@ -14,6 +14,8 @@ namespace CMS.Model
         public string Name { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }
+        [Required]
+        public bool IsActive{ get; set; }
         [JsonIgnore]
         public List<Order>? Orders { get; set; }
         [JsonIgnore]
