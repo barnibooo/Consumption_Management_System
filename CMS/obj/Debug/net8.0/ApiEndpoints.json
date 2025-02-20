@@ -540,7 +540,7 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "OrderPostDto",
+        "Name": "orderPostDto",
         "Type": "CMS.Dtos.OrderPostDto",
         "IsRequired": true
       }

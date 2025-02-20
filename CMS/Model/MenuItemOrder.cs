@@ -16,5 +16,6 @@ namespace CMS.Model
         public int OrderId { get; set; }
         [ForeignKey(nameof(OrderId))]
         public Order Orders { get; set; }
+        public int Quantity { get; set; }
     }
 }

@@ -59,22 +59,32 @@ namespace CMS.Controllers
         // POST: api/Orders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<IActionResult> CreateOrder([FromBody] OrderPostDto OrderPostDto)
+        public async Task<IActionResult> CreateOrder([FromBody] OrderPostDto orderPostDto)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState); // 400-as válasz, ha a DTO nem érvényes
+                return BadRequest(ModelState);
             }
-
-            var menuItems = _context.MenuItems.Where(c => OrderPostDto.MenuItemIds.Contains(c.ItemId)).ToList();
 
             var order = new Order
             {
-                CustomerId = OrderPostDto.CustomerId,
-                EmployeeId = OrderPostDto.EmployeeId,
-                CreatedAt = DateTime.Now,
-                MenuItems = menuItems,
+                CustomerId = orderPostDto.CustomerId,
+                EmployeeId = orderPostDto.EmployeeId,
+                CreatedAt = DateTime.Now
             };
+
+            foreach (var item in orderPostDto.MenuItems)
+            {
+                var menuItem = await _context.MenuItems.FindAsync(item.MenuItemId);
+                if (menuItem != null)
+                {
+                    order.MenuItemOrders.Add(new MenuItemOrder
+                    {
+                        ItemId = item.MenuItemId,
+                        Quantity = item.Quantity
+                    });
+                }
+            }
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
@@ -84,6 +94,7 @@ namespace CMS.Controllers
                 message = "Order created successfully.",
             });
         }
+
 
         private bool OrderExists(int id)
         {
