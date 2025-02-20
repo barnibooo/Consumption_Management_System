@@ -83,22 +83,6 @@ namespace CMS.Controllers
             return CreatedAtAction("GetCustomerAdmission", new { id = customerAdmission.CustomerAdmissionId }, customerAdmission);
         }
 
-        // DELETE: api/CustomerAdmissions/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomerAdmission(int id)
-        {
-            var customerAdmission = await _context.CustomerAdmissions.FindAsync(id);
-            if (customerAdmission == null)
-            {
-                return NotFound();
-            }
-
-            _context.CustomerAdmissions.Remove(customerAdmission);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
         private bool CustomerAdmissionExists(int id)
         {
             return _context.CustomerAdmissions.Any(e => e.CustomerAdmissionId == id);

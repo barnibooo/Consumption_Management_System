@@ -93,22 +93,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "CMS.Controllers.AdmissionsController",
-    "Method": "DeleteAdmission",
-    "RelativePath": "api/Admissions/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "CMS.Controllers.CustomerAdmissionsController",
     "Method": "GetCustomerAdmissions",
     "RelativePath": "api/CustomerAdmissions",
@@ -196,22 +180,6 @@
       {
         "Name": "customerAdmission",
         "Type": "CMS.Model.CustomerAdmission",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CMS.Controllers.CustomerAdmissionsController",
-    "Method": "DeleteCustomerAdmission",
-    "RelativePath": "api/CustomerAdmissions/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -311,22 +279,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "CMS.Controllers.CustomersController",
-    "Method": "DeleteCustomer",
-    "RelativePath": "api/Customers/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "CMS.Controllers.EmployeesController",
     "Method": "GetEmployees",
     "RelativePath": "api/Employees",
@@ -408,22 +360,6 @@
         "StatusCode": 200
       }
     ]
-  },
-  {
-    "ContainingType": "CMS.Controllers.EmployeesController",
-    "Method": "DeleteEmployee",
-    "RelativePath": "api/Employees/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
   },
   {
     "ContainingType": "CMS.Controllers.MenuItemOrdersController",
@@ -519,22 +455,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "CMS.Controllers.MenuItemOrdersController",
-    "Method": "DeleteMenuItemOrder",
-    "RelativePath": "api/MenuItemOrders/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "CMS.Controllers.MenuItemsController",
     "Method": "GetMenuItems",
     "RelativePath": "api/MenuItems",
@@ -586,22 +506,6 @@
       {
         "Name": "menuItem",
         "Type": "CMS.Model.MenuItem",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "CMS.Controllers.MenuItemsController",
-    "Method": "DeleteMenuItem",
-    "RelativePath": "api/MenuItems/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -668,21 +572,5 @@
         "StatusCode": 200
       }
     ]
-  },
-  {
-    "ContainingType": "CMS.Controllers.OrdersController",
-    "Method": "DeleteOrder",
-    "RelativePath": "api/Orders/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
   }
 ]

@@ -88,23 +88,6 @@ namespace CMS.Controllers
             });
         }
 
-        // DELETE: api/MenuItems/5
-        //Admin only
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMenuItem(int id)
-        {
-            var menuItem = await _context.MenuItems.FindAsync(id);
-            if (menuItem == null)
-            {
-                return NotFound();
-            }
-
-            _context.MenuItems.Remove(menuItem);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
         private bool MenuItemExists(int id)
         {
             return _context.MenuItems.Any(e => e.ItemId == id);

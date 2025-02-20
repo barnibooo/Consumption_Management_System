@@ -85,23 +85,6 @@ namespace CMS.Controllers
             });
         }
 
-        // DELETE: api/Orders/5
-        //Customer id alapján
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
-        {
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
         private bool OrderExists(int id)
         {
             return _context.Orders.Any(e => e.OrderId == id);

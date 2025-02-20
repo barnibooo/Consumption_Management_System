@@ -83,22 +83,6 @@ namespace CMS.Controllers
             return CreatedAtAction("GetMenuItemOrder", new { id = menuItemOrder.MenuItemOrderId }, menuItemOrder);
         }
 
-        // DELETE: api/MenuItemOrders/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMenuItemOrder(int id)
-        {
-            var menuItemOrder = await _context.MenuItemOrders.FindAsync(id);
-            if (menuItemOrder == null)
-            {
-                return NotFound();
-            }
-
-            _context.MenuItemOrders.Remove(menuItemOrder);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
         private bool MenuItemOrderExists(int id)
         {
             return _context.MenuItemOrders.Any(e => e.MenuItemOrderId == id);
