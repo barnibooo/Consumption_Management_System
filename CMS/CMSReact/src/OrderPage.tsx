@@ -475,13 +475,13 @@ const Dashboard: React.FC = () => {
                   <CardMedia
                     component="img"
                     height="200"
-                    image="/sample.png"
+                    image={item.imagePath}
                     alt="Kép"
                   />
                   <CardContent>
                     <Typography>{item.description}</Typography>
                     <Typography>
-                      IsAvailable: {item.isAvailable ? "True" : "False"}
+                      Rendelhető: {item.isAvailable ? "Igen" : "Nem"}
                     </Typography>
                   </CardContent>
                   <CardActions disableSpacing>

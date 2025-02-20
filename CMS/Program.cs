@@ -9,9 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//MSSQL-es
+//builder.Services.AddDbContext<CMSContext>(db => db.UseSqlServer(
+//builder.Configuration.GetConnectionString("CMSContext")));
 
-builder.Services.AddDbContext<CMSContext>(db => db.UseSqlServer(
-builder.Configuration.GetConnectionString("CMSContext")));
+// SQLite
+builder.Services.AddDbContext<CMSContext>(
+    db => db.UseSqlite(builder.Configuration.GetConnectionString("CMSContext")));
 
 // CORS policy hozzáadása
 builder.Services.AddCors(options =>

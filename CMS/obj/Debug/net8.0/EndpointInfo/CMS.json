@@ -1189,6 +1189,7 @@
         "required": [
           "cardId",
           "createdAt",
+          "isActive",
           "name"
         ],
         "type": "object",
@@ -1208,6 +1209,9 @@
           "createdAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "isActive": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
