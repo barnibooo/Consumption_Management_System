@@ -56,7 +56,7 @@ app.UseStaticFiles(new StaticFileOptions
 
 
 app.Run();
-
+//Script for build
 void RunBuildScript()
 {
     try
