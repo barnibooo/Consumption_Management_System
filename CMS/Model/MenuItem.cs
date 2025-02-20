@@ -22,7 +22,7 @@ namespace CMS.Model
         public string Description { get; set; }
 
         [Required]
-        public int IsAvailable { get; set; }
+        public bool IsAvailable { get; set; }
 
         [Required]
         public string ImagePath { get; set; }
@@ -33,5 +33,7 @@ namespace CMS.Model
         [JsonIgnore]
         [InverseProperty("MenuItems")]
         public List<MenuItemOrder>? MenuItemOrders { get; set; }
+
+        
     }
 }

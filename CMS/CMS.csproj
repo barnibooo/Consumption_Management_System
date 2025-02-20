@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="wwwroot\**" />
+    <Compile Remove="[MSSQL] Migrations\**" />
     <Content Remove="wwwroot\**" />
+    <Content Remove="[MSSQL] Migrations\**" />
     <EmbeddedResource Remove="wwwroot\**" />
+    <EmbeddedResource Remove="[MSSQL] Migrations\**" />
     <None Remove="wwwroot\**" />
+    <None Remove="[MSSQL] Migrations\**" />
   </ItemGroup>
 
   <ItemGroup>

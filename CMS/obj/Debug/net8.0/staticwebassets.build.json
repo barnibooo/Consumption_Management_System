@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "izI9nKVwuFn5A4uw8i4vIOfCm1QuuA8/9bR49hFLD+Q=",
+  "Hash": "5TLX49JBIeJAG0cyk+s+aTzuc4ge97jvnpAUzazYWAw=",
   "Source": "CMS",
   "BasePath": "_content/CMS",
   "Mode": "Default",
@@ -10,11 +10,10 @@
     {
       "Name": "CMS\\wwwroot",
       "Source": "CMS",
-      "ContentRoot": "F:\\OB\\Cms full\\Consumption_Management_System\\CMS\\wwwroot\\",
+      "ContentRoot": "D:\\! SULIS FELADATAIM\\13. osztály\\ZARO\\gites\\CMS development\\Consumption_Management_System\\CMS\\wwwroot\\",
       "BasePath": "_content/CMS",
       "Pattern": "**"
     }
   ],
-  "Assets": [],
-  "Endpoints": []
+  "Assets": []
 }

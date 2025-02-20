@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "GegxBMW4y7k=",
+  "dgSpecHash": "IabYE20d8vg=",
   "success": true,
-  "projectFilePath": "F:\\OB\\Cms full\\Consumption_Management_System\\CMS\\CMS.csproj",
+  "projectFilePath": "D:\\! SULIS FELADATAIM\\13. osztály\\ZARO\\gites\\CMS development\\Consumption_Management_System\\CMS\\CMS.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\orbanb\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\orbanb\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
