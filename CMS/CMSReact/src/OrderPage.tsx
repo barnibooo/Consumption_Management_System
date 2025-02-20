@@ -41,6 +41,7 @@ import LocalPizzaOutlinedIcon from "@mui/icons-material/LocalPizzaOutlined";
 import BakeryDiningOutlinedIcon from "@mui/icons-material/BakeryDiningOutlined";
 import AppsIcon from "@mui/icons-material/Apps";
 import axios from "axios";
+import SendIcon from "@mui/icons-material/Send";
 
 interface MenuItem {
   quantity: number;
@@ -142,6 +143,13 @@ const Dashboard: React.FC = () => {
   const handleDeleteFromOrder = (item: MenuItem) => {
     setOrders((prevOrders) =>
       prevOrders.filter((orderItem) => orderItem.itemId !== item.itemId)
+    );
+  };
+
+  const calculateTotalPrice = () => {
+    return orders.reduce(
+      (total, orderItem) => total + orderItem.price * orderItem.quantity,
+      0
     );
   };
 
@@ -410,11 +418,13 @@ const Dashboard: React.FC = () => {
               },
               height: "100%", // Set height to 100%
               backgroundColor: "#202938",
+              display: "flex",
+              flexDirection: "column", // Fontos a helyes elrendezéshez
             }}
           >
             <CardHeader
               title="Orders"
-              subheader={`Total: ${orders.length}`}
+              subheader={`Total: ${calculateTotalPrice()} Ft`}
               sx={{
                 "& .MuiCardHeader-subheader": {
                   color: "#d5d6d6",
@@ -424,31 +434,45 @@ const Dashboard: React.FC = () => {
                 },
               }}
             />
-            <List dense>
-              {orders.map((orderItem, index) => (
-                <ListItem
-                  key={index}
-                  secondaryAction={
-                    <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      onClick={() => handleDeleteFromOrder(orderItem)}
-                    >
-                      <DeleteOutlineOutlinedIcon
-                        sx={{ fontSize: 35, color: "#e7e6dd" }}
-                      />
-                    </IconButton>
-                  }
-                >
-                  <ListItemAvatar>
-                    {categoryIcons[orderItem.category]}
-                  </ListItemAvatar>
-                  <Typography variant="body2" color="#e7e6dd" fontSize={16}>
-                    {orderItem.name} x{orderItem.quantity}
-                  </Typography>
-                </ListItem>
-              ))}
-            </List>
+            {/* Görgethető lista konténer */}
+            <Box
+              sx={{
+                flex: 1,
+                overflowY: "auto",
+                maxHeight: "550px",
+                padding: 1,
+              }}
+            >
+              <List dense>
+                {orders.map((orderItem, index) => (
+                  <ListItem
+                    key={index}
+                    secondaryAction={
+                      <IconButton
+                        edge="end"
+                        aria-label="delete"
+                        onClick={() => handleDeleteFromOrder(orderItem)}
+                      >
+                        <DeleteOutlineOutlinedIcon
+                          sx={{ fontSize: 35, color: "#e7e6dd" }}
+                        />
+                      </IconButton>
+                    }
+                  >
+                    <ListItemAvatar>
+                      {categoryIcons[orderItem.category]}
+                    </ListItemAvatar>
+                    <Typography variant="body2" color="#e7e6dd" fontSize={16}>
+                      {orderItem.name} x{orderItem.quantity}
+                    </Typography>
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+            {/* Gomb a rendelés leadására */}
+            <Button variant="contained" endIcon={<SendIcon />} sx={{ m: 2 }}>
+              Rendelés leadása
+            </Button>
           </Card>
         </Box>
 
