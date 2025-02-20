@@ -43,6 +43,8 @@ import AppsIcon from "@mui/icons-material/Apps";
 import axios from "axios";
 
 interface MenuItem {
+  quantity: number;
+  imagePath: string | undefined;
   itemId: number;
   name: string;
   category: string;
@@ -109,21 +111,38 @@ const Dashboard: React.FC = () => {
   };
 
   const handleAddToOrder = (item: MenuItem) => {
-    setOrders((prevOrders) => [...prevOrders, item]);
+    setOrders((prevOrders) => {
+      const existingOrder = prevOrders.find(
+        (orderItem) => orderItem.itemId === item.itemId
+      );
+      if (existingOrder) {
+        return prevOrders.map((orderItem) =>
+          orderItem.itemId === item.itemId
+            ? { ...orderItem, quantity: (orderItem.quantity || 0) + 1 }
+            : orderItem
+        );
+      } else {
+        return [...prevOrders, { ...item, quantity: 1 }];
+      }
+    });
   };
 
   const handleRemoveFromOrder = (item: MenuItem) => {
     setOrders((prevOrders) => {
-      const index = prevOrders.findIndex(
-        (orderItem) => orderItem.itemId === item.itemId
-      );
-      if (index !== -1) {
-        const newOrders = [...prevOrders];
-        newOrders.splice(index, 1);
-        return newOrders;
-      }
-      return prevOrders;
+      return prevOrders
+        .map((orderItem) =>
+          orderItem.itemId === item.itemId
+            ? { ...orderItem, quantity: (orderItem.quantity || 0) - 1 }
+            : orderItem
+        )
+        .filter((orderItem) => orderItem.quantity > 0); // Ha 0, akkor törli az elemet
     });
+  };
+
+  const handleDeleteFromOrder = (item: MenuItem) => {
+    setOrders((prevOrders) =>
+      prevOrders.filter((orderItem) => orderItem.itemId !== item.itemId)
+    );
   };
 
   useEffect(() => {
@@ -413,7 +432,7 @@ const Dashboard: React.FC = () => {
                     <IconButton
                       edge="end"
                       aria-label="delete"
-                      onClick={() => handleRemoveFromOrder(orderItem)}
+                      onClick={() => handleDeleteFromOrder(orderItem)}
                     >
                       <DeleteOutlineOutlinedIcon
                         sx={{ fontSize: 35, color: "#e7e6dd" }}
@@ -425,7 +444,7 @@ const Dashboard: React.FC = () => {
                     {categoryIcons[orderItem.category]}
                   </ListItemAvatar>
                   <Typography variant="body2" color="#e7e6dd" fontSize={16}>
-                    1x {orderItem.name}
+                    {orderItem.name} x{orderItem.quantity}
                   </Typography>
                 </ListItem>
               ))}
@@ -485,15 +504,25 @@ const Dashboard: React.FC = () => {
                     </Typography>
                   </CardContent>
                   <CardActions disableSpacing>
-                    <IconButton onClick={() => handleAddToOrder(item)}>
-                      <AddCircleOutlineIcon
-                        sx={{ fontSize: 35, color: "#e7e6dd" }}
-                      />
+                    <IconButton
+                      onClick={() => handleAddToOrder(item)}
+                      disabled={item.isAvailable === false}
+                      sx={{
+                        color:
+                          item.isAvailable === false ? "#6d737d" : "#e7e6dd",
+                      }}
+                    >
+                      <AddCircleOutlineIcon sx={{ fontSize: 35 }} />
                     </IconButton>
-                    <IconButton onClick={() => handleRemoveFromOrder(item)}>
-                      <RemoveCircleOutlineIcon
-                        sx={{ fontSize: 35, color: "#e7e6dd" }}
-                      />
+                    <IconButton
+                      onClick={() => handleRemoveFromOrder(item)}
+                      disabled={item.isAvailable === false}
+                      sx={{
+                        color:
+                          item.isAvailable === false ? "#6d737d" : "#e7e6dd",
+                      }}
+                    >
+                      <RemoveCircleOutlineIcon sx={{ fontSize: 35 }} />
                     </IconButton>
                   </CardActions>
                 </Card>
