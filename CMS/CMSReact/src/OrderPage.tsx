@@ -169,19 +169,6 @@ const Dashboard: React.FC = () => {
   const uniqueCategories = getUniqueCategories();
 
   // Kategóriák elemeinek megszámlálása
-  const countItemsInCategories = () => {
-    const categoryCounts: { [key: string]: number } = {};
-    menuItems.forEach((item) => {
-      if (categoryCounts[item.category]) {
-        categoryCounts[item.category]++;
-      } else {
-        categoryCounts[item.category] = 1;
-      }
-    });
-    return categoryCounts;
-  };
-
-  const categoryCounts = countItemsInCategories();
 
   // Filter out the "Egyéb" category
   const filteredCategories = uniqueCategories.filter(
@@ -493,7 +480,9 @@ const Dashboard: React.FC = () => {
                   />
                   <CardContent>
                     <Typography>{item.description}</Typography>
-                    <Typography>IsAvailable: {item.isAvailable ? "True" : "False"}</Typography>
+                    <Typography>
+                      IsAvailable: {item.isAvailable ? "True" : "False"}
+                    </Typography>
                   </CardContent>
                   <CardActions disableSpacing>
                     <IconButton onClick={() => handleAddToOrder(item)}>

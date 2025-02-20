@@ -9,6 +9,8 @@ namespace CMS.Model
         [Key]
         public int CustomerId { get; set; }
         [Required]
+        public int CardId { get; set; }
+        [Required]
         public string Name { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }

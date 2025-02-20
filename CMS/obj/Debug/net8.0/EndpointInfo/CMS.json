@@ -1187,12 +1187,17 @@
       },
       "Customer": {
         "required": [
+          "cardId",
           "createdAt",
           "name"
         ],
         "type": "object",
         "properties": {
           "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cardId": {
             "type": "integer",
             "format": "int32"
           },
