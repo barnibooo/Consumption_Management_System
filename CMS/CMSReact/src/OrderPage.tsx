@@ -82,7 +82,7 @@ const categoryIcons: { [key: string]: React.ReactElement } = {
 const Dashboard: React.FC = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]); // Menü elemek típusa
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -144,7 +144,7 @@ const Dashboard: React.FC = () => {
             ? { ...orderItem, quantity: (orderItem.quantity || 0) - 1 }
             : orderItem
         )
-        .filter((orderItem) => orderItem.quantity > 0); // Ha 0, akkor törli az elemet
+        .filter((orderItem) => orderItem.quantity > 0);
     });
   };
 
@@ -163,12 +163,11 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get("https://localhost:5000/api/MenuItems") // Cseréld ki az API végpontot!
+      .get("https://localhost:5000/api/MenuItems")
       .then((response) => {
-        console.log(response.data); // Naplózza a teljes választ, hogy lássuk, mi érkezik
+        console.log(response.data);
         if (Array.isArray(response.data)) {
-          // Ha az adat egy tömb
-          setMenuItems(response.data); // A válasz tömböt közvetlenül beállítjuk
+          setMenuItems(response.data);
         } else {
           console.error("Hibás API válasz: nem tömb", response.data);
         }
@@ -186,14 +185,11 @@ const Dashboard: React.FC = () => {
 
   var l = menuItems.length;
 
-  // Az egyedi kategóriák meghatározása for ciklussal
   const getUniqueCategories = () => {
-    const categories: string[] = []; // A kategóriákat tartalmazó tömb
+    const categories: string[] = [];
 
-    // Végigiterálunk az items tömbön és hozzáadjuk a kategóriákat a categories tömbhöz
     for (let i = 0; i < l; i++) {
       const category = menuItems[i].category;
-      // Csak akkor adjuk hozzá a kategóriát, ha még nincs benne a categories tömbben
       if (!categories.includes(category)) {
         categories.push(category);
       }
@@ -203,17 +199,12 @@ const Dashboard: React.FC = () => {
 
   const uniqueCategories = getUniqueCategories();
 
-  // Kategóriák elemeinek megszámlálása
-
-  // Filter out the "Egyéb" category
   const filteredCategories = uniqueCategories.filter(
     (category) => category !== "Egyéb"
   );
 
-  // Check if there are any items in the "Egyéb" category
   const hasEgyebItems = menuItems.some((item) => item.category === "Egyéb");
 
-  // Filter menu items based on the selected category
   const filteredMenuItems = selectedCategory
     ? menuItems.filter((item) => item.category === selectedCategory)
     : menuItems;
@@ -378,7 +369,7 @@ const Dashboard: React.FC = () => {
 
       <Box
         display="flex"
-        height="calc(100vh - 64px)" // Adjust height to account for AppBar height
+        height="calc(100vh - 64px)"
         flexDirection={{ xs: "column", md: "row" }}
       >
         {/* Sidebar Replacement */}
@@ -424,7 +415,7 @@ const Dashboard: React.FC = () => {
           width={{ xs: "90%", md: "70%", lg: "40%", xl: "30%" }}
           display="flex"
           justifyContent={{ xs: "center", md: "flex-start" }}
-          sx={{ height: "80%", p: 2 }} // Add margin around the Orders Box and set height to 50vh
+          sx={{ height: "80%", p: 2 }}
         >
           <Card
             sx={{
@@ -432,10 +423,10 @@ const Dashboard: React.FC = () => {
                 xs: "100%",
                 md: "100%",
               },
-              height: "100%", // Set height to 100%
+              height: "100%",
               backgroundColor: "#202938",
               display: "flex",
-              flexDirection: "column", // Fontos a helyes elrendezéshez
+              flexDirection: "column",
             }}
           >
             <CardHeader
