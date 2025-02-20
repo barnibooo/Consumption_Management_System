@@ -1,4 +1,3 @@
-//TESTING
 import React, { useState, useEffect } from "react";
 import {
   AppBar,
@@ -42,6 +41,14 @@ import BakeryDiningOutlinedIcon from "@mui/icons-material/BakeryDiningOutlined";
 import AppsIcon from "@mui/icons-material/Apps";
 import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  DialogActions,
+} from "@mui/material";
 
 interface MenuItem {
   quantity: number;
@@ -80,6 +87,7 @@ const Dashboard: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [orders, setOrders] = useState<MenuItem[]>([]);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -209,6 +217,14 @@ const Dashboard: React.FC = () => {
   const filteredMenuItems = selectedCategory
     ? menuItems.filter((item) => item.category === selectedCategory)
     : menuItems;
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
 
   return (
     <>
@@ -470,7 +486,12 @@ const Dashboard: React.FC = () => {
               </List>
             </Box>
             {/* Gomb a rendelés leadására */}
-            <Button variant="contained" endIcon={<SendIcon />} sx={{ m: 2 }}>
+            <Button
+              variant="contained"
+              endIcon={<SendIcon />}
+              sx={{ m: 2 }}
+              onClick={handleOpenDialog}
+            >
               Rendelés leadása
             </Button>
           </Card>
@@ -555,6 +576,46 @@ const Dashboard: React.FC = () => {
           </Box>
         </Box>
       </Box>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        slotProps={{
+          paper: {
+            component: "form",
+            onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+              event.preventDefault();
+              const formData = new FormData(event.currentTarget);
+              const formJson = Object.fromEntries((formData as any).entries());
+              const email = formJson.email;
+              console.log(email);
+              handleCloseDialog();
+            },
+          },
+        }}
+      >
+        <DialogTitle>Subscribe</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            To subscribe to this website, please enter your email address here.
+            We will send updates occasionally.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="name"
+            name="email"
+            label="Email Address"
+            type="email"
+            fullWidth
+            variant="standard"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button type="submit">Subscribe</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
