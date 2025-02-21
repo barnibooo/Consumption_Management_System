@@ -65,18 +65,116 @@ const pages = ["Home", "Menu"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 const categoryIcons: { [key: string]: React.ReactElement } = {
-  Leves: <RamenDiningOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
-  Előétel: <BakeryDiningOutlinedIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />,
-  Főétel: <DinnerDiningOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
-  Hamburger: <LunchDiningOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
-  Pizza: <LocalPizzaOutlinedIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />,
-  Desszert: <CookieOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
-  Menü: <FastfoodOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
-  Ital: <LocalBarOutlined sx={{ fontSize: 35, color: "#e7e6dd" }} />,
-  Kávé: (
-    <EmojiFoodBeverageOutlinedIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />
+  Leves: (
+    <RamenDiningOutlined
+      sx={{
+        fontSize: 35,
+        color: "#d5d6d6",
+        "&:hover": {
+          color: "#BFA181",
+        },
+      }}
+    />
   ),
-  Egyéb: <MoreHorizIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />,
+  Előétel: (
+    <BakeryDiningOutlinedIcon
+      sx={{
+        fontSize: 35,
+        color: "#d5d6d6",
+        "&:hover": {
+          color: "#BFA181",
+        },
+      }}
+    />
+  ),
+  Főétel: (
+    <DinnerDiningOutlined
+      sx={{
+        fontSize: 35,
+        color: "#d5d6d6",
+        "&:hover": {
+          color: "#BFA181",
+        },
+      }}
+    />
+  ),
+  Hamburger: (
+    <LunchDiningOutlined
+      sx={{
+        fontSize: 35,
+        color: "#d5d6d6",
+        "&:hover": {
+          color: "#BFA181",
+        },
+      }}
+    />
+  ),
+  Pizza: (
+    <LocalPizzaOutlinedIcon
+      sx={{
+        fontSize: 35,
+        color: "#d5d6d6",
+        "&:hover": {
+          color: "#BFA181",
+        },
+      }}
+    />
+  ),
+  Desszert: (
+    <CookieOutlined
+      sx={{
+        fontSize: 35,
+        color: "#d5d6d6",
+        "&:hover": {
+          color: "#BFA181",
+        },
+      }}
+    />
+  ),
+  Menü: (
+    <FastfoodOutlined
+      sx={{
+        fontSize: 35,
+        color: "#d5d6d6",
+        "&:hover": {
+          color: "#BFA181",
+        },
+      }}
+    />
+  ),
+  Ital: (
+    <LocalBarOutlined
+      sx={{
+        fontSize: 35,
+        color: "#d5d6d6",
+        "&:hover": {
+          color: "#BFA181",
+        },
+      }}
+    />
+  ),
+  Kávé: (
+    <EmojiFoodBeverageOutlinedIcon
+      sx={{
+        fontSize: 35,
+        color: "#d5d6d6",
+        "&:hover": {
+          color: "#BFA181",
+        },
+      }}
+    />
+  ),
+  Egyéb: (
+    <MoreHorizIcon
+      sx={{
+        fontSize: 35,
+        color: "#d5d6d6",
+        "&:hover": {
+          color: "#BFA181",
+        },
+      }}
+    />
+  ),
 };
 
 const Dashboard: React.FC = () => {
@@ -233,7 +331,12 @@ const Dashboard: React.FC = () => {
             }}
           >
             <BarChartIcon
-              sx={{ display: { xs: "none", md: "flex" }, mr: 1, fontSize: 35 }}
+              sx={{
+                display: { xs: "none", md: "flex" },
+                mr: 1,
+                fontSize: 35,
+                color: "#d5d6d6",
+              }}
             />
             <Typography
               variant="h6"
@@ -243,9 +346,8 @@ const Dashboard: React.FC = () => {
               sx={{
                 mr: 2,
                 display: { xs: "none", md: "flex" },
-                fontFamily: "monospace",
                 fontWeight: 700,
-                color: "#e7e6dd",
+                color: "#d5d6d6",
                 textDecoration: "none",
               }}
             >
@@ -269,6 +371,9 @@ const Dashboard: React.FC = () => {
                 <MenuIcon
                   sx={{
                     fontSize: 35,
+                    "&:hover": {
+                      color: "#BFA181",
+                    },
                   }}
                 />
               </IconButton>
@@ -307,12 +412,14 @@ const Dashboard: React.FC = () => {
               sx={{
                 mr: 2,
                 display: { xs: "flex", md: "none" },
-                fontFamily: "monospace",
-                fontWeight: 700,
+                fontWeight: 400,
                 textDecoration: "none",
-                color: "#e7e6dd",
+                color: "#d5d6d6",
                 textAlign: { xs: "center", sm: "center" },
                 flexGrow: { xs: 1, sm: 1 },
+                "&:hover": {
+                  color: "#BFA181",
+                },
               }}
             >
               Consumption Management System
@@ -322,9 +429,19 @@ const Dashboard: React.FC = () => {
                 <Button
                   key={page}
                   onClick={() => handlePageNavigation(page)}
-                  sx={{ my: 2, color: "white", display: "block" }}
+                  sx={{
+                    color: "#d5d6d6",
+                    display: "block",
+                    textTransform: "none",
+                    fontSize: 20,
+                    "&:hover": {
+                      color: "#BFA181",
+                    },
+                  }}
                 >
-                  {page}
+                  <Typography variant="h2" sx={{ fontSize: "inherit" }}>
+                    {page}
+                  </Typography>
                 </Button>
               ))}
             </Box>
@@ -332,7 +449,7 @@ const Dashboard: React.FC = () => {
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar
-                    sx={{ fontSize: 25, color: "#e7e6dd", bgcolor: "#6d737d" }}
+                    sx={{ fontSize: 25, color: "#d5d6d6", bgcolor: "#bfa181" }}
                   >
                     N
                   </Avatar>
@@ -389,13 +506,35 @@ const Dashboard: React.FC = () => {
           }}
         >
           <Stack direction={{ xs: "row", md: "column" }} spacing={2}>
-            <IconButton onClick={() => handleCategoryClick(null)}>
-              <AppsIcon sx={{ fontSize: 35, color: "#e7e6dd" }} />
+            <IconButton
+              onClick={() => handleCategoryClick(null)}
+              sx={{
+                fontSize: 35,
+                color: "#d5d6d6",
+                "&:hover": {
+                  color: "#BFA181",
+                },
+                "&:active": {
+                  color: "#BFA181",
+                },
+              }}
+            >
+              <AppsIcon />
             </IconButton>
             {filteredCategories.map((category) => (
               <IconButton
                 key={category}
                 onClick={() => handleCategoryClick(category)}
+                sx={{
+                  fontSize: 35,
+                  color: "#d5d6d6",
+                  "&:hover": {
+                    color: "#BFA181",
+                  },
+                  "&:active": {
+                    color: "#BFA181",
+                  },
+                }}
               >
                 {categoryIcons[category]}
               </IconButton>
@@ -403,6 +542,16 @@ const Dashboard: React.FC = () => {
             <IconButton
               onClick={() => handleCategoryClick("Egyéb")}
               disabled={!hasEgyebItems}
+              sx={{
+                fontSize: 35,
+                color: "#d5d6d6",
+                "&:hover": {
+                  color: "#BFA181",
+                },
+                "&:active": {
+                  color: "#BFA181",
+                },
+              }}
             >
               {categoryIcons["Egyéb"]}
             </IconButton>
@@ -461,7 +610,13 @@ const Dashboard: React.FC = () => {
                         onClick={() => handleDeleteFromOrder(orderItem)}
                       >
                         <DeleteOutlineOutlinedIcon
-                          sx={{ fontSize: 35, color: "#e7e6dd" }}
+                          sx={{
+                            fontSize: 35,
+                            color: "#d5d6d6",
+                            "&:hover": {
+                              color: "#BFA181",
+                            },
+                          }}
                         />
                       </IconButton>
                     }
@@ -480,7 +635,10 @@ const Dashboard: React.FC = () => {
             <Button
               variant="contained"
               endIcon={<SendIcon />}
-              sx={{ m: 2 }}
+              sx={{
+                m: 2,
+                backgroundColor: "#BFA181",
+              }}
               onClick={handleOpenDialog}
             >
               Rendelés leadása
@@ -516,7 +674,9 @@ const Dashboard: React.FC = () => {
                       xl: "30%",
                     },
                     background: "#202938",
-                    color: "#e7e6dd",
+                    color: "#d5d6d6",
+                    display: "flex",
+                    flexDirection: "column",
                   }}
                   key={item.itemId}
                 >
@@ -539,26 +699,45 @@ const Dashboard: React.FC = () => {
                       Rendelhető: {item.isAvailable ? "Igen" : "Nem"}
                     </Typography>
                   </CardContent>
-                  <CardActions disableSpacing>
+                  <CardActions
+                    disableSpacing
+                    sx={{ mt: "auto", justifyContent: "flex-start" }}
+                  >
                     <IconButton
                       onClick={() => handleAddToOrder(item)}
                       disabled={item.isAvailable === false}
-                      sx={{
-                        color:
-                          item.isAvailable === false ? "#6d737d" : "#e7e6dd",
-                      }}
                     >
-                      <AddCircleOutlineIcon sx={{ fontSize: 35 }} />
+                      <AddCircleOutlineIcon
+                        sx={{
+                          fontSize: 35,
+                          color:
+                            item.isAvailable === false ? "#6d737d" : "#d5d6d6",
+                          "&:hover": {
+                            color:
+                              item.isAvailable === false
+                                ? "#6d737d"
+                                : "#BFA181",
+                          },
+                        }}
+                      />
                     </IconButton>
                     <IconButton
                       onClick={() => handleRemoveFromOrder(item)}
                       disabled={item.isAvailable === false}
-                      sx={{
-                        color:
-                          item.isAvailable === false ? "#6d737d" : "#e7e6dd",
-                      }}
                     >
-                      <RemoveCircleOutlineIcon sx={{ fontSize: 35 }} />
+                      <RemoveCircleOutlineIcon
+                        sx={{
+                          fontSize: 35,
+                          color:
+                            item.isAvailable === false ? "#6d737d" : "#d5d6d6",
+                          "&:hover": {
+                            color:
+                              item.isAvailable === false
+                                ? "#6d737d"
+                                : "#BFA181",
+                          },
+                        }}
+                      />
                     </IconButton>
                   </CardActions>
                 </Card>
