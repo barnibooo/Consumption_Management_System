@@ -14,8 +14,8 @@ namespace CMS.Model
         public int EmployeeId { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }
-        [JsonIgnore]
-        public List<MenuItem>? MenuItems { get; set; }
+
+        public List<MenuItem> MenuItems { get; set; }
         [JsonIgnore]
         [InverseProperty("Orders")]
         public List<MenuItemOrder>? MenuItemOrders { get; set; }

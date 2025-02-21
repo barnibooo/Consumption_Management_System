@@ -23,21 +23,20 @@ namespace CMS.Controllers
 
         // GET: api/Orders
         [HttpGet]
-
         public async Task<ActionResult<IEnumerable<Object>>> GetOrders()
         {
-            return await _context.Orders.Select(item =>
-            new
+            return await _context.Orders.Select(order => new
             {
-                OrderId = item.OrderId,
-                CutomerId = item.CustomerId,
-                EmployeeId = item.EmployeeId,
-                CreatedAt = item.CreatedAt,
-                MenuItems = item.MenuItems.Select(c => new { c.ItemId, c.Name }).ToList()
-
-            }
-            ).ToListAsync();
-
+                OrderId = order.OrderId,
+                CustomerId = order.CustomerId,
+                EmployeeId = order.EmployeeId,
+                CreatedAt = order.CreatedAt,
+                MenuItems = order.MenuItemOrders.Select(mio => new
+                {
+                    mio.MenuItems.ItemId,
+                    mio.Quantity
+                }).ToList()
+            }).ToListAsync();
         }
 
 
@@ -70,7 +69,8 @@ namespace CMS.Controllers
             {
                 CustomerId = orderPostDto.CustomerId,
                 EmployeeId = orderPostDto.EmployeeId,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+                MenuItemOrders = new List<MenuItemOrder>()
             };
 
             foreach (var item in orderPostDto.MenuItems)
@@ -78,11 +78,13 @@ namespace CMS.Controllers
                 var menuItem = await _context.MenuItems.FindAsync(item.MenuItemId);
                 if (menuItem != null)
                 {
-                    order.MenuItemOrders.Add(new MenuItemOrder
+                    var menuItemOrder = new MenuItemOrder
                     {
-                        ItemId = item.MenuItemId,
+                        MenuItems = menuItem,
+                        Orders = order,
                         Quantity = item.Quantity
-                    });
+                    };
+                    order.MenuItemOrders.Add(menuItemOrder);
                 }
             }
 
@@ -94,6 +96,7 @@ namespace CMS.Controllers
                 message = "Order created successfully.",
             });
         }
+
 
 
         private bool OrderExists(int id)
