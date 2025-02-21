@@ -1,10 +1,8 @@
-import * as React from "react";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import SendIcon from "@mui/icons-material/Send";
+import LoginIcon from "@mui/icons-material/Login";
 import Box from "@mui/material/Box";
 import { Button, TextField, useMediaQuery, useTheme } from "@mui/material";
 
@@ -15,6 +13,7 @@ function MediaCard() {
   return (
     <Box
       sx={{
+        backgroundColor: "#0F1827",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -24,6 +23,8 @@ function MediaCard() {
     >
       <Card
         sx={{
+          color: "#d5d6d6",
+          backgroundColor: "#202938",
           width: {
             xs: "90%",
             sm: "70%",
@@ -42,7 +43,7 @@ function MediaCard() {
             objectFit: "cover",
             objectPosition: "right",
           }}
-          image="/img/gyik.jpg"
+          image="/img/login_sample.png"
         />
         <CardContent
           sx={{
@@ -59,34 +60,105 @@ function MediaCard() {
             variant="h5"
             component="div"
             sx={{
-              whiteSpace: "nowrap",
-              textAlign: "center",
+              mr: 2,
+              display: { xs: "none", md: "flex" },
+              fontWeight: 400,
+              color: "#d5d6d6",
+              textDecoration: "none",
+              marginBottom: 2,
             }}
           >
             Consumption Management System
           </Typography>
-          <Typography gutterBottom variant="h2" component="div">
+          <Typography
+            gutterBottom
+            variant="h2"
+            component="div"
+            sx={{
+              mr: 2,
+              display: { xs: "none", md: "flex" },
+              fontWeight: 300,
+              color: "#d5d6d6",
+              textDecoration: "none",
+              marginBottom: 2,
+            }}
+          >
             Welcome
           </Typography>
-          <Typography gutterBottom variant="h5" component="div">
+          <Typography
+            gutterBottom
+            variant="h5"
+            component="div"
+            sx={{
+              mr: 2,
+              display: { xs: "none", md: "flex" },
+              fontWeight: 300,
+              color: "#d5d6d6",
+              textDecoration: "none",
+              marginBottom: 2,
+            }}
+          >
             Login to your account
           </Typography>
           <TextField
             sx={{
               width: "70%",
               height: "Auto",
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "#d5d6d6",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#d5d6d6",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#BFA181",
+                },
+              },
+              "& .MuiInputLabel-root": {
+                color: "#d5d6d6",
+              },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "#BFA181",
+              },
+              "& .MuiInputBase-input": {
+                color: "#d5d6d6",
+                caretColor: "#d5d6d6",
+              },
+              marginBottom: 2,
             }}
             required
             id="outlined-search"
-            label="Search field"
+            label="Username"
             type="search"
             margin="dense"
           />
-          <br />
           <TextField
             sx={{
               width: "70%",
               height: "Auto",
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "#d5d6d6",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#d5d6d6",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#BFA181",
+                },
+              },
+              "& .MuiInputLabel-root": {
+                color: "#d5d6d6",
+              },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "#BFA181",
+              },
+              "& .MuiInputBase-input": {
+                color: "#d5d6d6",
+                caretColor: "#d5d6d6",
+              },
+              marginBottom: 2,
             }}
             required
             id="outlined-password-input"
@@ -95,16 +167,17 @@ function MediaCard() {
             autoComplete="current-password"
             margin="dense"
           />
-          <br />
           <Button
             sx={{
               width: "70%",
               height: "Auto",
+              backgroundColor: "#BFA181",
+              marginBottom: 2,
             }}
             variant="contained"
-            endIcon={<SendIcon />}
+            endIcon={<LoginIcon />}
           >
-            Send
+            Log In
           </Button>
         </CardContent>
       </Card>
