@@ -6,9 +6,12 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import SendIcon from "@mui/icons-material/Send";
 import Box from "@mui/material/Box";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, useMediaQuery, useTheme } from "@mui/material";
 
 function MediaCard() {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("lg"));
+
   return (
     <Box
       sx={{
@@ -22,33 +25,55 @@ function MediaCard() {
       <Card
         sx={{
           width: {
-            xs: "50%",
-            md: "50%",
+            xs: "90%",
+            sm: "70%",
+            md: "55%",
+            lg: "60%",
           },
-          height: "60vh",
+          height: "70vh",
           display: "flex",
-          flexDirection: "row",
+          flexDirection: isSmallScreen ? "column" : "row",
         }}
       >
+        <CardMedia
+          sx={{
+            width: isSmallScreen ? "100%" : "50%",
+            height: isSmallScreen ? "40%" : "100%",
+            objectFit: "cover",
+            objectPosition: "right",
+          }}
+          image="/img/gyik.jpg"
+        />
         <CardContent
           sx={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            width: { xl: "50%" },
+            width: isSmallScreen ? "100%" : "50%",
             flex: 1,
           }}
         >
+          <Typography
+            gutterBottom
+            variant="h5"
+            component="div"
+            sx={{
+              whiteSpace: "nowrap",
+              textAlign: "center",
+            }}
+          >
+            Consumption Management System
+          </Typography>
+          <Typography gutterBottom variant="h2" component="div">
+            Welcome
+          </Typography>
           <Typography gutterBottom variant="h5" component="div">
-            Login
+            Login to your account
           </Typography>
           <TextField
             sx={{
-              width: {
-                xs: "70%",
-                md: "70%",
-              },
+              width: "70%",
               height: "Auto",
             }}
             required
@@ -60,10 +85,7 @@ function MediaCard() {
           <br />
           <TextField
             sx={{
-              width: {
-                xs: "70%",
-                md: "70%",
-              },
+              width: "70%",
               height: "Auto",
             }}
             required
@@ -76,10 +98,7 @@ function MediaCard() {
           <br />
           <Button
             sx={{
-              width: {
-                xs: "70%",
-                md: "70%",
-              },
+              width: "70%",
               height: "Auto",
             }}
             variant="contained"
@@ -88,14 +107,6 @@ function MediaCard() {
             Send
           </Button>
         </CardContent>
-        <CardMedia
-          sx={{
-            width: { xl: "50%" },
-            objectFit: "cover",
-            objectPosition: "right",
-          }}
-          image="/img/gyik.jpg"
-        />
       </Card>
     </Box>
   );
