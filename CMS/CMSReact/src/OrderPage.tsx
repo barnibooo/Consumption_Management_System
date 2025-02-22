@@ -20,6 +20,10 @@ import {
   List,
   ListItem,
   ListItemAvatar,
+  CircularProgress,
+  Alert,
+  AlertTitle,
+  ThemeProvider,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -49,6 +53,13 @@ import {
   TextField,
   DialogActions,
 } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
 
 interface MenuItem {
   quantity: number;
@@ -278,8 +289,35 @@ const Dashboard: React.FC = () => {
       });
   }, []);
 
-  if (loading) return <p>Adatok betöltése...</p>;
-  if (error) return <p>Hiba történt: {error}</p>;
+  if (loading)
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <CircularProgress size={120} sx={{ color: "#bfa181" }} />
+      </Box>
+    );
+  if (error)
+    return (
+      <ThemeProvider theme={darkTheme}>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100vh"
+        >
+          <Box width="40%">
+            <Alert severity="error">
+              <AlertTitle>Hiba</AlertTitle>
+              Hiba történt az adatok betöltése közben!
+            </Alert>
+          </Box>
+        </Box>
+      </ThemeProvider>
+    );
 
   var l = menuItems.length;
 
@@ -449,7 +487,11 @@ const Dashboard: React.FC = () => {
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar
-                    sx={{ fontSize: 25, color: "#d5d6d6", bgcolor: "#bfa181" }}
+                    sx={{
+                      fontSize: 25,
+                      color: "#d5d6d6",
+                      bgcolor: "#bfa181",
+                    }}
                   >
                     N
                   </Avatar>
