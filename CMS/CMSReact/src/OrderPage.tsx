@@ -197,6 +197,10 @@ const Dashboard: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [orders, setOrders] = useState<MenuItem[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [guestId, setGuestId] = useState<string | null>(null);
+  const [finalizedOrders, setFinalizedOrders] = useState<
+    { itemId: number; quantity: number }[]
+  >([]);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -351,6 +355,34 @@ const Dashboard: React.FC = () => {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
+  };
+
+  const handleSubmitOrder = (cId: string) => {
+    setGuestId(cId);
+
+    // Helyes kulcsnevek használata
+    const orderList = orders.map((orderItem) => ({
+      itemId: orderItem.itemId, // Fontos: az eredeti kulcsnév marad!
+      quantity: orderItem.quantity,
+    }));
+
+    setFinalizedOrders(orderList);
+
+    axios
+      .post("https://localhost:5000/api/Orders", {
+        customerId: cId,
+        employeeId: 1,
+        menuItems: orders.map((orderItem) => ({
+          menuItemId: orderItem.itemId,
+          quantity: orderItem.quantity,
+        })),
+      })
+      .then((response) => {
+        console.log("Order submitted successfully:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error submitting order:", error);
+      });
   };
 
   return (
@@ -788,46 +820,48 @@ const Dashboard: React.FC = () => {
           </Box>
         </Box>
       </Box>
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        slotProps={{
-          paper: {
-            component: "form",
-            onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-              event.preventDefault();
-              const formData = new FormData(event.currentTarget);
-              const formJson = Object.fromEntries((formData as any).entries());
-              const email = formJson.email;
-              console.log(email);
-              handleCloseDialog();
+      <ThemeProvider theme={darkTheme}>
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          slotProps={{
+            paper: {
+              component: "form",
+              onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+                event.preventDefault();
+                const formData = new FormData(event.currentTarget);
+                const formJson = Object.fromEntries(
+                  (formData as any).entries()
+                );
+                const id = formJson.id as string;
+                handleSubmitOrder(id);
+                handleCloseDialog();
+              },
             },
-          },
-        }}
-      >
-        <DialogTitle>Subscribe</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            To subscribe to this website, please enter your email address here.
-            We will send updates occasionally.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="name"
-            name="email"
-            label="Email Address"
-            type="email"
-            fullWidth
-            variant="standard"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button type="submit">Subscribe</Button>
-        </DialogActions>
-      </Dialog>
+          }}
+        >
+          <DialogTitle>Rendelés leadása</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Kérjük adja meg a vendég azonosítóját!
+            </DialogContentText>
+            <TextField
+              required
+              margin="dense"
+              id="name"
+              name="id"
+              label="Azonosító"
+              type="text"
+              fullWidth
+              variant="standard"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Mégse</Button>
+            <Button type="submit">Leadás</Button>
+          </DialogActions>
+        </Dialog>
+      </ThemeProvider>
     </>
   );
 };
