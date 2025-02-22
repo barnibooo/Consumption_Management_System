@@ -201,7 +201,6 @@ const Dashboard: React.FC = () => {
   const [finalizedOrders, setFinalizedOrders] = useState<
     { itemId: number; quantity: number }[]
   >([]);
-  const [openSuccessDialog, setOpenSuccessDialog] = useState(false);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -358,15 +357,12 @@ const Dashboard: React.FC = () => {
     setOpenDialog(false);
   };
 
-  const handleCloseSuccessDialog = () => {
-    setOpenSuccessDialog(false);
-  };
-
   const handleSubmitOrder = (cId: string) => {
     setGuestId(cId);
 
+    // Helyes kulcsnevek használata
     const orderList = orders.map((orderItem) => ({
-      itemId: orderItem.itemId,
+      itemId: orderItem.itemId, // Fontos: az eredeti kulcsnév marad!
       quantity: orderItem.quantity,
     }));
 
@@ -376,11 +372,13 @@ const Dashboard: React.FC = () => {
       .post("https://localhost:5000/api/Orders", {
         customerId: cId,
         employeeId: 1,
-        menuItems: orderList,
+        menuItems: orders.map((orderItem) => ({
+          menuItemId: orderItem.itemId,
+          quantity: orderItem.quantity,
+        })),
       })
       .then((response) => {
         console.log("Order submitted successfully:", response.data);
-        setOpenSuccessDialog(true); // Show success dialog
       })
       .catch((error) => {
         console.error("Error submitting order:", error);
@@ -861,27 +859,6 @@ const Dashboard: React.FC = () => {
           <DialogActions>
             <Button onClick={handleCloseDialog}>Mégse</Button>
             <Button type="submit">Leadás</Button>
-          </DialogActions>
-        </Dialog>
-
-        <Dialog
-          open={openSuccessDialog}
-          onClose={handleCloseSuccessDialog}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            Rendelés sikeresen leadva
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              A rendelését sikeresen leadta.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseSuccessDialog} autoFocus>
-              OK
-            </Button>
           </DialogActions>
         </Dialog>
       </ThemeProvider>
