@@ -93,7 +93,7 @@ namespace CMS.Controllers
 
             return CreatedAtAction(nameof(CreateOrder), new { id = order.OrderId }, new
             {
-                message = "Order created successfully.",
+                order.OrderId,
             });
         }
 
