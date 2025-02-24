@@ -201,6 +201,7 @@ const Dashboard: React.FC = () => {
   const [finalizedOrders, setFinalizedOrders] = useState<
     { itemId: number; quantity: number }[]
   >([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -379,10 +380,16 @@ const Dashboard: React.FC = () => {
       })
       .then((response) => {
         console.log("Order submitted successfully:", response.data);
+        setDialogOpen(true);
+
       })
       .catch((error) => {
         console.error("Error submitting order:", error);
       });
+  };
+
+  const handleClose = () => {
+    setDialogOpen(false);
   };
 
   return (
@@ -861,6 +868,26 @@ const Dashboard: React.FC = () => {
             <Button type="submit">Leadás</Button>
           </DialogActions>
         </Dialog>
+        <Dialog
+        open={dialogOpen}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Sikeres rendelés leadás"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            A rendelés a ... számon elkészült!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} autoFocus>
+            Rendben
+          </Button>
+        </DialogActions>
+      </Dialog>
       </ThemeProvider>
     </>
   );
