@@ -202,6 +202,7 @@ const Dashboard: React.FC = () => {
     { itemId: number; quantity: number }[]
   >([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [orderId, setOrderId] = useState('');
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -361,9 +362,8 @@ const Dashboard: React.FC = () => {
   const handleSubmitOrder = (cId: string) => {
     setGuestId(cId);
 
-    // Helyes kulcsnevek használata
     const orderList = orders.map((orderItem) => ({
-      itemId: orderItem.itemId, // Fontos: az eredeti kulcsnév marad!
+      itemId: orderItem.itemId,
       quantity: orderItem.quantity,
     }));
 
@@ -380,8 +380,8 @@ const Dashboard: React.FC = () => {
       })
       .then((response) => {
         console.log("Order submitted successfully:", response.data);
+        setOrderId(response.data.orderId);
         setDialogOpen(true);
-
       })
       .catch((error) => {
         console.error("Error submitting order:", error);
@@ -522,45 +522,47 @@ const Dashboard: React.FC = () => {
                 </Button>
               ))}
             </Box>
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar
-                    sx={{
-                      fontSize: 25,
-                      color: "#d5d6d6",
-                      bgcolor: "#bfa181",
-                    }}
-                  >
-                    N
-                  </Avatar>
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: "45px" }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography sx={{ textAlign: "center" }}>
-                      {setting}
-                    </Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
+            <ThemeProvider theme={darkTheme}>
+              <Box sx={{ flexGrow: 0 }}>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar
+                      sx={{
+                        fontSize: 25,
+                        color: "#d5d6d6",
+                        bgcolor: "#bfa181",
+                      }}
+                    >
+                      N
+                    </Avatar>
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: "45px" }} 
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  {settings.map((setting) => (
+                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                      <Typography sx={{ textAlign: "center" }}>
+                        {setting}
+                      </Typography>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </Box>
+            </ThemeProvider>
           </Toolbar>
         </Container>
       </AppBar>
@@ -879,11 +881,15 @@ const Dashboard: React.FC = () => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            A rendelés a ... számon elkészült!
+          <Typography>A rendelés leadva!</Typography>
+          <Typography>Rendelési szám: {orderId}</Typography>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} autoFocus>
+          <Button onClick={() => {
+        handleClose();
+        window.location.reload();
+      }} autoFocus>
             Rendben
           </Button>
         </DialogActions>

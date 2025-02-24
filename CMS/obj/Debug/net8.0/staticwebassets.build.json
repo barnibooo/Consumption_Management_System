@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "9QMs8Ic0tE2SCpn3S/vOhwNOKMqRt1OL1cGm0h89Xfs=",
+  "Hash": "k6O2fX17k8bJ9Rib1UlauAzgJCyh2ddMoYj8DP8LEFs=",
   "Source": "CMS",
   "BasePath": "_content/CMS",
   "Mode": "Default",
@@ -10,7 +10,7 @@
     {
       "Name": "CMS\\wwwroot",
       "Source": "CMS",
-      "ContentRoot": "F:\\dobosig\\project\\Consumption_Management_System\\CMS\\wwwroot\\",
+      "ContentRoot": "F:\\13B\\Luca\\git\\Consumption_Management_System\\CMS\\wwwroot\\",
       "BasePath": "_content/CMS",
       "Pattern": "**"
     }
