@@ -21,14 +21,19 @@ namespace CMS.Model
 
         public DbSet<CustomerAdmission> CustomerAdmissions { get; set; } = null!;
 
+        public DbSet<RefreshToken> RefreshTokens { get; set; } =null!;
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MenuItem>()
                 .HasMany(e => e.Orders)
                 .WithMany(e => e.MenuItems)
                 .UsingEntity<MenuItemOrder>();
-        }
 
+            modelBuilder.Entity<Employee>().HasIndex(u => u.Username).IsUnique();
+        }
+        
 
 
 

@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "F:\\13B\\Luca\\git\\Consumption_Management_System\\CMS\\CMS.csproj": {}
+    "F:\\OB\\CMS\\Consumption_Management_System\\CMS\\CMS.csproj": {}
   },
   "projects": {
-    "F:\\13B\\Luca\\git\\Consumption_Management_System\\CMS\\CMS.csproj": {
+    "F:\\OB\\CMS\\Consumption_Management_System\\CMS\\CMS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\13B\\Luca\\git\\Consumption_Management_System\\CMS\\CMS.csproj",
+        "projectUniqueName": "F:\\OB\\CMS\\Consumption_Management_System\\CMS\\CMS.csproj",
         "projectName": "CMS",
-        "projectPath": "F:\\13B\\Luca\\git\\Consumption_Management_System\\CMS\\CMS.csproj",
-        "packagesPath": "C:\\Users\\makl\\.nuget\\packages\\",
-        "outputPath": "F:\\13B\\Luca\\git\\Consumption_Management_System\\CMS\\obj\\",
+        "projectPath": "F:\\OB\\CMS\\Consumption_Management_System\\CMS\\CMS.csproj",
+        "packagesPath": "C:\\Users\\orbanb\\.nuget\\packages\\",
+        "outputPath": "F:\\OB\\CMS\\Consumption_Management_System\\CMS\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\makl\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\orbanb\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -50,6 +50,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.13, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[9.0.2, )"

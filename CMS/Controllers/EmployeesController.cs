@@ -92,7 +92,7 @@ namespace CMS.Controllers
                 LastName = EmployeePostDto.LastName,
                 Role = EmployeePostDto.Role,
                 Username = EmployeePostDto.UserName,
-                Password = EmployeePostDto.Password,
+                PasswordHash = EmployeePostDto.PasswordHash,
             };
 
             _context.Employees.Add(employee);

@@ -2640,3 +2640,5 @@ F:\13B\Luca\git\Consumption_Management_System\CMS\obj\Debug\net8.0\refint\CMS.dl
 F:\13B\Luca\git\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.pdb
 F:\13B\Luca\git\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.genruntimeconfig.cache
 F:\13B\Luca\git\Consumption_Management_System\CMS\obj\Debug\net8.0\ref\CMS.dll
+F:\OB\CMS\Consumption_Management_System\CMS\bin\Debug\net8.0\BCrypt.Net-Next.dll
+F:\OB\CMS\Consumption_Management_System\CMS\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

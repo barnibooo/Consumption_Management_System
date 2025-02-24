@@ -91,7 +91,7 @@ namespace CMS.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -104,6 +104,9 @@ namespace CMS.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("EmployeeId");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Employees");
                 });
@@ -189,6 +192,29 @@ namespace CMS.Migrations
                     b.ToTable("Orders");
                 });
 
+            modelBuilder.Entity("CMS.Model.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("CMS.Model.CustomerAdmission", b =>
                 {
                     b.HasOne("CMS.Model.Admission", "Admissions")
@@ -242,6 +268,17 @@ namespace CMS.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("CMS.Model.RefreshToken", b =>
+                {
+                    b.HasOne("CMS.Model.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Employee");
                 });
