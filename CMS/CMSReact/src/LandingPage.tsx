@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./App.css";
-import { Card, CardActionArea, CardMedia, CardContent, Typography, ThemeProvider, createTheme } from "@mui/material";
+import { Card, CardActionArea, CardMedia, ThemeProvider, createTheme, Typography, Box } from "@mui/material";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -14,25 +14,55 @@ function App() {
   return (
     <>
     <ThemeProvider theme={darkTheme}>
-      <Card sx={{ maxWidth: 345 }}>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          height="140"
-          image="/static/images/cards/contemplative-reptile.jpg"
-          alt="green iguana"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            Lizard
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-    </Card>
+      <Card sx={{
+        maxWidth: '90%',
+        width: '600px',
+        height: 'auto',
+        margin: 'auto',
+        mt: 4,
+        mb: 4,
+        '@media (max-width: 600px)': {
+          width: '100%',
+        },
+      }}>
+        <CardActionArea>
+          <Box sx={{ position: 'relative' }}>
+            <CardMedia
+              component="img"
+              height="auto"
+              image="img/RestaurantCardWP.jpg"
+              alt="green iguana"
+              sx={{
+                width: '100%',
+                height: 'auto',
+              }}
+            />
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                color: 'white',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                opacity: 0,
+                transition: 'opacity 0.3s',
+                '&:hover': {
+                  opacity: 1,
+                },
+              }}
+            >
+              Hover Text
+            </Typography>
+          </Box>
+        </CardActionArea>
+      </Card>
     </ThemeProvider>
     </>
   );
