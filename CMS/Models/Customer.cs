@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -8,8 +9,8 @@ namespace CMS.Models
     {
         [Key]
         public int CustomerId { get; set; }
-        [Required]
-        public int CardId { get; set; }
+        [Required] 
+        public string CardId { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]

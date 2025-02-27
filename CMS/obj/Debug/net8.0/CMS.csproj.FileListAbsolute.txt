@@ -3613,3 +3613,7 @@ D:\CMS\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.genruntimeconfig.c
 D:\CMS\Consumption_Management_System\CMS\obj\Debug\net8.0\ref\CMS.dll
 D:\! SULIS FELADATAIM\13. osztály\ZARO\gites\CMS development\Consumption_Management_System\CMS\bin\Debug\net8.0\BCrypt.Net-Next.dll
 D:\! SULIS FELADATAIM\13. osztály\ZARO\gites\CMS development\Consumption_Management_System\CMS\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\! SULIS FELADATAIM\13. osztály\ZARO\gites\CMS development\Consumption_Management_System\CMS\bin\Debug\net8.0\CMS.staticwebassets.endpoints.json
+D:\! SULIS FELADATAIM\13. osztály\ZARO\gites\CMS development\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+D:\! SULIS FELADATAIM\13. osztály\ZARO\gites\CMS development\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets\msbuild.CMS.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+D:\! SULIS FELADATAIM\13. osztály\ZARO\gites\CMS development\Consumption_Management_System\CMS\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

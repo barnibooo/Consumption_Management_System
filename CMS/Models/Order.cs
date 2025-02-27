@@ -9,7 +9,7 @@ namespace CMS.Models
         [Key]
         public int OrderId { get; set; }
         [Required]
-        public int CustomerId { get; set; }
+        public string CardId { get; set; }
         [Required]
         public int EmployeeId { get; set; }
         [Required]
