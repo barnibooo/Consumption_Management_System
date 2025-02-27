@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Model;
 using CMS.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Controllers
 {

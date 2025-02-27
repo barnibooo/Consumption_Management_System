@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "/DmAcijaWoKwqaOnboedexZD7MXiFPRyOXE4ih9AsnM=",
+  "Hash": "PguXQ7eitMsfsmil1A9+jhj8Z3Xa5cFNmayVTDfBByI=",
   "Source": "CMS",
   "BasePath": "_content/CMS",
   "Mode": "Default",
@@ -10,7 +10,7 @@
     {
       "Name": "CMS\\wwwroot",
       "Source": "CMS",
-      "ContentRoot": "F:\\OB\\ZARO\\Consumption_Management_System\\CMS\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\orbanb\\Documents\\OB\\Consumption_Management_System\\CMS\\wwwroot\\",
       "BasePath": "_content/CMS",
       "Pattern": "**"
     }
