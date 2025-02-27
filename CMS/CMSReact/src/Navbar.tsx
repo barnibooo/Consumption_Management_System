@@ -38,7 +38,7 @@ function App() {
   
     const handlePageNavigation = (page: string) => {
       if (page === "Home") {
-        window.location.href = "/index.html";
+        window.location.href = "/landingpage.html";
       } else if (page === "Menu") {
         window.location.href = "/restaurant.html";
       } else {
