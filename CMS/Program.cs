@@ -1,4 +1,4 @@
-using CMS.Model;
+using CMS.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;

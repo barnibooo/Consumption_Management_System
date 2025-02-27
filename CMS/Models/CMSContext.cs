@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace CMS.Model
+namespace CMS.Models
 {
     public class CMSContext : DbContext
     {

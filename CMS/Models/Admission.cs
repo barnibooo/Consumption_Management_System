@@ -2,14 +2,14 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace CMS.Model
+namespace CMS.Models
 {
     public class Admission
     {
         [Key]
         public int AdmissionId { get; set; }
         [Required]
-        public string AdmissionName { get; set; }
+        public string? AdmissionName { get; set; }
         [JsonIgnore]
         [InverseProperty("Admissions")]
         public List<CustomerAdmission>? CustomerAdmissions { get; set; }

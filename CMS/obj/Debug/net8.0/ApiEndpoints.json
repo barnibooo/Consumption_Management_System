@@ -9,7 +9,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[CMS.Model.Admission, CMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[CMS.Models.Admission, CMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -29,13 +29,13 @@
     "Parameters": [
       {
         "Name": "admission",
-        "Type": "CMS.Model.Admission",
+        "Type": "CMS.Models.Admission",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "CMS.Model.Admission",
+        "Type": "CMS.Models.Admission",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -61,7 +61,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "CMS.Model.Admission",
+        "Type": "CMS.Models.Admission",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -86,7 +86,7 @@
       },
       {
         "Name": "admission",
-        "Type": "CMS.Model.Admission",
+        "Type": "CMS.Models.Admission",
         "IsRequired": true
       }
     ],
@@ -166,7 +166,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[CMS.Model.CustomerAdmission, CMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[CMS.Models.CustomerAdmission, CMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -186,13 +186,13 @@
     "Parameters": [
       {
         "Name": "customerAdmission",
-        "Type": "CMS.Model.CustomerAdmission",
+        "Type": "CMS.Models.CustomerAdmission",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "CMS.Model.CustomerAdmission",
+        "Type": "CMS.Models.CustomerAdmission",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -218,7 +218,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "CMS.Model.CustomerAdmission",
+        "Type": "CMS.Models.CustomerAdmission",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -243,7 +243,7 @@
       },
       {
         "Name": "customerAdmission",
-        "Type": "CMS.Model.CustomerAdmission",
+        "Type": "CMS.Models.CustomerAdmission",
         "IsRequired": true
       }
     ],
@@ -259,7 +259,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[CMS.Model.Customer, CMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[CMS.Models.Customer, CMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -279,13 +279,13 @@
     "Parameters": [
       {
         "Name": "customer",
-        "Type": "CMS.Model.Customer",
+        "Type": "CMS.Models.Customer",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "CMS.Model.Customer",
+        "Type": "CMS.Models.Customer",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -311,7 +311,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "CMS.Model.Customer",
+        "Type": "CMS.Models.Customer",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -336,7 +336,7 @@
       },
       {
         "Name": "customer",
-        "Type": "CMS.Model.Customer",
+        "Type": "CMS.Models.Customer",
         "IsRequired": true
       }
     ],
@@ -352,7 +352,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[CMS.Model.Employee, CMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[CMS.Models.Employee, CMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -415,7 +415,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "CMS.Model.Employee",
+        "Type": "CMS.Models.Employee",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -435,7 +435,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[CMS.Model.MenuItemOrder, CMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[CMS.Models.MenuItemOrder, CMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -455,13 +455,13 @@
     "Parameters": [
       {
         "Name": "menuItemOrder",
-        "Type": "CMS.Model.MenuItemOrder",
+        "Type": "CMS.Models.MenuItemOrder",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "CMS.Model.MenuItemOrder",
+        "Type": "CMS.Models.MenuItemOrder",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -487,7 +487,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "CMS.Model.MenuItemOrder",
+        "Type": "CMS.Models.MenuItemOrder",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -512,7 +512,7 @@
       },
       {
         "Name": "menuItemOrder",
-        "Type": "CMS.Model.MenuItemOrder",
+        "Type": "CMS.Models.MenuItemOrder",
         "IsRequired": true
       }
     ],
@@ -528,7 +528,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[CMS.Model.MenuItem, CMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[CMS.Models.MenuItem, CMS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -569,7 +569,7 @@
       },
       {
         "Name": "menuItem",
-        "Type": "CMS.Model.MenuItem",
+        "Type": "CMS.Models.MenuItem",
         "IsRequired": true
       }
     ],
@@ -627,7 +627,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "CMS.Model.Order",
+        "Type": "CMS.Models.Order",
         "MediaTypes": [
           "text/plain",
           "application/json",

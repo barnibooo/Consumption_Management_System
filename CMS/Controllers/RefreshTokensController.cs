@@ -1,5 +1,5 @@
 ﻿using CMS.Dtos;
-using CMS.Model;
+using CMS.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

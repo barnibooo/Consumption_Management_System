@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CMS.Model
+namespace CMS.Models
 {
     public class MenuItemOrder
     {

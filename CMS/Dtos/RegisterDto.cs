@@ -1,4 +1,4 @@
-﻿using CMS.Model;
+﻿using CMS.Models;
 
 namespace CMS.Dtos
 {

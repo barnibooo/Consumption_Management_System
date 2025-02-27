@@ -1,4 +1,4 @@
-﻿namespace CMS.Model
+﻿namespace CMS.Models
 {
     public class RefreshToken
     {
