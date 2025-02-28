@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using CMS.Models;
 
 namespace CMS.Models
 {
@@ -9,14 +9,14 @@ namespace CMS.Models
     {
         [Key]
         public int CustomerId { get; set; }
-        [Required] 
+        [Required]
         public string CardId { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }
         [Required]
-        public bool IsActive{ get; set; }
+        public bool IsActive { get; set; }
         [JsonIgnore]
         public List<Order>? Orders { get; set; }
         [JsonIgnore]

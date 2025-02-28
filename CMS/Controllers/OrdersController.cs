@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CMS.Models;
 using CMS.Dtos;
+using CMS.Models;
 
 namespace CMS.Controllers
 {
@@ -43,7 +43,7 @@ namespace CMS.Controllers
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(int id)
+        public async Task<ActionResult<OrderGetDto>> GetOrder(int id)
         {
             var order = await _context.Orders.FindAsync(id);
 
@@ -51,8 +51,20 @@ namespace CMS.Controllers
             {
                 return NotFound();
             }
+            var orderdto = new OrderGetDto
+            {
+                Id = order.OrderId,
+                CustomerId = order.CustomerId,
+                EmployeeId = order.EmployeeId,
+                CreatedAt = order.CreatedAt,
+                MenuItemIds = order.MenuItems.Select(mio => 
+                
+                    mio.ItemId
+                ).ToList()
 
-            return order;
+            };
+
+            return orderdto;
         }
 
         // POST: api/Orders

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using CMS.Models;
 
 namespace CMS.Models
 {
@@ -9,7 +10,7 @@ namespace CMS.Models
         [Key]
         public int OrderId { get; set; }
         [Required]
-        public string CardId { get; set; }
+        public int CustomerId { get; set; }
         [Required]
         public int EmployeeId { get; set; }
         [Required]

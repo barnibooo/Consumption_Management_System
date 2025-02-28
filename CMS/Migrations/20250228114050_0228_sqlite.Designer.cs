@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CMS.Migrations
 {
     [DbContext(typeof(CMSContext))]
-    [Migration("20250224120848_0224Sqlite")]
-    partial class _0224Sqlite
+    [Migration("20250228114050_0228_sqlite")]
+    partial class _0228_sqlite
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,7 +20,7 @@ namespace CMS.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
 
-            modelBuilder.Entity("CMS.Model.Admission", b =>
+            modelBuilder.Entity("CMS.Models.Admission", b =>
                 {
                     b.Property<int>("AdmissionId")
                         .ValueGeneratedOnAdd()
@@ -35,14 +35,25 @@ namespace CMS.Migrations
                     b.ToTable("Admissions");
                 });
 
-            modelBuilder.Entity("CMS.Model.Customer", b =>
+            modelBuilder.Entity("CMS.Models.Card", b =>
+                {
+                    b.Property<string>("CardId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CardId");
+
+                    b.ToTable("Card");
+                });
+
+            modelBuilder.Entity("CMS.Models.Customer", b =>
                 {
                     b.Property<int>("CustomerId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CardId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("CardId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
@@ -59,7 +70,7 @@ namespace CMS.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("CMS.Model.CustomerAdmission", b =>
+            modelBuilder.Entity("CMS.Models.CustomerAdmission", b =>
                 {
                     b.Property<int>("CustomerAdmissionId")
                         .ValueGeneratedOnAdd()
@@ -80,7 +91,7 @@ namespace CMS.Migrations
                     b.ToTable("CustomerAdmissions");
                 });
 
-            modelBuilder.Entity("CMS.Model.Employee", b =>
+            modelBuilder.Entity("CMS.Models.Employee", b =>
                 {
                     b.Property<int>("EmployeeId")
                         .ValueGeneratedOnAdd()
@@ -114,7 +125,7 @@ namespace CMS.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("CMS.Model.MenuItem", b =>
+            modelBuilder.Entity("CMS.Models.MenuItem", b =>
                 {
                     b.Property<int>("ItemId")
                         .ValueGeneratedOnAdd()
@@ -147,7 +158,7 @@ namespace CMS.Migrations
                     b.ToTable("MenuItems");
                 });
 
-            modelBuilder.Entity("CMS.Model.MenuItemOrder", b =>
+            modelBuilder.Entity("CMS.Models.MenuItemOrder", b =>
                 {
                     b.Property<int>("MenuItemOrderId")
                         .ValueGeneratedOnAdd()
@@ -171,7 +182,7 @@ namespace CMS.Migrations
                     b.ToTable("MenuItemOrders");
                 });
 
-            modelBuilder.Entity("CMS.Model.Order", b =>
+            modelBuilder.Entity("CMS.Models.Order", b =>
                 {
                     b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd()
@@ -195,7 +206,7 @@ namespace CMS.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("CMS.Model.RefreshToken", b =>
+            modelBuilder.Entity("CMS.Models.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -218,15 +229,15 @@ namespace CMS.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("CMS.Model.CustomerAdmission", b =>
+            modelBuilder.Entity("CMS.Models.CustomerAdmission", b =>
                 {
-                    b.HasOne("CMS.Model.Admission", "Admissions")
+                    b.HasOne("CMS.Models.Admission", "Admissions")
                         .WithMany("CustomerAdmissions")
                         .HasForeignKey("AdmissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CMS.Model.Customer", "Customers")
+                    b.HasOne("CMS.Models.Customer", "Customers")
                         .WithMany("CustomerAdmissions")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -237,15 +248,15 @@ namespace CMS.Migrations
                     b.Navigation("Customers");
                 });
 
-            modelBuilder.Entity("CMS.Model.MenuItemOrder", b =>
+            modelBuilder.Entity("CMS.Models.MenuItemOrder", b =>
                 {
-                    b.HasOne("CMS.Model.MenuItem", "MenuItems")
+                    b.HasOne("CMS.Models.MenuItem", "MenuItems")
                         .WithMany("MenuItemOrders")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CMS.Model.Order", "Orders")
+                    b.HasOne("CMS.Models.Order", "Orders")
                         .WithMany("MenuItemOrders")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -256,15 +267,15 @@ namespace CMS.Migrations
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("CMS.Model.Order", b =>
+            modelBuilder.Entity("CMS.Models.Order", b =>
                 {
-                    b.HasOne("CMS.Model.Customer", "Customer")
+                    b.HasOne("CMS.Models.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CMS.Model.Employee", "Employee")
+                    b.HasOne("CMS.Models.Employee", "Employee")
                         .WithMany("Orders")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -275,9 +286,9 @@ namespace CMS.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("CMS.Model.RefreshToken", b =>
+            modelBuilder.Entity("CMS.Models.RefreshToken", b =>
                 {
-                    b.HasOne("CMS.Model.Employee", "Employee")
+                    b.HasOne("CMS.Models.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -286,29 +297,29 @@ namespace CMS.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("CMS.Model.Admission", b =>
+            modelBuilder.Entity("CMS.Models.Admission", b =>
                 {
                     b.Navigation("CustomerAdmissions");
                 });
 
-            modelBuilder.Entity("CMS.Model.Customer", b =>
+            modelBuilder.Entity("CMS.Models.Customer", b =>
                 {
                     b.Navigation("CustomerAdmissions");
 
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("CMS.Model.Employee", b =>
+            modelBuilder.Entity("CMS.Models.Employee", b =>
                 {
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("CMS.Model.MenuItem", b =>
+            modelBuilder.Entity("CMS.Models.MenuItem", b =>
                 {
                     b.Navigation("MenuItemOrders");
                 });
 
-            modelBuilder.Entity("CMS.Model.Order", b =>
+            modelBuilder.Entity("CMS.Models.Order", b =>
                 {
                     b.Navigation("MenuItemOrders");
                 });

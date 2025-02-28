@@ -32,6 +32,16 @@ namespace CMS.Migrations
                     b.ToTable("Admissions");
                 });
 
+            modelBuilder.Entity("CMS.Models.Card", b =>
+                {
+                    b.Property<string>("CardId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CardId");
+
+                    b.ToTable("Card");
+                });
+
             modelBuilder.Entity("CMS.Models.Customer", b =>
                 {
                     b.Property<int>("CustomerId")
@@ -175,14 +185,10 @@ namespace CMS.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("CardId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("CustomerId")
+                    b.Property<int>("CustomerId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("EmployeeId")
@@ -262,7 +268,9 @@ namespace CMS.Migrations
                 {
                     b.HasOne("CMS.Models.Customer", "Customer")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerId");
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CMS.Models.Employee", "Employee")
                         .WithMany("Orders")

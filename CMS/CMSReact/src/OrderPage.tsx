@@ -370,22 +370,38 @@ const Dashboard: React.FC = () => {
     setFinalizedOrders(orderList);
 
     axios
-      .post("https://localhost:5000/api/Orders", {
-        customerId: cId,
-        employeeId: 1,
-        menuItems: orders.map((orderItem) => ({
-          menuItemId: orderItem.itemId,
-          quantity: orderItem.quantity,
-        })),
-      })
+      .get("https://localhost:5000/api/Cards/GetCustomerIdByCardId/"+cId)
       .then((response) => {
-        console.log("Order submitted successfully:", response.data);
-        setOrderId(response.data.orderId);
-        setDialogOpen(true);
+        console.log(response.data);
+        if (!isNaN(response.data)) {
+          axios.post("https://localhost:5000/api/Orders", {
+            customerId: response.data,
+            employeeId: 1,
+            menuItems: orders.map((orderItem) => ({
+              menuItemId: orderItem.itemId,
+              quantity: orderItem.quantity,
+            })),
+          })
+          .then((response) => {
+            console.log("Order submitted successfully:", response.data);
+            setOrderId(response.data.orderId);
+            setDialogOpen(true);
+          })
+          .catch((error) => {
+            console.error("Error submitting order:", error);
+          });
+          
+        } else {
+          console.error("Nincs ilyen felhasználó", response.data);
+        }
+        setLoading(false);
       })
       .catch((error) => {
-        console.error("Error submitting order:", error);
+        console.error("Hiba történt:", error);
+        setError(error.message);
+        setLoading(false);
       });
+      
   };
 
   const handleClose = () => {
