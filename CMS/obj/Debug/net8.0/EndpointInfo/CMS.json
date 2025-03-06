@@ -1189,7 +1189,12 @@
     "schemas": {
       "Admission": {
         "required": [
-          "admissionName"
+          "admissionName",
+          "category",
+          "description",
+          "imagePath",
+          "isAvailable",
+          "price"
         ],
         "type": "object",
         "properties": {
@@ -1198,6 +1203,25 @@
             "format": "int32"
           },
           "admissionName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "category": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "price": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "isAvailable": {
+            "type": "boolean"
+          },
+          "imagePath": {
             "minLength": 1,
             "type": "string"
           }

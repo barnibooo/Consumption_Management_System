@@ -366,8 +366,8 @@ const Dashboard: React.FC = () => {
             }}
           >
             <CardHeader
-              title="Orders"
-              subheader={`Total: ${calculateTotalPrice()} Ft`}
+              title="Rendelés"
+              subheader={`Összesen: ${calculateTotalPrice()} Ft`}
               sx={{
                 "& .MuiCardHeader-subheader": {
                   color: "#d5d6d6",
@@ -412,7 +412,7 @@ const Dashboard: React.FC = () => {
                       {categoryIcons[orderItem.category]}
                     </ListItemAvatar>
                     <Typography variant="body2" color="#e7e6dd" fontSize={16}>
-                      {orderItem.name} x{orderItem.quantity}
+                      {orderItem.name} x{orderItem.quantity} <br /> {orderItem.price * orderItem.quantity} Ft
                     </Typography>
                   </ListItem>
                 ))}
@@ -486,11 +486,16 @@ const Dashboard: React.FC = () => {
                     image={item.imagePath}
                     alt="Kép"
                   />
-                  <CardContent>
-                    <Typography>{item.description}</Typography>
-                    <Typography>
-                      Rendelhető: {item.isAvailable ? "Igen" : "Nem"}
-                    </Typography>
+                  <CardContent sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                    <Typography mb={2}>{item.description}</Typography>
+                    <Box sx={{ mt: 'auto' }}>
+                      <Typography fontWeight="bold">
+                        {item.isAvailable ? "Elérhető" : "Nem elérhető"}
+                      </Typography>
+                      <Typography fontWeight="bold">
+                        {item.price} Ft
+                      </Typography>
+                    </Box>
                   </CardContent>
                   <CardActions
                     disableSpacing
