@@ -303,7 +303,9 @@ const Dashboard: React.FC = () => {
           <Stack direction={{ xs: "row", md: "column" }} spacing={2}>
             <IconButton
               onClick={() => handleCategoryClick(null)}
-              sx={{
+              
+            >
+              <AppsIcon sx={{
                 fontSize: 35,
                 color: "#d5d6d6",
                 "&:hover": {
@@ -312,24 +314,13 @@ const Dashboard: React.FC = () => {
                 "&:active": {
                   color: "#BFA181",
                 },
-              }}
-            >
-              <AppsIcon />
+              }}/>
             </IconButton>
             {filteredCategories.map((category) => (
               <IconButton
                 key={category}
                 onClick={() => handleCategoryClick(category)}
-                sx={{
-                  fontSize: 35,
-                  color: "#d5d6d6",
-                  "&:hover": {
-                    color: "#BFA181",
-                  },
-                  "&:active": {
-                    color: "#BFA181",
-                  },
-                }}
+                sx={{iconStyle}}
               >
                 {categoryIcons[category]}
               </IconButton>
