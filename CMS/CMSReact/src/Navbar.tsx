@@ -1,62 +1,62 @@
 import { useState } from "react";
 import { ThemeProvider } from "@emotion/react";
 import { AppBar, Container, Toolbar, Typography, Box, IconButton, Menu, MenuItem, Button, Tooltip, Avatar } from "@mui/material";
-
-
 import BarChartIcon from "@mui/icons-material/BarChart";
 import MenuIcon from "@mui/icons-material/Menu";
 import { createTheme } from "@mui/material/styles";
 
-
-
 function App() {
-   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-      setAnchorElNav(event.currentTarget);
-    };
-    const darkTheme = createTheme({
-        palette: {
-          mode: "dark",
-        },
-      });
-      
-    const pages = ["Home", "Menu"];
-    const settings = ["Profile", "Account", "Dashboard", "Logout"];
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
+
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const handlePageNavigation = (page: string) => {
+    if (page === "Home") {
+      window.location.href = "/landingpage.html";
+    } else if (page === "Menu") {
+      window.location.href = "/restaurant.html";
+    } else {
+      handleCloseNavMenu();
+    }
+  };
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: "dark",
+      background: {
+        default: "#0f1827",
+        paper: "#0f1827",
+      },
+    },
+  });
   
-    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-      setAnchorElUser(event.currentTarget);
-    };
-  
-    const handleCloseNavMenu = () => {
-      setAnchorElNav(null);
-    };
-  
-    const handleCloseUserMenu = () => {
-      setAnchorElUser(null);
-    };
-  
-    const handlePageNavigation = (page: string) => {
-      if (page === "Home") {
-        window.location.href = "/landingpage.html";
-      } else if (page === "Menu") {
-        window.location.href = "/restaurant.html";
-      } else {
-        handleCloseNavMenu();
-      }
-    };
+
+  const pages = ["Home", "Menu"];
+  const settings = ["Profile", "Account", "Dashboard", "Logout"];
+
   return (
-    <>
-      <AppBar position="static" sx={{ backgroundColor: "#202938" }}>
+    <ThemeProvider theme={darkTheme}>
+      <AppBar position="static">
         <Container maxWidth={false}>
           <Toolbar
             disableGutters
             sx={{
-              justifyContent: {
-                xs: "center",
-                sm: "center",
-                xl: "space-between",
-              },
+              justifyContent: { xs: "center", sm: "center", xl: "space-between" },
               padding: { xs: "0 16px", xl: "0 24px" },
             }}
           >
@@ -84,10 +84,11 @@ function App() {
               Consumption Management System
             </Typography>
 
+            {/* Mobile Menu Icon */}
             <Box
               sx={{
                 flexGrow: 1,
-                display: { xs: "flex", md: "none", color: "#d3d9d4" },
+                display: { xs: "flex", md: "none" },
               }}
             >
               <IconButton
@@ -121,39 +122,41 @@ function App() {
                 }}
                 open={Boolean(anchorElNav)}
                 onClose={handleCloseNavMenu}
-                sx={{ display: { xs: "block", md: "none" } }}
+                sx={{
+                  display: { xs: "block", md: "none" },
+                }}
               >
                 {pages.map((page) => (
-                  <MenuItem
-                    key={page}
-                    onClick={() => handlePageNavigation(page)}
-                  >
-                    <Typography sx={{ textAlign: "center" }}>{page}</Typography>
+                  <MenuItem key={page} onClick={() => handlePageNavigation(page)}>
+                    <Typography sx={{ textAlign: "center", color: "#d5d6d6" }}>
+                      {page}
+                    </Typography>
                   </MenuItem>
                 ))}
               </Menu>
             </Box>
+
+            {/* Logo for Larger Screens */}
             <BarChartIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
             <Typography
-              variant="h5"
+              variant="h6"
               noWrap
               component="a"
               href=""
               sx={{
                 mr: 2,
                 display: { xs: "flex", md: "none" },
-                fontWeight: 400,
+                fontWeight: 700,
                 textDecoration: "none",
                 color: "#d5d6d6",
-                textAlign: { xs: "center", sm: "center" },
-                flexGrow: { xs: 1, sm: 1 },
-                "&:hover": {
-                  color: "#BFA181",
-                },
+                textAlign: "center",
+                flexGrow: 1,
               }}
             >
               CMS
             </Typography>
+
+            {/* Desktop Menu */}
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               {pages.map((page) => (
                 <Button
@@ -175,51 +178,63 @@ function App() {
                 </Button>
               ))}
             </Box>
-            <ThemeProvider theme={darkTheme}>
-              <Box sx={{ flexGrow: 0 }}>
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar
-                      sx={{
-                        fontSize: 25,
-                        color: "#d5d6d6",
-                        bgcolor: "#bfa181",
-                      }}
-                    >
-                      N
-                    </Avatar>
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: "45px" }} 
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Typography sx={{ textAlign: "center" }}>
-                        {setting}
-                      </Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </Box>
-            </ThemeProvider>
+
+            {/* User Avatar and Menu */}
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar
+                    sx={{
+                      fontSize: 25,
+                      color: "#d5d6d6",
+                      bgcolor: "#bfa181",
+                    }}
+                  >
+                    N
+                  </Avatar>
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{
+                  mt: "45px",
+                }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem
+                    key={setting}
+                    onClick={handleCloseUserMenu}
+                    sx={{
+                      color: "#d5d6d6",
+                      "&:hover": {
+                        backgroundColor: "#37404f",
+                      },
+                      
+                    }}
+                  >
+                    <Typography sx={{ textAlign: "center" }}>
+                      {setting}
+                    </Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
           </Toolbar>
         </Container>
       </AppBar>
-    </>
+    </ThemeProvider>
   );
 }
 
