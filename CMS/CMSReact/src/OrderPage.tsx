@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  AppBar,
-  Toolbar,
   Stack,
   Box,
   Card,
@@ -9,14 +7,10 @@ import {
   Typography,
   CardActions,
   Button,
-  Container,
   IconButton,
-  Menu,
   MenuItem,
-  Tooltip,
   CardHeader,
   CardMedia,
-  Avatar,
   List,
   ListItem,
   ListItemAvatar,
@@ -25,7 +19,6 @@ import {
   AlertTitle,
   ThemeProvider,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import RamenDiningOutlined from "@mui/icons-material/RamenDiningOutlined";
@@ -36,7 +29,6 @@ import {
   LocalBarOutlined,
   LunchDiningOutlined,
 } from "@mui/icons-material";
-import BarChartIcon from "@mui/icons-material/BarChart";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import EmojiFoodBeverageOutlinedIcon from "@mui/icons-material/EmojiFoodBeverageOutlined";
@@ -72,125 +64,28 @@ interface MenuItem {
   isAvailable: boolean;
 }
 
-const pages = ["Home", "Menu"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const iconStyle = {
+  fontSize: 35,
+  color: "#d5d6d6",
+  "&:hover": {
+    color: "#BFA181",
+  },
+};
 
 const categoryIcons: { [key: string]: React.ReactElement } = {
-  Leves: (
-    <RamenDiningOutlined
-      sx={{
-        fontSize: 35,
-        color: "#d5d6d6",
-        "&:hover": {
-          color: "#BFA181",
-        },
-      }}
-    />
-  ),
-  Előétel: (
-    <BakeryDiningOutlinedIcon
-      sx={{
-        fontSize: 35,
-        color: "#d5d6d6",
-        "&:hover": {
-          color: "#BFA181",
-        },
-      }}
-    />
-  ),
-  Főétel: (
-    <DinnerDiningOutlined
-      sx={{
-        fontSize: 35,
-        color: "#d5d6d6",
-        "&:hover": {
-          color: "#BFA181",
-        },
-      }}
-    />
-  ),
-  Hamburger: (
-    <LunchDiningOutlined
-      sx={{
-        fontSize: 35,
-        color: "#d5d6d6",
-        "&:hover": {
-          color: "#BFA181",
-        },
-      }}
-    />
-  ),
-  Pizza: (
-    <LocalPizzaOutlinedIcon
-      sx={{
-        fontSize: 35,
-        color: "#d5d6d6",
-        "&:hover": {
-          color: "#BFA181",
-        },
-      }}
-    />
-  ),
-  Desszert: (
-    <CookieOutlined
-      sx={{
-        fontSize: 35,
-        color: "#d5d6d6",
-        "&:hover": {
-          color: "#BFA181",
-        },
-      }}
-    />
-  ),
-  Menü: (
-    <FastfoodOutlined
-      sx={{
-        fontSize: 35,
-        color: "#d5d6d6",
-        "&:hover": {
-          color: "#BFA181",
-        },
-      }}
-    />
-  ),
-  Ital: (
-    <LocalBarOutlined
-      sx={{
-        fontSize: 35,
-        color: "#d5d6d6",
-        "&:hover": {
-          color: "#BFA181",
-        },
-      }}
-    />
-  ),
-  Kávé: (
-    <EmojiFoodBeverageOutlinedIcon
-      sx={{
-        fontSize: 35,
-        color: "#d5d6d6",
-        "&:hover": {
-          color: "#BFA181",
-        },
-      }}
-    />
-  ),
-  Egyéb: (
-    <MoreHorizIcon
-      sx={{
-        fontSize: 35,
-        color: "#d5d6d6",
-        "&:hover": {
-          color: "#BFA181",
-        },
-      }}
-    />
-  ),
+  Leves: <RamenDiningOutlined sx={iconStyle} />, 
+  Előétel: <BakeryDiningOutlinedIcon sx={iconStyle} />, 
+  Főétel: <DinnerDiningOutlined sx={iconStyle} />, 
+  Hamburger: <LunchDiningOutlined sx={iconStyle} />, 
+  Pizza: <LocalPizzaOutlinedIcon sx={iconStyle} />, 
+  Desszert: <CookieOutlined sx={iconStyle} />, 
+  Menü: <FastfoodOutlined sx={iconStyle} />, 
+  Ital: <LocalBarOutlined sx={iconStyle} />, 
+  Kávé: <EmojiFoodBeverageOutlinedIcon sx={iconStyle} />, 
+  Egyéb: <MoreHorizIcon sx={iconStyle} />,
 };
 
 const Dashboard: React.FC = () => {
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -203,32 +98,6 @@ const Dashboard: React.FC = () => {
   >([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [orderId, setOrderId] = useState('');
-
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
-  const handlePageNavigation = (page: string) => {
-    if (page === "Home") {
-      window.location.href = "/index.html";
-    } else if (page === "Menu") {
-      window.location.href = "/restaurant.html";
-    } else {
-      handleCloseNavMenu();
-    }
-  };
 
   const handleCategoryClick = (category: string | null) => {
     setSelectedCategory(category);
@@ -415,11 +284,10 @@ const Dashboard: React.FC = () => {
         height="calc(100vh - 64px)"
         flexDirection={{ xs: "column", md: "row" }}
       >
-        {/* Sidebar Replacement */}
         <Box
           sx={{
-            display: "flex",
-            flexDirection: { xs: "row", md: "column" },
+            display: { xs: 'none', sm: 'none', md: 'none', lg: 'flex' },
+            flexDirection: { xs: "column", md: "row" },
             justifyContent: { xs: "center", md: "flex-start" },
             alignItems: "flex-start",
             p: 2,
@@ -431,6 +299,7 @@ const Dashboard: React.FC = () => {
             backgroundColor: "#202938",
           }}
         >
+
           <Stack direction={{ xs: "row", md: "column" }} spacing={2}>
             <IconButton
               onClick={() => handleCategoryClick(null)}
