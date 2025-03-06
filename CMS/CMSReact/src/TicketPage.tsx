@@ -17,18 +17,6 @@ import {
   Alert,
   AlertTitle,
   ThemeProvider,
-} from "@mui/material";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import ExtensionIcon from "@mui/icons-material/Extension";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-
-import AppsIcon from "@mui/icons-material/Apps";
-import axios from "axios";
-import SendIcon from "@mui/icons-material/Send";
-import {
   Dialog,
   DialogTitle,
   DialogContent,
@@ -36,6 +24,15 @@ import {
   TextField,
   DialogActions,
 } from "@mui/material";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import ExtensionOutlinedIcon from "@mui/icons-material/ExtensionOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
+
+import AppsIcon from "@mui/icons-material/Apps";
+import axios from "axios";
+import SendIcon from "@mui/icons-material/Send";
 import { createTheme } from "@mui/material/styles";
 
 const darkTheme = createTheme({
@@ -47,7 +44,7 @@ const darkTheme = createTheme({
 interface AdmissionItem {
   quantity: number;
   imagePath: string | undefined;
-  AdmissionId: number;
+  admissionId: number;
   admissionName: string;
   category: string;
   price: number;
@@ -65,8 +62,7 @@ const iconStyle = {
 
 const categoryIcons: { [key: string]: React.ReactElement } = {
   Belépő: <ConfirmationNumberOutlinedIcon sx={iconStyle} />,
-  Kiegészítő: <ExtensionIcon sx={iconStyle} />,
-  Egyéb: <MoreHorizIcon sx={iconStyle} />,
+  Kiegészítő: <ExtensionOutlinedIcon sx={iconStyle} />,
 };
 
 const Dashboard: React.FC = () => {
@@ -78,10 +74,13 @@ const Dashboard: React.FC = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [guestId, setGuestId] = useState<string | null>(null);
   const [finalizedOrders, setFinalizedOrders] = useState<
-    { AdmissionId: number; quantity: number }[]
+    { admissionId: number; quantity: number }[]
   >([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
+  const [openSuccessDialogs, setOpenSuccessDialogs] = useState<boolean[]>([]);
+  const [ids, setIds] = useState<string[]>([]);
+  const [openDialogs, setOpenDialogs] = useState<boolean[]>([]);
 
   const handleCategoryClick = (category: string | null) => {
     setSelectedCategory(category);
@@ -90,13 +89,13 @@ const Dashboard: React.FC = () => {
   const handleAddToOrder = (item: AdmissionItem) => {
     setOrders((prevOrders) => {
       const existingOrder = prevOrders.find(
-        (orderItem) => orderItem.AdmissionId === item.AdmissionId
+        (admissionItem) => admissionItem.admissionId === item.admissionId
       );
       if (existingOrder) {
-        return prevOrders.map((orderItem) =>
-          orderItem.AdmissionId === item.AdmissionId
-            ? { ...orderItem, quantity: orderItem.quantity + 1 }
-            : orderItem
+        return prevOrders.map((admissionItem) =>
+          admissionItem.admissionId === item.admissionId
+            ? { ...admissionItem, quantity: admissionItem.quantity + 1 }
+            : admissionItem
         );
       } else {
         return [...prevOrders, { ...item, quantity: 1 }];
@@ -107,30 +106,31 @@ const Dashboard: React.FC = () => {
   const handleRemoveFromOrder = (item: AdmissionItem) => {
     setOrders((prevOrders) => {
       return prevOrders
-        .map((orderItem) =>
-          orderItem.AdmissionId === item.AdmissionId
-            ? { ...orderItem, quantity: orderItem.quantity - 1 }
-            : orderItem
+        .map((admissionItem) =>
+          admissionItem.admissionId === item.admissionId
+            ? { ...admissionItem, quantity: admissionItem.quantity - 1 }
+            : admissionItem
         )
-        .filter((orderItem) => orderItem.quantity > 0);
+        .filter((admissionItem) => admissionItem.quantity > 0);
     });
   };
 
   const handleDeleteFromOrder = (item: AdmissionItem) => {
     setOrders((prevOrders) =>
       prevOrders.filter(
-        (orderItem) => orderItem.AdmissionId !== item.AdmissionId
+        (admissionItem) => admissionItem.admissionId !== item.admissionId
       )
     );
   };
 
   const calculateTotalPrice = () => {
     return orders.reduce(
-      (total, orderItem) => total + orderItem.price * orderItem.quantity,
+      (total, admissionItem) =>
+        total + admissionItem.price * admissionItem.quantity,
       0
     );
   };
-  ///////////////////////////////////////
+
   useEffect(() => {
     axios
       .get("https://localhost:5000/api/Admissions")
@@ -149,7 +149,6 @@ const Dashboard: React.FC = () => {
         setLoading(false);
       });
   }, []);
-  /////////////////////////////////////////////
 
   if (loading)
     return (
@@ -210,22 +209,49 @@ const Dashboard: React.FC = () => {
     : AdmissionItems;
 
   const handleOpenDialog = () => {
-    setOpenDialog(true);
+    setOpenDialogs(new Array(orders.length).fill(true));
   };
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
+  const handleCloseDialog = (index: number) => {
+    setOpenDialogs((prev) => {
+      const newDialogs = [...prev];
+      newDialogs[index] = false;
+      return newDialogs;
+    });
   };
 
-  const handleSubmitOrder = (cId: string) => {
-    setGuestId(cId);
+  const handleIdChange = (index: number, value: string) => {
+    setIds((prev) => {
+      const newIds = [...prev];
+      newIds[index] = value;
+      return newIds;
+    });
+  };
 
-    const orderList = orders.map((orderItem) => ({
-      AdmissionId: orderItem.AdmissionId,
-      quantity: orderItem.quantity,
+  const handleSubmitOrder = () => {
+    const orderList = orders.map((admissionItem, index) => ({
+      admissionId: admissionItem.admissionId,
+      quantity: admissionItem.quantity,
+      id: ids[index],
     }));
 
     setFinalizedOrders(orderList);
+
+    const currentDateTime = new Date().toISOString();
+
+    axios
+      .post("https://localhost:5000/api/Customers", {
+        orders: orderList,
+        createdAt: currentDateTime,
+      })
+      .then((response) => {
+        console.log("Order submitted successfully:", response.data);
+        setOrderId(response.data.orderId);
+        setOpenSuccessDialogs(new Array(orders.length).fill(true)); // Show success dialogs
+      })
+      .catch((error) => {
+        console.error("Error submitting order:", error);
+      });
   };
 
   const handleClose = () => {
@@ -339,14 +365,14 @@ const Dashboard: React.FC = () => {
               }}
             >
               <List dense>
-                {orders.map((orderItem, index) => (
+                {orders.map((admissionItem, index) => (
                   <ListItem
                     key={index}
                     secondaryAction={
                       <IconButton
                         edge="end"
                         aria-label="delete"
-                        onClick={() => handleDeleteFromOrder(orderItem)}
+                        onClick={() => handleDeleteFromOrder(admissionItem)}
                       >
                         <DeleteOutlineOutlinedIcon
                           sx={{
@@ -361,11 +387,11 @@ const Dashboard: React.FC = () => {
                     }
                   >
                     <ListItemAvatar>
-                      {categoryIcons[orderItem.category]}
+                      {categoryIcons[admissionItem.category]}
                     </ListItemAvatar>
                     <Typography variant="body2" color="#e7e6dd" fontSize={16}>
-                      {orderItem.admissionName} x{orderItem.quantity} <br />{" "}
-                      {orderItem.price * orderItem.quantity} Ft
+                      {admissionItem.admissionName} x{admissionItem.quantity}{" "}
+                      <br /> {admissionItem.price * admissionItem.quantity} Ft
                     </Typography>
                   </ListItem>
                 ))}
@@ -386,7 +412,7 @@ const Dashboard: React.FC = () => {
                 }}
                 onClick={handleOpenDialog}
               >
-                Rendelés leadása
+                Jegyfoglalás
               </Button>
             </CardActions>
           </Card>
@@ -424,7 +450,7 @@ const Dashboard: React.FC = () => {
                     display: "flex",
                     flexDirection: "column",
                   }}
-                  key={item.AdmissionId}
+                  key={item.admissionId}
                 >
                   <CardHeader
                     title={item.admissionName}
@@ -502,73 +528,49 @@ const Dashboard: React.FC = () => {
         </Box>
       </Box>
       <ThemeProvider theme={darkTheme}>
-        <Dialog
-          open={openDialog}
-          onClose={handleCloseDialog}
-          slotProps={{
-            paper: {
-              component: "form",
-              onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-                event.preventDefault();
-                const formData = new FormData(event.currentTarget);
-                const formJson = Object.fromEntries(
-                  (formData as any).entries()
-                );
-                const id = formJson.id as string;
-                handleSubmitOrder(id);
-                handleCloseDialog();
+        {orders.map((orderItem, index) => (
+          <Dialog
+            key={index}
+            open={openDialogs[index]}
+            onClose={() => handleCloseDialog(index)}
+            slotProps={{
+              paper: {
+                component: "form",
+                onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+                  event.preventDefault();
+                  handleCloseDialog(index);
+                  if (index === orders.length - 1) {
+                    handleSubmitOrder();
+                  }
+                },
               },
-            },
-          }}
-        >
-          <DialogTitle>Rendelés leadása</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Kérjük adja meg a vendég azonosítóját!
-            </DialogContentText>
-            <TextField
-              required
-              margin="dense"
-              id="name"
-              name="id"
-              label="Azonosító"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Mégse</Button>
-            <Button type="submit">Leadás</Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog
-          open={dialogOpen}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"Sikeres rendelés leadás"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              <Typography>A rendelés leadva!</Typography>
-              <Typography>Rendelési szám: {orderId}</Typography>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => {
-                handleClose();
-                window.location.reload();
-              }}
-              autoFocus
-            >
-              Rendben
-            </Button>
-          </DialogActions>
-        </Dialog>
+            }}
+          >
+            <DialogTitle>Jegyfoglalás</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Kérjük adja meg a kártyaszámot a következő jegyhez:{" "}
+                {orderItem.admissionName}
+              </DialogContentText>
+              <TextField
+                required
+                margin="dense"
+                id={`id-${index}`}
+                name={`id-${index}`}
+                label="Azonosító"
+                type="text"
+                fullWidth
+                variant="standard"
+                value={ids[index] || ""}
+                onChange={(e) => handleIdChange(index, e.target.value)}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => handleCloseDialog(index)}>Mégse</Button>
+              <Button type="submit">Leadás</Button>
+            </DialogActions>
+          </Dialog>
+        ))}
       </ThemeProvider>
     </>
   );
