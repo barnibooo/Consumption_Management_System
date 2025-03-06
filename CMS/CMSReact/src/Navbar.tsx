@@ -127,7 +127,9 @@ function App() {
                 }}
               >
                 {pages.map((page) => (
-                  <MenuItem key={page} onClick={() => handlePageNavigation(page)}>
+                  <MenuItem key={page} onClick={() => handlePageNavigation(page)} sx={{"&:hover": {
+                        backgroundColor: "#37404f",
+                  },}}>
                     <Typography sx={{ textAlign: "center", color: "#d5d6d6" }}>
                       {page}
                     </Typography>
