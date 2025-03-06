@@ -20,19 +20,11 @@ import {
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import RamenDiningOutlined from "@mui/icons-material/RamenDiningOutlined";
-import {
-  CookieOutlined,
-  DinnerDiningOutlined,
-  FastfoodOutlined,
-  LocalBarOutlined,
-  LunchDiningOutlined,
-} from "@mui/icons-material";
+import ExtensionIcon from "@mui/icons-material/Extension";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined';
+import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
-import BakeryDiningOutlinedIcon from "@mui/icons-material/BakeryDiningOutlined";
 import AppsIcon from "@mui/icons-material/Apps";
 import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
@@ -52,10 +44,10 @@ const darkTheme = createTheme({
   },
 });
 
-interface OrderItem {
+interface AdmissionItem {
   quantity: number;
   imagePath: string | undefined;
-  itemId: number;
+  AdmissionId: number;
   admissionName: string;
   category: string;
   price: number;
@@ -72,38 +64,38 @@ const iconStyle = {
 };
 
 const categoryIcons: { [key: string]: React.ReactElement } = {
-  Belépő: <ConfirmationNumberOutlinedIcon sx={iconStyle} />, 
-  Kiegészítő: <BakeryDiningOutlinedIcon sx={iconStyle} />, 
+  Belépő: <ConfirmationNumberOutlinedIcon sx={iconStyle} />,
+  Kiegészítő: <ExtensionIcon sx={iconStyle} />,
   Egyéb: <MoreHorizIcon sx={iconStyle} />,
 };
 
 const Dashboard: React.FC = () => {
-  const [OrderItems, setOrderItems] = useState<OrderItem[]>([]);
+  const [AdmissionItems, setAdmissionItems] = useState<AdmissionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [orders, setOrders] = useState<OrderItem[]>([]);
+  const [orders, setOrders] = useState<AdmissionItem[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [guestId, setGuestId] = useState<string | null>(null);
   const [finalizedOrders, setFinalizedOrders] = useState<
-    { itemId: number; quantity: number }[]
+    { AdmissionId: number; quantity: number }[]
   >([]);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [orderId, setOrderId] = useState('');
+  const [orderId, setOrderId] = useState("");
 
   const handleCategoryClick = (category: string | null) => {
     setSelectedCategory(category);
   };
 
-  const handleAddToOrder = (item: OrderItem) => {
+  const handleAddToOrder = (item: AdmissionItem) => {
     setOrders((prevOrders) => {
       const existingOrder = prevOrders.find(
-        (orderItem) => orderItem.itemId === item.itemId
+        (orderItem) => orderItem.AdmissionId === item.AdmissionId
       );
       if (existingOrder) {
         return prevOrders.map((orderItem) =>
-          orderItem.itemId === item.itemId
-            ? { ...orderItem, quantity: (orderItem.quantity || 0) + 1 }
+          orderItem.AdmissionId === item.AdmissionId
+            ? { ...orderItem, quantity: orderItem.quantity + 1 }
             : orderItem
         );
       } else {
@@ -112,21 +104,23 @@ const Dashboard: React.FC = () => {
     });
   };
 
-  const handleRemoveFromOrder = (item: OrderItem) => {
+  const handleRemoveFromOrder = (item: AdmissionItem) => {
     setOrders((prevOrders) => {
       return prevOrders
         .map((orderItem) =>
-          orderItem.itemId === item.itemId
-            ? { ...orderItem, quantity: (orderItem.quantity || 0) - 1 }
+          orderItem.AdmissionId === item.AdmissionId
+            ? { ...orderItem, quantity: orderItem.quantity - 1 }
             : orderItem
         )
         .filter((orderItem) => orderItem.quantity > 0);
     });
   };
 
-  const handleDeleteFromOrder = (item: OrderItem) => {
+  const handleDeleteFromOrder = (item: AdmissionItem) => {
     setOrders((prevOrders) =>
-      prevOrders.filter((orderItem) => orderItem.itemId !== item.itemId)
+      prevOrders.filter(
+        (orderItem) => orderItem.AdmissionId !== item.AdmissionId
+      )
     );
   };
 
@@ -136,14 +130,14 @@ const Dashboard: React.FC = () => {
       0
     );
   };
-
+  ///////////////////////////////////////
   useEffect(() => {
     axios
       .get("https://localhost:5000/api/Admissions")
       .then((response) => {
         console.log(response.data);
         if (Array.isArray(response.data)) {
-          setOrderItems(response.data);
+          setAdmissionItems(response.data);
         } else {
           console.error("Hibás API válasz: nem tömb", response.data);
         }
@@ -155,6 +149,7 @@ const Dashboard: React.FC = () => {
         setLoading(false);
       });
   }, []);
+  /////////////////////////////////////////////
 
   if (loading)
     return (
@@ -186,13 +181,13 @@ const Dashboard: React.FC = () => {
       </ThemeProvider>
     );
 
-  var l = OrderItems.length;
+  var l = AdmissionItems.length;
 
   const getUniqueCategories = () => {
     const categories: string[] = [];
 
     for (let i = 0; i < l; i++) {
-      const category = OrderItems[i].category;
+      const category = AdmissionItems[i].category;
       if (!categories.includes(category)) {
         categories.push(category);
       }
@@ -206,11 +201,13 @@ const Dashboard: React.FC = () => {
     (category) => category !== "Egyéb"
   );
 
-  const hasEgyebItems = OrderItems.some((item) => item.category === "Egyéb");
+  const hasEgyebItems = AdmissionItems.some(
+    (item) => item.category === "Egyéb"
+  );
 
-  const filteredOrderItems = selectedCategory
-    ? OrderItems.filter((item) => item.category === selectedCategory)
-    : OrderItems;
+  const filteredAdmissionItems = selectedCategory
+    ? AdmissionItems.filter((item) => item.category === selectedCategory)
+    : AdmissionItems;
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -224,45 +221,11 @@ const Dashboard: React.FC = () => {
     setGuestId(cId);
 
     const orderList = orders.map((orderItem) => ({
-      itemId: orderItem.itemId,
+      AdmissionId: orderItem.AdmissionId,
       quantity: orderItem.quantity,
     }));
 
     setFinalizedOrders(orderList);
-
-    axios
-      .get("https://localhost:5000/api/Cards/GetCustomerIdByCardId/"+cId)
-      .then((response) => {
-        console.log(response.data);
-        if (!isNaN(response.data)) {
-          axios.post("https://localhost:5000/api/Orders", {
-            customerId: response.data,
-            employeeId: 1,
-            OrderItems: orders.map((orderItem) => ({
-              OrderItemId: orderItem.itemId,
-              quantity: orderItem.quantity,
-            })),
-          })
-          .then((response) => {
-            console.log("Order submitted successfully:", response.data);
-            setOrderId(response.data.orderId);
-            setDialogOpen(true);
-          })
-          .catch((error) => {
-            console.error("Error submitting order:", error);
-          });
-          
-        } else {
-          console.error("Nincs ilyen felhasználó", response.data);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Hiba történt:", error);
-        setError(error.message);
-        setLoading(false);
-      });
-      
   };
 
   const handleClose = () => {
@@ -278,7 +241,7 @@ const Dashboard: React.FC = () => {
       >
         <Box
           sx={{
-            display: { xs: 'none', sm: 'none', md: 'none', lg: 'flex' },
+            display: { xs: "none", sm: "none", md: "none", lg: "flex" },
             flexDirection: { xs: "column", md: "row" },
             justifyContent: { xs: "center", md: "flex-start" },
             alignItems: "flex-start",
@@ -291,28 +254,26 @@ const Dashboard: React.FC = () => {
             backgroundColor: "#202938",
           }}
         >
-
           <Stack direction={{ xs: "row", md: "column" }} spacing={2}>
-            <IconButton
-              onClick={() => handleCategoryClick(null)}
-              
-            >
-              <AppsIcon sx={{
-                fontSize: 35,
-                color: "#d5d6d6",
-                "&:hover": {
-                  color: "#BFA181",
-                },
-                "&:active": {
-                  color: "#BFA181",
-                },
-              }}/>
+            <IconButton onClick={() => handleCategoryClick(null)}>
+              <AppsIcon
+                sx={{
+                  fontSize: 35,
+                  color: "#d5d6d6",
+                  "&:hover": {
+                    color: "#BFA181",
+                  },
+                  "&:active": {
+                    color: "#BFA181",
+                  },
+                }}
+              />
             </IconButton>
             {filteredCategories.map((category) => (
               <IconButton
                 key={category}
                 onClick={() => handleCategoryClick(category)}
-                sx={{iconStyle}}
+                sx={{ iconStyle }}
               >
                 {categoryIcons[category]}
               </IconButton>
@@ -344,7 +305,6 @@ const Dashboard: React.FC = () => {
           justifyContent={{ xs: "center", md: "flex-start" }}
           sx={{ height: "93%", p: 2 }}
         >
-
           <Card
             sx={{
               width: {
@@ -404,7 +364,8 @@ const Dashboard: React.FC = () => {
                       {categoryIcons[orderItem.category]}
                     </ListItemAvatar>
                     <Typography variant="body2" color="#e7e6dd" fontSize={16}>
-                      {orderItem.admissionName} x{orderItem.quantity} <br /> {orderItem.price * orderItem.quantity} Ft
+                      {orderItem.admissionName} x{orderItem.quantity} <br />{" "}
+                      {orderItem.price * orderItem.quantity} Ft
                     </Typography>
                   </ListItem>
                 ))}
@@ -421,7 +382,7 @@ const Dashboard: React.FC = () => {
                 sx={{
                   m: 2,
                   backgroundColor: "#BFA181",
-                  width: "80%"
+                  width: "80%",
                 }}
                 onClick={handleOpenDialog}
               >
@@ -448,7 +409,7 @@ const Dashboard: React.FC = () => {
               justifyContent={{ xs: "center", sm: "flex-start" }}
               margin={2}
             >
-              {filteredOrderItems.map((item) => (
+              {filteredAdmissionItems.map((item) => (
                 <Card
                   sx={{
                     width: {
@@ -463,7 +424,7 @@ const Dashboard: React.FC = () => {
                     display: "flex",
                     flexDirection: "column",
                   }}
-                  key={item.itemId}
+                  key={item.AdmissionId}
                 >
                   <CardHeader
                     title={item.admissionName}
@@ -478,15 +439,19 @@ const Dashboard: React.FC = () => {
                     image={item.imagePath}
                     alt="Kép"
                   />
-                  <CardContent sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      flexGrow: 1,
+                    }}
+                  >
                     <Typography mb={2}>{item.description}</Typography>
-                    <Box sx={{ mt: 'auto' }}>
+                    <Box sx={{ mt: "auto" }}>
                       <Typography fontWeight="bold">
                         {item.isAvailable ? "Elérhető" : "Nem elérhető"}
                       </Typography>
-                      <Typography fontWeight="bold">
-                        {item.price} Ft
-                      </Typography>
+                      <Typography fontWeight="bold">{item.price} Ft</Typography>
                     </Box>
                   </CardContent>
                   <CardActions
@@ -578,29 +543,32 @@ const Dashboard: React.FC = () => {
           </DialogActions>
         </Dialog>
         <Dialog
-        open={dialogOpen}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Sikeres rendelés leadás"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-          <Typography>A rendelés leadva!</Typography>
-          <Typography>Rendelési szám: {orderId}</Typography>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => {
-        handleClose();
-        window.location.reload();
-      }} autoFocus>
-            Rendben
-          </Button>
-        </DialogActions>
-      </Dialog>
+          open={dialogOpen}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Sikeres rendelés leadás"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <Typography>A rendelés leadva!</Typography>
+              <Typography>Rendelési szám: {orderId}</Typography>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                handleClose();
+                window.location.reload();
+              }}
+              autoFocus
+            >
+              Rendben
+            </Button>
+          </DialogActions>
+        </Dialog>
       </ThemeProvider>
     </>
   );

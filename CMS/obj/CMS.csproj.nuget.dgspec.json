@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "F:\\OB\\CMS\\Consumption_Management_System\\CMS\\CMS.csproj": {}
+    "F:\\OB\\ZARO\\Consumption_Management_System\\CMS\\CMS.csproj": {}
   },
   "projects": {
-    "F:\\OB\\CMS\\Consumption_Management_System\\CMS\\CMS.csproj": {
+    "F:\\OB\\ZARO\\Consumption_Management_System\\CMS\\CMS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\OB\\CMS\\Consumption_Management_System\\CMS\\CMS.csproj",
+        "projectUniqueName": "F:\\OB\\ZARO\\Consumption_Management_System\\CMS\\CMS.csproj",
         "projectName": "CMS",
-        "projectPath": "F:\\OB\\CMS\\Consumption_Management_System\\CMS\\CMS.csproj",
+        "projectPath": "F:\\OB\\ZARO\\Consumption_Management_System\\CMS\\CMS.csproj",
         "packagesPath": "C:\\Users\\orbanb\\.nuget\\packages\\",
-        "outputPath": "F:\\OB\\CMS\\Consumption_Management_System\\CMS\\obj\\",
+        "outputPath": "F:\\OB\\ZARO\\Consumption_Management_System\\CMS\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -110,7 +110,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.103/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

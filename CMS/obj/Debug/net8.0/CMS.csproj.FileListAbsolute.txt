@@ -3942,3 +3942,4 @@ F:\luca\git\Consumption_Management_System\CMS\obj\Debug\net8.0\CMS.genruntimecon
 F:\luca\git\Consumption_Management_System\CMS\obj\Debug\net8.0\ref\CMS.dll
 F:\13B\Luca\git\Consumption_Management_System\CMS\bin\Debug\net8.0\BCrypt.Net-Next.dll
 F:\13B\Luca\git\Consumption_Management_System\CMS\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+F:\OB\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\package-lock.json

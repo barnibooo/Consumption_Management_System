@@ -1,6 +1,18 @@
 import { useState } from "react";
 import { ThemeProvider } from "@emotion/react";
-import { AppBar, Container, Toolbar, Typography, Box, IconButton, Menu, MenuItem, Button, Tooltip, Avatar } from "@mui/material";
+import {
+  AppBar,
+  Container,
+  Toolbar,
+  Typography,
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Button,
+  Tooltip,
+  Avatar,
+} from "@mui/material";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import MenuIcon from "@mui/icons-material/Menu";
 import { createTheme } from "@mui/material/styles";
@@ -26,10 +38,12 @@ function App() {
   };
 
   const handlePageNavigation = (page: string) => {
-    if (page === "Home") {
+    if (page === "Főoldal") {
       window.location.href = "/landingpage.html";
-    } else if (page === "Menu") {
+    } else if (page === "Menü") {
       window.location.href = "/restaurant.html";
+    } else if (page === "Jegyértékesítés") {
+      window.location.href = "/tickets.html";
     } else {
       handleCloseNavMenu();
     }
@@ -44,9 +58,8 @@ function App() {
       },
     },
   });
-  
 
-  const pages = ["Főoldal", "Menü"];
+  const pages = ["Főoldal", "Menü", "Jegyértékesítés"];
   const settings = ["Profil", "Kijelentkezés"];
 
   return (
@@ -56,7 +69,11 @@ function App() {
           <Toolbar
             disableGutters
             sx={{
-              justifyContent: { xs: "center", sm: "center", xl: "space-between" },
+              justifyContent: {
+                xs: "center",
+                sm: "center",
+                xl: "space-between",
+              },
               padding: { xs: "0 16px", xl: "0 24px" },
             }}
           >
@@ -127,9 +144,15 @@ function App() {
                 }}
               >
                 {pages.map((page) => (
-                  <MenuItem key={page} onClick={() => handlePageNavigation(page)} sx={{"&:hover": {
+                  <MenuItem
+                    key={page}
+                    onClick={() => handlePageNavigation(page)}
+                    sx={{
+                      "&:hover": {
                         backgroundColor: "#37404f",
-                  },}}>
+                      },
+                    }}
+                  >
                     <Typography sx={{ textAlign: "center", color: "#d5d6d6" }}>
                       {page}
                     </Typography>
@@ -223,7 +246,6 @@ function App() {
                       "&:hover": {
                         backgroundColor: "#37404f",
                       },
-                      
                     }}
                   >
                     <Typography sx={{ textAlign: "center" }}>
