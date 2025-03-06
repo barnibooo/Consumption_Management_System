@@ -10,6 +10,21 @@ namespace CMS.Models
         public int AdmissionId { get; set; }
         [Required]
         public string? AdmissionName { get; set; }
+
+        [Required]
+        public string Category { get; set; }
+
+        [Required]
+        public int Price { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        [Required]
+        public bool IsAvailable { get; set; }
+
+        [Required]
+        public string ImagePath { get; set; }
         [JsonIgnore]
         [InverseProperty("Admissions")]
         public List<CustomerAdmission>? CustomerAdmissions { get; set; }
