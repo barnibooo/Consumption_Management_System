@@ -359,8 +359,9 @@ const Dashboard: React.FC = () => {
           width={{ xs: "90%", md: "70%", lg: "40%", xl: "30%" }}
           display="flex"
           justifyContent={{ xs: "center", md: "flex-start" }}
-          sx={{ height: "80%", p: 2 }}
+          sx={{ height: "93%", p: 2 }}
         >
+
           <Card
             sx={{
               width: {
@@ -427,17 +428,23 @@ const Dashboard: React.FC = () => {
               </List>
             </Box>
             {/* Gomb a rendelés leadására */}
-            <Button
-              variant="contained"
-              endIcon={<SendIcon />}
-              sx={{
-                m: 2,
-                backgroundColor: "#BFA181",
-              }}
-              onClick={handleOpenDialog}
+            <CardActions
+              disableSpacing
+              sx={{ mt: "auto", justifyContent: "center", paddingBottom: 2 }}
             >
-              Rendelés leadása
-            </Button>
+              <Button
+                variant="contained"
+                endIcon={<SendIcon />}
+                sx={{
+                  m: 2,
+                  backgroundColor: "#BFA181",
+                  width: "80%"
+                }}
+                onClick={handleOpenDialog}
+              >
+                Rendelés leadása
+              </Button>
+            </CardActions>
           </Card>
         </Box>
 
