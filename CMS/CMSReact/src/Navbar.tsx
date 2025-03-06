@@ -46,8 +46,8 @@ function App() {
   });
   
 
-  const pages = ["Home", "Menu"];
-  const settings = ["Profile", "Account", "Dashboard", "Logout"];
+  const pages = ["Főoldal", "Menü"];
+  const settings = ["Profil", "Kijelentkezés"];
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -183,7 +183,7 @@ function App() {
 
             {/* User Avatar and Menu */}
             <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
+              <Tooltip title="Menü megnyitása">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar
                     sx={{
