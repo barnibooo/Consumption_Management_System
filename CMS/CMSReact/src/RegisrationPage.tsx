@@ -42,8 +42,8 @@ function RegistrationCard() {
         <CardMedia
           component="img"
           sx={{
-            width: isSmallScreen ? "100%" : "50%",
-            height: isSmallScreen ? "30%" : "auto",
+            width: isSmallScreen ? "0%" : "40%",
+            height: isSmallScreen ? "0%" : "auto",
             objectFit: "cover",
             objectPosition: "left",
           }}
@@ -62,15 +62,16 @@ function RegistrationCard() {
         >
           <Typography
             gutterBottom
-            variant="h5"
+            variant="h6"
             component="div"
             sx={{
               mr: 2,
-              display: { xs: "none", md: "flex" },
+              display: { md: "flex" },
               fontWeight: 400,
               color: "#d5d6d6",
               textDecoration: "none",
               marginBottom: 2,
+              fontSize: { xs: 20, sm: 20, md: 20, lg: 22, xl: 30 },
             }}
           >
             Consumption Management System
@@ -81,7 +82,7 @@ function RegistrationCard() {
             component="div"
             sx={{
               mr: 2,
-              display: { xs: "none", md: "flex" },
+              display: { md: "flex" },
               fontWeight: 300,
               color: "#d5d6d6",
               textDecoration: "none",
@@ -96,7 +97,7 @@ function RegistrationCard() {
             component="div"
             sx={{
               mr: 2,
-              display: { xs: "none", md: "flex" },
+              display: { md: "flex" },
               fontWeight: 300,
               color: "#d5d6d6",
               textDecoration: "none",
