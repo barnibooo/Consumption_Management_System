@@ -223,39 +223,25 @@ const Dashboard: React.FC = () => {
       quantity: admissionItem.quantity,
       id: ids[index],
     }));
-
+ 
     setFinalizedOrders(orderList);
-
+ 
     const currentDateTime = new Date().toISOString();
-
+ 
     axios
-      .get("https://localhost:5000/api/Cards/GetCustomerIdByCardId/"+cId)
+      .post("https://localhost:5000/api/Customers", {
+        orders: orderList,
+        createdAt: currentDateTime,
+      })
       .then((response) => {
-        console.log(response.data);
-        if (!isNaN(response.data)) {
-          axios.post("https://localhost:5000/api/Orders", {
-            orders: orderList,
-            createdAt: currentDateTime,
-          })
-          .then((response) => {
-            console.log("Order submitted successfully:", response.data);
-            setOrderId(response.data.orderId);
-            setDialogOpen(true);
-          })
-          .catch((error) => {
-            console.error("Error submitting order:", error);
-          });
-         
-        } else {
-          console.error("Nincs ilyen felhasználó", response.data);
-        }
-        setLoading(false);
+        console.log("Order submitted successfully:", response.data);
+        setOrderId(response.data.orderId);
+        setOpenSuccessDialogs(new Array(orders.length).fill(true)); // Show success dialogs
       })
       .catch((error) => {
-        console.error("Hiba történt:", error);
-        setError(error.message);
-        setLoading(false);
-  });
+        console.error("Error submitting order:", error);
+      });
+  };
 
   const handleClose = () => {
     setDialogOpen(false);
