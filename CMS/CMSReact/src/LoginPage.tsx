@@ -43,7 +43,7 @@ function MediaCard() {
             objectFit: "cover",
             objectPosition: "right",
           }}
-          image="/img/login_sample.png"
+          image="/img/main/login_sample.png"
         />
         <CardContent
           sx={{

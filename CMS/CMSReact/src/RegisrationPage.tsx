@@ -37,18 +37,17 @@ function RegistrationCard() {
           height: "auto",
           display: "flex",
           flexDirection: isSmallScreen ? "column" : "row",
-          padding: 2,
         }}
       >
         <CardMedia
           component="img"
           sx={{
             width: isSmallScreen ? "100%" : "50%",
-            height: isSmallScreen ? "40%" : "100%",
+            height: isSmallScreen ? "30%" : "auto",
             objectFit: "cover",
             objectPosition: "left",
           }}
-          image="/img/registration_sample.jpg"
+          image="/img/main/login_sample.png"
           alt="Registration sample"
         />
         <CardContent
@@ -78,7 +77,7 @@ function RegistrationCard() {
           </Typography>
           <Typography
             gutterBottom
-            variant="h2"
+            variant="h4"
             component="div"
             sx={{
               mr: 2,
@@ -93,7 +92,7 @@ function RegistrationCard() {
           </Typography>
           <Typography
             gutterBottom
-            variant="h5"
+            variant="h6"
             component="div"
             sx={{
               mr: 2,
