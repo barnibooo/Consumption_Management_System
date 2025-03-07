@@ -3946,3 +3946,6 @@ F:\OB\ZARO\Consumption_Management_System\CMS\bin\Debug\net8.0\package-lock.json
 C:\git\Consumption_Management_System\CMS\bin\Debug\net8.0\package-lock.json
 C:\git\Consumption_Management_System\CMS\bin\Debug\net8.0\BCrypt.Net-Next.dll
 C:\git\Consumption_Management_System\CMS\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+F:\dobosig\project\Consumption_Management_System\CMS\bin\Debug\net8.0\package-lock.json
+F:\dobosig\project\Consumption_Management_System\CMS\bin\Debug\net8.0\BCrypt.Net-Next.dll
+F:\dobosig\project\Consumption_Management_System\CMS\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

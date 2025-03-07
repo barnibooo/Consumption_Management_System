@@ -87,31 +87,20 @@ const Dashboard: React.FC = () => {
   };
 
   const handleAddToOrder = (item: AdmissionItem) => {
-    setOrders((prevOrders) => {
-      const existingOrder = prevOrders.find(
-        (admissionItem) => admissionItem.admissionId === item.admissionId
-      );
-      if (existingOrder) {
-        return prevOrders.map((admissionItem) =>
-          admissionItem.admissionId === item.admissionId
-            ? { ...admissionItem, quantity: admissionItem.quantity + 1 }
-            : admissionItem
-        );
-      } else {
-        return [...prevOrders, { ...item, quantity: 1 }];
-      }
-    });
+    setOrders((prevOrders) => [...prevOrders, { ...item, quantity: 1 }]);
   };
 
   const handleRemoveFromOrder = (item: AdmissionItem) => {
     setOrders((prevOrders) => {
-      return prevOrders
-        .map((admissionItem) =>
-          admissionItem.admissionId === item.admissionId
-            ? { ...admissionItem, quantity: admissionItem.quantity - 1 }
-            : admissionItem
-        )
-        .filter((admissionItem) => admissionItem.quantity > 0);
+      const index = prevOrders.findIndex(
+        (admissionItem) => admissionItem.admissionId === item.admissionId
+      );
+      if (index !== -1) {
+        const newOrders = [...prevOrders];
+        newOrders.splice(index, 1);
+        return newOrders;
+      }
+      return prevOrders;
     });
   };
 
@@ -258,6 +247,18 @@ const Dashboard: React.FC = () => {
     setDialogOpen(false);
   };
 
+  const groupedOrders = orders.reduce((acc, item) => {
+    const existingItem = acc.find(
+      (orderItem) => orderItem.admissionId === item.admissionId
+    );
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      acc.push({ ...item });
+    }
+    return acc;
+  }, [] as AdmissionItem[]);
+
   return (
     <>
       <Box
@@ -365,7 +366,7 @@ const Dashboard: React.FC = () => {
               }}
             >
               <List dense>
-                {orders.map((admissionItem, index) => (
+                {groupedOrders.map((admissionItem, index) => (
                   <ListItem
                     key={index}
                     secondaryAction={
