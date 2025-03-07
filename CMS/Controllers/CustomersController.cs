@@ -73,14 +73,21 @@ namespace CMS.Controllers
             return NoContent();
         }
 
-        // POST: api/Customers
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] CustomerPostDto customerpostdto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            var existingCustomer = await _context.Customers
+                .FirstOrDefaultAsync(c => c.CardId == customerpostdto.CardId && c.IsActive);
+
+            if (existingCustomer != null)
+            {
+                return BadRequest(new { message = "A customer with the same CardId and IsActive = true already exists." });
             }
 
             var customer = new Customer
@@ -108,11 +115,7 @@ namespace CMS.Controllers
 
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(CreateOrder), new { id = customer.CustomerId }, new
-            {
-                customer.CustomerId,
-            });
+            return Ok(new { message = "Customer created successfully." });
         }
 
 

@@ -3949,3 +3949,4 @@ C:\git\Consumption_Management_System\CMS\bin\Debug\net8.0\Microsoft.AspNetCore.A
 F:\dobosig\project\Consumption_Management_System\CMS\bin\Debug\net8.0\package-lock.json
 F:\dobosig\project\Consumption_Management_System\CMS\bin\Debug\net8.0\BCrypt.Net-Next.dll
 F:\dobosig\project\Consumption_Management_System\CMS\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\! SULIS FELADATAIM\13. osztály\ZARO\gites\CMS development\Consumption_Management_System\CMS\bin\Debug\net8.0\package-lock.json
