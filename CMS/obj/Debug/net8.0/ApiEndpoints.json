@@ -297,29 +297,19 @@
   },
   {
     "ContainingType": "CMS.Controllers.CustomersController",
-    "Method": "PostCustomer",
+    "Method": "CreateOrder",
     "RelativePath": "api/Customers",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "customer",
-        "Type": "CMS.Models.Customer",
+        "Name": "customerpostdto",
+        "Type": "CMS.Dtos.CustomerPostDto",
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "CMS.Models.Customer",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "CMS.Controllers.CustomersController",

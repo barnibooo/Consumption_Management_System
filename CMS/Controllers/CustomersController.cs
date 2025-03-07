@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Models;
+using CMS.Dtos;
 
 namespace CMS.Controllers
 {
@@ -75,13 +76,45 @@ namespace CMS.Controllers
         // POST: api/Customers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
+        public async Task<IActionResult> CreateOrder([FromBody] CustomerPostDto customerpostdto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var customer = new Customer
+            {
+                CustomerId = customerpostdto.CustomerId,
+                CardId = customerpostdto.CardId,
+                Name = customerpostdto.Name,
+                CreatedAt = DateTime.Now,
+                IsActive = customerpostdto.IsActive,
+                CustomerAdmissions = new List<CustomerAdmission>()
+            };
+
+            foreach (var item in customerpostdto.AdmissionsIds)
+            {
+                var admission = await _context.Admissions.FindAsync(item.AdmissionId);
+                if (admission != null)
+                {
+                    var customerAdmission = new CustomerAdmission
+                    {
+                        AdmissionId = item.AdmissionId
+                    };
+                    customer.CustomerAdmissions.Add(customerAdmission);
+                }
+            }
+
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCustomer", new { id = customer.CustomerId }, customer);
+            return CreatedAtAction(nameof(CreateOrder), new { id = customer.CustomerId }, new
+            {
+                customer.CustomerId,
+            });
         }
+
 
         private bool CustomerExists(int id)
         {
