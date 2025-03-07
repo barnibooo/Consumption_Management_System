@@ -31,27 +31,31 @@ function MediaCard() {
             md: "55%",
             lg: "60%",
           },
-          height: "70vh",
+          height: "auto",
           display: "flex",
           flexDirection: isSmallScreen ? "column" : "row",
         }}
       >
-        <CardMedia
-          sx={{
-            width: isSmallScreen ? "100%" : "50%",
-            height: isSmallScreen ? "40%" : "100%",
-            objectFit: "cover",
-            objectPosition: "right",
-          }}
-          image="/img/main/login_sample.png"
-        />
+        {!isSmallScreen && (
+          <CardMedia
+            component="img"
+            sx={{
+              width: "40%",
+              height: "auto",
+              objectFit: "cover",
+              objectPosition: "right",
+            }}
+            image="/img/main/login_sample.png"
+            alt="Login sample"
+          />
+        )}
         <CardContent
           sx={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            width: isSmallScreen ? "100%" : "50%",
+            width: isSmallScreen ? "100%" : "60%",
             flex: 1,
           }}
         >
@@ -61,7 +65,7 @@ function MediaCard() {
             component="div"
             sx={{
               mr: 2,
-              display: { xs: "none", md: "flex" },
+              display: { md: "flex" },
               fontWeight: 400,
               color: "#d5d6d6",
               textDecoration: "none",
@@ -76,7 +80,7 @@ function MediaCard() {
             component="div"
             sx={{
               mr: 2,
-              display: { xs: "none", md: "flex" },
+              display: { md: "flex" },
               fontWeight: 300,
               color: "#d5d6d6",
               textDecoration: "none",
@@ -91,7 +95,7 @@ function MediaCard() {
             component="div"
             sx={{
               mr: 2,
-              display: { xs: "none", md: "flex" },
+              display: { md: "flex" },
               fontWeight: 300,
               color: "#d5d6d6",
               textDecoration: "none",
