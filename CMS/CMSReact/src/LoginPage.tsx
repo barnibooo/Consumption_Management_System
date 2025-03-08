@@ -87,7 +87,7 @@ function MediaCard() {
               marginBottom: 2,
             }}
           >
-            Welcome
+            Üdvözöljük!
           </Typography>
           <Typography
             gutterBottom
@@ -102,7 +102,7 @@ function MediaCard() {
               marginBottom: 2,
             }}
           >
-            Login to your account
+            Kérjük jelentkezz be!
           </Typography>
           <TextField
             sx={{
@@ -133,7 +133,7 @@ function MediaCard() {
             }}
             required
             id="outlined-search"
-            label="Username"
+            label="Felhasználónév"
             type="search"
             margin="dense"
           />
@@ -166,7 +166,7 @@ function MediaCard() {
             }}
             required
             id="outlined-password-input"
-            label="Password"
+            label="Jelszó"
             type="password"
             autoComplete="current-password"
             margin="dense"
@@ -181,7 +181,7 @@ function MediaCard() {
             variant="contained"
             endIcon={<LoginIcon />}
           >
-            Log In
+            Belépés
           </Button>
         </CardContent>
       </Card>
