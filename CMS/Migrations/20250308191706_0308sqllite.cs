@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CMS.Migrations
 {
     /// <inheritdoc />
-    public partial class _0228_sqlite : Migration
+    public partial class _0308sqllite : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,12 @@ namespace CMS.Migrations
                 {
                     AdmissionId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    AdmissionName = table.Column<string>(type: "TEXT", nullable: false)
+                    AdmissionName = table.Column<string>(type: "TEXT", nullable: false),
+                    Category = table.Column<string>(type: "TEXT", nullable: false),
+                    Price = table.Column<int>(type: "INTEGER", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "INTEGER", nullable: false),
+                    ImagePath = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,7 +49,8 @@ namespace CMS.Migrations
                     CardId = table.Column<string>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false)
+                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
+                    CreatedBy = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -84,6 +90,24 @@ namespace CMS.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MenuItems", x => x.ItemId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tickets",
+                columns: table => new
+                {
+                    TicketId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TicketName = table.Column<string>(type: "TEXT", nullable: false),
+                    Category = table.Column<string>(type: "TEXT", nullable: false),
+                    Price = table.Column<int>(type: "INTEGER", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "INTEGER", nullable: false),
+                    ImagePath = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tickets", x => x.TicketId);
                 });
 
             migrationBuilder.CreateTable(
@@ -161,6 +185,32 @@ namespace CMS.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CustomerTickets",
+                columns: table => new
+                {
+                    CustomerTicketId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CustomerId = table.Column<int>(type: "INTEGER", nullable: false),
+                    TicketId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerTickets", x => x.CustomerTicketId);
+                    table.ForeignKey(
+                        name: "FK_CustomerTickets_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "CustomerId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustomerTickets_Tickets_TicketId",
+                        column: x => x.TicketId,
+                        principalTable: "Tickets",
+                        principalColumn: "TicketId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MenuItemOrders",
                 columns: table => new
                 {
@@ -196,6 +246,16 @@ namespace CMS.Migrations
                 name: "IX_CustomerAdmissions_CustomerId",
                 table: "CustomerAdmissions",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerTickets_CustomerId",
+                table: "CustomerTickets",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerTickets_TicketId",
+                table: "CustomerTickets",
+                column: "TicketId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_Username",
@@ -239,6 +299,9 @@ namespace CMS.Migrations
                 name: "CustomerAdmissions");
 
             migrationBuilder.DropTable(
+                name: "CustomerTickets");
+
+            migrationBuilder.DropTable(
                 name: "MenuItemOrders");
 
             migrationBuilder.DropTable(
@@ -246,6 +309,9 @@ namespace CMS.Migrations
 
             migrationBuilder.DropTable(
                 name: "Admissions");
+
+            migrationBuilder.DropTable(
+                name: "Tickets");
 
             migrationBuilder.DropTable(
                 name: "MenuItems");

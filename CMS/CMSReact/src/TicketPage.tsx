@@ -41,11 +41,11 @@ const darkTheme = createTheme({
   },
 });
 
-interface AdmissionItem {
+interface ticketItem {
   quantity: number;
   imagePath: string | undefined;
-  admissionId: number;
-  admissionName: string;
+  ticketId: number;
+  ticketName: string;
   category: string;
   price: number;
   description: string;
@@ -66,15 +66,15 @@ const categoryIcons: { [key: string]: React.ReactElement } = {
 };
 
 const Dashboard: React.FC = () => {
-  const [AdmissionItems, setAdmissionItems] = useState<AdmissionItem[]>([]);
+  const [ticketItems, setticketItems] = useState<ticketItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [orders, setOrders] = useState<AdmissionItem[]>([]);
+  const [orders, setOrders] = useState<ticketItem[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [guestId, setGuestId] = useState<string | null>(null);
   const [finalizedOrders, setFinalizedOrders] = useState<
-    { admissionId: number; quantity: number }[]
+    { ticketId: number; quantity: number }[]
   >([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
@@ -86,14 +86,14 @@ const Dashboard: React.FC = () => {
     setSelectedCategory(category);
   };
 
-  const handleAddToOrder = (item: AdmissionItem) => {
+  const handleAddToOrder = (item: ticketItem) => {
     setOrders((prevOrders) => [...prevOrders, { ...item, quantity: 1 }]);
   };
 
-  const handleRemoveFromOrder = (item: AdmissionItem) => {
+  const handleRemoveFromOrder = (item: ticketItem) => {
     setOrders((prevOrders) => {
       const index = prevOrders.findIndex(
-        (admissionItem) => admissionItem.admissionId === item.admissionId
+        (ticketItem) => ticketItem.ticketId === item.ticketId
       );
       if (index !== -1) {
         const newOrders = [...prevOrders];
@@ -104,29 +104,26 @@ const Dashboard: React.FC = () => {
     });
   };
 
-  const handleDeleteFromOrder = (item: AdmissionItem) => {
+  const handleDeleteFromOrder = (item: ticketItem) => {
     setOrders((prevOrders) =>
-      prevOrders.filter(
-        (admissionItem) => admissionItem.admissionId !== item.admissionId
-      )
+      prevOrders.filter((ticketItem) => ticketItem.ticketId !== item.ticketId)
     );
   };
 
   const calculateTotalPrice = () => {
     return orders.reduce(
-      (total, admissionItem) =>
-        total + admissionItem.price * admissionItem.quantity,
+      (total, ticketItem) => total + ticketItem.price * ticketItem.quantity,
       0
     );
   };
 
   useEffect(() => {
     axios
-      .get("https://localhost:5000/api/Admissions")
+      .get("https://localhost:5000/api/Tickets")
       .then((response) => {
         console.log(response.data);
         if (Array.isArray(response.data)) {
-          setAdmissionItems(response.data);
+          setticketItems(response.data);
         } else {
           console.error("Hibás API válasz: nem tömb", response.data);
         }
@@ -169,13 +166,13 @@ const Dashboard: React.FC = () => {
       </ThemeProvider>
     );
 
-  var l = AdmissionItems.length;
+  var l = ticketItems.length;
 
   const getUniqueCategories = () => {
     const categories: string[] = [];
 
     for (let i = 0; i < l; i++) {
-      const category = AdmissionItems[i].category;
+      const category = ticketItems[i].category;
       if (!categories.includes(category)) {
         categories.push(category);
       }
@@ -189,13 +186,11 @@ const Dashboard: React.FC = () => {
     (category) => category !== "Egyéb"
   );
 
-  const hasEgyebItems = AdmissionItems.some(
-    (item) => item.category === "Egyéb"
-  );
+  const hasEgyebItems = ticketItems.some((item) => item.category === "Egyéb");
 
-  const filteredAdmissionItems = selectedCategory
-    ? AdmissionItems.filter((item) => item.category === selectedCategory)
-    : AdmissionItems;
+  const filteredticketItems = selectedCategory
+    ? ticketItems.filter((item) => item.category === selectedCategory)
+    : ticketItems;
 
   const handleOpenDialog = () => {
     setOpenDialogs(new Array(orders.length).fill(true));
@@ -218,29 +213,29 @@ const Dashboard: React.FC = () => {
   };
 
   const handleSubmitOrder = () => {
-    const orderList = orders.map((admissionItem, index) => ({
-      admissionId: admissionItem.admissionId,
-      quantity: admissionItem.quantity,
+    const orderList = orders.map((ticketItem, index) => ({
+      ticketId: ticketItem.ticketId,
+      quantity: ticketItem.quantity,
       id: ids[index],
     }));
- 
+
     setFinalizedOrders(orderList);
- 
+
     const currentDateTime = new Date().toISOString();
- 
-    axios
-      .post("https://localhost:5000/api/Customers", {
-        orders: orderList,
+
+    // Log each order individually
+    orderList.forEach((order, index) => {
+      console.log({
+        cardId: ids[index],
+        name: "Order Name",
+        ticketsIds: [{ ticketId: order.ticketId }],
         createdAt: currentDateTime,
-      })
-      .then((response) => {
-        console.log("Order submitted successfully:", response.data);
-        setOrderId(response.data.orderId);
-        setOpenSuccessDialogs(new Array(orders.length).fill(true)); // Show success dialogs
-      })
-      .catch((error) => {
-        console.error("Error submitting order:", error);
       });
+    });
+
+    // Simulate successful order submission
+    setOrderId("mockOrderId");
+    setOpenSuccessDialogs(new Array(orders.length).fill(true));
   };
 
   const handleClose = () => {
@@ -249,7 +244,7 @@ const Dashboard: React.FC = () => {
 
   const groupedOrders = orders.reduce((acc, item) => {
     const existingItem = acc.find(
-      (orderItem) => orderItem.admissionId === item.admissionId
+      (orderItem) => orderItem.ticketId === item.ticketId
     );
     if (existingItem) {
       existingItem.quantity += 1;
@@ -257,7 +252,7 @@ const Dashboard: React.FC = () => {
       acc.push({ ...item });
     }
     return acc;
-  }, [] as AdmissionItem[]);
+  }, [] as ticketItem[]);
 
   return (
     <>
@@ -366,14 +361,14 @@ const Dashboard: React.FC = () => {
               }}
             >
               <List dense>
-                {groupedOrders.map((admissionItem, index) => (
+                {groupedOrders.map((ticketItem, index) => (
                   <ListItem
                     key={index}
                     secondaryAction={
                       <IconButton
                         edge="end"
                         aria-label="delete"
-                        onClick={() => handleDeleteFromOrder(admissionItem)}
+                        onClick={() => handleDeleteFromOrder(ticketItem)}
                       >
                         <DeleteOutlineOutlinedIcon
                           sx={{
@@ -388,11 +383,11 @@ const Dashboard: React.FC = () => {
                     }
                   >
                     <ListItemAvatar>
-                      {categoryIcons[admissionItem.category]}
+                      {categoryIcons[ticketItem.category]}
                     </ListItemAvatar>
                     <Typography variant="body2" color="#e7e6dd" fontSize={16}>
-                      {admissionItem.admissionName} x{admissionItem.quantity}{" "}
-                      <br /> {admissionItem.price * admissionItem.quantity} Ft
+                      {ticketItem.ticketName} x{ticketItem.quantity} <br />{" "}
+                      {ticketItem.price * ticketItem.quantity} Ft
                     </Typography>
                   </ListItem>
                 ))}
@@ -436,7 +431,7 @@ const Dashboard: React.FC = () => {
               justifyContent={{ xs: "center", sm: "flex-start" }}
               margin={2}
             >
-              {filteredAdmissionItems.map((item) => (
+              {filteredticketItems.map((item) => (
                 <Card
                   sx={{
                     width: {
@@ -451,10 +446,10 @@ const Dashboard: React.FC = () => {
                     display: "flex",
                     flexDirection: "column",
                   }}
-                  key={item.admissionId}
+                  key={item.ticketId}
                 >
                   <CardHeader
-                    title={item.admissionName}
+                    title={item.ticketName}
                     subheader={item.category}
                     sx={{
                       "& .MuiCardHeader-subheader": { color: "#d5d6d6" },
@@ -551,7 +546,7 @@ const Dashboard: React.FC = () => {
             <DialogContent>
               <DialogContentText>
                 Kérjük adja meg a kártyaszámot a következő jegyhez:{" "}
-                {orderItem.admissionName}
+                {orderItem.ticketName}
               </DialogContentText>
               <TextField
                 required

@@ -23,10 +23,28 @@ namespace CMS.Controllers
 
         // GET: api/Customers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<CustomerGetDto>>> GetCustomers()
         {
-            return await _context.Customers.ToListAsync();
+            var customers = await _context.Customers
+                .Include(c => c.CustomerTickets)
+                .ThenInclude(ct => ct.Tickets)
+                .ToListAsync();
+
+            var customerDtos = customers.Select(customer => new CustomerGetDto
+            {
+                CardId = customer.CardId,
+                Name = customer.Name,
+                CreatedAt = customer.CreatedAt,
+                CreatedBy = customer.CreatedBy,
+                Tickets = customer.CustomerTickets.Select(ct => new CustomerTicketsDto
+                {
+                    TicketName = ct.Tickets.TicketName // Map the ticket name
+                }).ToList()
+            }).ToList();
+
+            return customerDtos;
         }
+
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
@@ -92,24 +110,23 @@ namespace CMS.Controllers
 
             var customer = new Customer
             {
-                CustomerId = customerpostdto.CustomerId,
                 CardId = customerpostdto.CardId,
                 Name = customerpostdto.Name,
                 CreatedAt = DateTime.Now,
-                IsActive = customerpostdto.IsActive,
-                CustomerAdmissions = new List<CustomerAdmission>()
+                IsActive = true,
+                CustomerTickets = new List<CustomerTicket>()
             };
 
-            foreach (var item in customerpostdto.AdmissionsIds)
+            foreach (var item in customerpostdto.TicketsIds)
             {
-                var admission = await _context.Admissions.FindAsync(item.AdmissionId);
-                if (admission != null)
+                var ticket = await _context.Tickets.FindAsync(item.TicketId);
+                if (ticket != null)
                 {
-                    var customerAdmission = new CustomerAdmission
+                    var customerTicket = new CustomerTicket
                     {
-                        AdmissionId = item.AdmissionId
+                        TicketId = item.TicketId
                     };
-                    customer.CustomerAdmissions.Add(customerAdmission);
+                    customer.CustomerTickets.Add(customerTicket);
                 }
             }
 
