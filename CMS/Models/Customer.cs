@@ -22,5 +22,8 @@ namespace CMS.Models
         [JsonIgnore]
         [InverseProperty("Customers")]
         public List<CustomerAdmission>? CustomerAdmissions { get; set; }
+        [JsonIgnore]
+        [InverseProperty("Customers")]
+        public List<CustomerTicket>? CustomerTickets { get; set; }
     }
 }

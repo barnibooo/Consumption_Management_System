@@ -106,6 +106,27 @@ namespace CMS.Migrations
                     b.ToTable("CustomerAdmissions");
                 });
 
+            modelBuilder.Entity("CMS.Models.CustomerTicket", b =>
+                {
+                    b.Property<int>("CustomerTicketId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TicketId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("CustomerTicketId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("CustomerTickets");
+                });
+
             modelBuilder.Entity("CMS.Models.Employee", b =>
                 {
                     b.Property<int>("EmployeeId")
@@ -244,6 +265,39 @@ namespace CMS.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
+            modelBuilder.Entity("CMS.Models.Ticket", b =>
+                {
+                    b.Property<int>("TicketId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TicketName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("TicketId");
+
+                    b.ToTable("Tickets");
+                });
+
             modelBuilder.Entity("CMS.Models.CustomerAdmission", b =>
                 {
                     b.HasOne("CMS.Models.Admission", "Admissions")
@@ -261,6 +315,25 @@ namespace CMS.Migrations
                     b.Navigation("Admissions");
 
                     b.Navigation("Customers");
+                });
+
+            modelBuilder.Entity("CMS.Models.CustomerTicket", b =>
+                {
+                    b.HasOne("CMS.Models.Customer", "Customers")
+                        .WithMany("CustomerTickets")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CMS.Models.Ticket", "Tickets")
+                        .WithMany("CustomerTickets")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customers");
+
+                    b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("CMS.Models.MenuItemOrder", b =>
@@ -321,6 +394,8 @@ namespace CMS.Migrations
                 {
                     b.Navigation("CustomerAdmissions");
 
+                    b.Navigation("CustomerTickets");
+
                     b.Navigation("Orders");
                 });
 
@@ -337,6 +412,11 @@ namespace CMS.Migrations
             modelBuilder.Entity("CMS.Models.Order", b =>
                 {
                     b.Navigation("MenuItemOrders");
+                });
+
+            modelBuilder.Entity("CMS.Models.Ticket", b =>
+                {
+                    b.Navigation("CustomerTickets");
                 });
 #pragma warning restore 612, 618
         }
