@@ -21,11 +21,23 @@ namespace CMS.Controllers
         }
 
         // GET: api/MenuItemOrders
+        // GET: api/MenuItemOrders
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MenuItemOrder>>> GetMenuItemOrders()
+        public async Task<ActionResult<IEnumerable<MenuItemOrderDto>>> GetMenuItemOrders()
         {
-            return await _context.MenuItemOrders.ToListAsync();
+            var menuItemOrders = await _context.MenuItemOrders
+                .Select(m => new MenuItemOrderDto
+                {
+                    MenuItemOrderId = m.MenuItemOrderId,
+                    ItemId = m.ItemId,
+                    OrderId = m.OrderId,
+                    Quantity = m.Quantity
+                })
+                .ToListAsync();
+
+            return menuItemOrders;
         }
+
 
         // GET: api/MenuItemOrders/5
         [HttpGet("{id}")]
