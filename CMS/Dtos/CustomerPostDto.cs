@@ -2,8 +2,10 @@
 {
     public class CustomerPostDto
     {
+        //public int CustomerId { get; set; }
         public string CardId { get; set; }
         public string Name { get; set; }
+        public int createdBy { get; set; }
 
         public List<CustomerTicketDto> TicketsIds { get; set; }
     }

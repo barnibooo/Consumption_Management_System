@@ -33,7 +33,7 @@ function App() {
         <Typography
           variant="h2"
           component="div"
-          fontFamily={"roboto"}
+          fontFamily={"Roboto"}
           sx={{
             position: "absolute",
             top: 0,

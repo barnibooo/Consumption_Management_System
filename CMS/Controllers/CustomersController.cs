@@ -32,18 +32,20 @@ namespace CMS.Controllers
 
             var customerDtos = customers.Select(customer => new CustomerGetDto
             {
+                CustomerId = customer.CustomerId, 
                 CardId = customer.CardId,
                 Name = customer.Name,
                 CreatedAt = customer.CreatedAt,
                 CreatedBy = customer.CreatedBy,
                 Tickets = customer.CustomerTickets.Select(ct => new CustomerTicketsDto
                 {
-                    TicketName = ct.Tickets.TicketName // Map the ticket name
+                    TicketName = ct.Tickets.TicketName
                 }).ToList()
             }).ToList();
 
             return customerDtos;
         }
+
 
 
         // GET: api/Customers/5
@@ -108,10 +110,28 @@ namespace CMS.Controllers
                 return BadRequest(new { message = "A customer with the same CardId and IsActive = true already exists." });
             }
 
+            var employeeExists = await _context.Employees.AnyAsync(e => e.EmployeeId == customerpostdto.createdBy);
+            if (!employeeExists)
+            {
+                return BadRequest(new { message = "The CreatedBy ID does not exist in the Employee table." });
+            }
+
+            var ticketIds = customerpostdto.TicketsIds.Select(t => t.TicketId).ToList();
+            var existingTicketIds = await _context.Tickets
+                .Where(t => ticketIds.Contains(t.TicketId))
+                .Select(t => t.TicketId)
+                .ToListAsync();
+
+            if (ticketIds.Count != existingTicketIds.Count)
+            {
+                return BadRequest(new { message = "One or more provided Ticket IDs do not exist." });
+            }
+
             var customer = new Customer
             {
                 CardId = customerpostdto.CardId,
                 Name = customerpostdto.Name,
+                CreatedBy = customerpostdto.createdBy,
                 CreatedAt = DateTime.Now,
                 IsActive = true,
                 CustomerTickets = new List<CustomerTicket>()
@@ -119,21 +139,21 @@ namespace CMS.Controllers
 
             foreach (var item in customerpostdto.TicketsIds)
             {
-                var ticket = await _context.Tickets.FindAsync(item.TicketId);
-                if (ticket != null)
+                var customerTicket = new CustomerTicket
                 {
-                    var customerTicket = new CustomerTicket
-                    {
-                        TicketId = item.TicketId
-                    };
-                    customer.CustomerTickets.Add(customerTicket);
-                }
+                    TicketId = item.TicketId
+                };
+                customer.CustomerTickets.Add(customerTicket);
             }
 
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
-            return Ok(new { message = "Customer created successfully." });
+
+            return Ok(new { message = "Customer created successfully.", CustomerId = customer.CustomerId });
         }
+
+
+
 
 
         private bool CustomerExists(int id)
