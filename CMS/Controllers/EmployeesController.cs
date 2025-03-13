@@ -28,10 +28,13 @@ namespace CMS.Controllers
             return await _context.Employees.ToListAsync();
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetEmployeeById(int id)
+        [HttpGet("{token}")]
+        public async Task<IActionResult> GetEmployeeById(string token)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _context.RefreshTokens
+                .Where(rt => rt.Token == token)
+                .Select(rt => rt.Employee)
+                .FirstOrDefaultAsync();
             if (employee == null)
             {
                 return NotFound(new { message = "Employee not found." });
