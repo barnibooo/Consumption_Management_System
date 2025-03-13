@@ -80,7 +80,7 @@ const Dashboard: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [orders, setOrders] = useState<ticketItem[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [guestId, setGuestId] = useState<string | null>(null);
+  const [cardId, setCardId] = useState<string | null>(null);
   const [finalizedOrders, setFinalizedOrders] = useState<
     { ticketId: number }[]
   >([]);
@@ -244,7 +244,42 @@ const Dashboard: React.FC = () => {
 
     setFinalizedOrders(orderList);
 
-    // Separate ticket IDs and admission IDs
+    axios
+      .get("https://localhost:5000/api/Cards/GetCustomerIdByCardId/" + cardId)
+      .then((response) => {
+        console.log(response.data);
+        if (isNaN(response.data)) {
+          axios
+            .post("https://localhost:5000/api/Customers", {
+              cardId: cardId,
+              employeeId: 1,
+              name: "Teszt Elek",
+              ticketIds: orders.map((ticketIds) => ({
+                ticketIds: ticketIds,
+              })),
+              admissionIds: orders.map((admissionIds) => ({
+                admissionIds: admissionIds,
+              })),
+            })
+            .then((response) => {
+              console.log("Order submitted successfully:", response.data);
+              setOrderId(response.data.orderId);
+              setDialogOpen(true);
+            })
+            .catch((error) => {
+              console.error("Error submitting order:", error);
+            });
+        } else {
+          console.error("Nincs ilyen felhasználó", response.data);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Hiba történt:", error);
+        setError(error.message);
+        setLoading(false);
+      });
+    /*
     const ticketIds = orderList
       .filter((order) => order.category === "Belépő")
       .map((order) => order.ticketId);
@@ -252,20 +287,16 @@ const Dashboard: React.FC = () => {
       .filter((order) => order.category === "Kiegészítő")
       .map((order) => order.ticketId);
 
-    // Log the card ID and the IDs of the items in the list in JSON format
     const logData = {
-      cardId: guestId,
+      cardId: cardId,
       ticketIds: ticketIds,
       admissionIds: admissionIds,
     };
     console.log(JSON.stringify(logData, null, 2));
 
-    // Simulate successful order submission
     setOrderId("mockOrderId");
-    setOpenSuccessDialogs(new Array(orders.length).fill(true));
+    setOpenSuccessDialogs(new Array(orders.length).fill(true));*/
   };
-
-  // ...existing code...
 
   const hasBelepoInOrder = orders.some((item) => item.category === "Belépő");
 
@@ -380,8 +411,8 @@ const Dashboard: React.FC = () => {
                 id="standard-required"
                 label="Kártyazonosító"
                 variant="standard"
-                value={guestId || ""}
-                onChange={(e) => setGuestId(e.target.value)}
+                value={cardId || ""}
+                onChange={(e) => setCardId(e.target.value)}
                 sx={{
                   "& .MuiInputBase-root": {
                     color: "#d5d6d6",
