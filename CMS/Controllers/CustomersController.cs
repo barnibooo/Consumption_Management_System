@@ -63,8 +63,11 @@ namespace CMS.Controllers
         public async Task<ActionResult<CustomerGetIdDto>> GetCustomer(string cardid)
         {
             var customer = await _context.Customers
-                .Where(ci => ci.CardId == cardid)
-                .FirstOrDefaultAsync();
+                .Include(c => c.CustomerTickets)
+                .ThenInclude(ct => ct.Tickets)
+                .Include(c => c.CustomerAdmissions)
+                .ThenInclude(ca => ca.Admissions)
+                .FirstOrDefaultAsync(ci => ci.CardId == cardid);
 
             if (customer == null)
             {
@@ -74,11 +77,20 @@ namespace CMS.Controllers
             // DTO-ba mapeljük az adatokat
             var customerGetIdDto = new CustomerGetIdDto
             {
-                Name = customer.Name
+                Name = customer.Name,
+                Tickets = customer.CustomerTickets.Select(ct => new CustomerTicketsDto
+                {
+                    TicketName = ct.Tickets.TicketName
+                }).ToList(),
+                Admissions = customer.CustomerAdmissions.Select(ca => new CustomerAdmissionDto
+                {
+                    AdmissionName = ca.Admissions.AdmissionName
+                }).ToList()
             };
 
             return Ok(customerGetIdDto); // 200 OK és a keresett adat
         }
+
 
 
         // PUT: api/Customers/5
