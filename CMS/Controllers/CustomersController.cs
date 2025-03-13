@@ -22,29 +22,39 @@ namespace CMS.Controllers
         }
 
         // GET: api/Customers
+        // GET: api/Customers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerGetDto>>> GetCustomers()
         {
             var customers = await _context.Customers
                 .Include(c => c.CustomerTickets)
                 .ThenInclude(ct => ct.Tickets)
+                .Include(c => c.CustomerAdmissions)
+                .ThenInclude(ca => ca.Admissions)
                 .ToListAsync();
 
             var customerDtos = customers.Select(customer => new CustomerGetDto
             {
-                CustomerId = customer.CustomerId, 
+                CustomerId = customer.CustomerId,
                 CardId = customer.CardId,
                 Name = customer.Name,
                 CreatedAt = customer.CreatedAt,
                 CreatedBy = customer.CreatedBy,
                 Tickets = customer.CustomerTickets.Select(ct => new CustomerTicketsDto
                 {
+                    TicketId = ct.TicketId,
                     TicketName = ct.Tickets.TicketName
+                }).ToList(),
+                Admissions = customer.CustomerAdmissions.Select(ca => new CustomerAdmissionDto
+                {
+                    AdmissionId = ca.AdmissionId,
+                    AdmissionName = ca.Admissions.AdmissionName
                 }).ToList()
             }).ToList();
 
             return customerDtos;
         }
+
 
 
 
@@ -93,7 +103,8 @@ namespace CMS.Controllers
             return NoContent();
         }
 
-
+        // POST: api/Customers
+        // POST: api/Customers
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] CustomerPostDto customerpostdto)
         {
@@ -127,6 +138,17 @@ namespace CMS.Controllers
                 return BadRequest(new { message = "One or more provided Ticket IDs do not exist." });
             }
 
+            var admissionIds = customerpostdto.Admissions.Select(a => a.AdmissionId).ToList();
+            var existingAdmissionIds = await _context.Admissions
+                .Where(a => admissionIds.Contains(a.AdmissionId))
+                .Select(a => a.AdmissionId)
+                .ToListAsync();
+
+            if (admissionIds.Count != existingAdmissionIds.Count)
+            {
+                return BadRequest(new { message = "One or more provided Admission IDs do not exist." });
+            }
+
             var customer = new Customer
             {
                 CardId = customerpostdto.CardId,
@@ -134,7 +156,8 @@ namespace CMS.Controllers
                 CreatedBy = customerpostdto.createdBy,
                 CreatedAt = DateTime.Now,
                 IsActive = true,
-                CustomerTickets = new List<CustomerTicket>()
+                CustomerTickets = new List<CustomerTicket>(),
+                CustomerAdmissions = new List<CustomerAdmission>()
             };
 
             foreach (var item in customerpostdto.TicketsIds)
@@ -146,11 +169,22 @@ namespace CMS.Controllers
                 customer.CustomerTickets.Add(customerTicket);
             }
 
+            foreach (var item in customerpostdto.Admissions)
+            {
+                var customerAdmission = new CustomerAdmission
+                {
+                    AdmissionId = item.AdmissionId
+                };
+                customer.CustomerAdmissions.Add(customerAdmission);
+            }
+
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Customer created successfully.", CustomerId = customer.CustomerId });
         }
+
+
 
 
 

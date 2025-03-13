@@ -7,10 +7,16 @@
         public string Name { get; set; }
         public int createdBy { get; set; }
 
-        public List<CustomerTicketDto> TicketsIds { get; set; }
+        public List<CustomerTicketsOnlyIdDto> TicketsIds { get; set; }
+        public List<CustomerAdmissionOnlyIdDto> Admissions { get; set; }
     }
-    public class CustomerTicketDto
+    public class CustomerTicketsOnlyIdDto
     {
         public int TicketId { get; set; }
     }
+    public class CustomerAdmissionOnlyIdDto
+    {
+        public int AdmissionId { get; set; }
+    }
+
 }

@@ -7,10 +7,10 @@
         public string Name { get; set; }
         public DateTime CreatedAt { get; set; }
         public int CreatedBy { get; set; }
-
         public List<CustomerTicketsDto> Tickets { get; set; }
         public List<CustomerAdmissionDto> Admissions { get; set; }
     }
+
     public class CustomerTicketsDto
     {
         public int TicketId { get; set; }
@@ -21,4 +21,5 @@
         public int AdmissionId { get; set; }
         public string AdmissionName { get; set; }
     }
+
 }
