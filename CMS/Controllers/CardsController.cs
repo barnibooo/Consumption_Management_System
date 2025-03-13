@@ -21,9 +21,6 @@ namespace CMS.Controllers
         }
 
 
-
-        // POST: api/Cards
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpGet("GetCustomerIdByCardId/{cardId}")]
         public async Task<ActionResult<int>> GetCustomerIdByCardId(string cardId)
         {
@@ -44,15 +41,6 @@ namespace CMS.Controllers
 
             // Return the CustomerId
             return Ok(customer.CustomerId);
-        }
-
-
-
-
-
-        private bool CardExists(string id)
-        {
-            return _context.Card.Any(e => e.CardId == id);
         }
     }
 }
