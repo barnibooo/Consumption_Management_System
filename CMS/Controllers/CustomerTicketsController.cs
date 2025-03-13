@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Models;
+using CMS.Dtos;
 
 namespace CMS.Controllers
 {
@@ -22,9 +23,16 @@ namespace CMS.Controllers
 
         // GET: api/CustomerTickets
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerTicket>>> GetCustomerTickets()
+        public async Task<ActionResult<IEnumerable<CustomerTicketGetDto>>> GetCustomerTickets()
         {
-            return await _context.CustomerTickets.ToListAsync();
+            return await _context.CustomerTickets
+                .Select(ct => new CustomerTicketGetDto
+                {
+                    CustomerTicketId = ct.CustomerTicketId,
+                    CustomerId = ct.CustomerId,
+                    TicketId = ct.TicketId
+                })
+                .ToListAsync();
         }
 
         // GET: api/CustomerTickets/5
