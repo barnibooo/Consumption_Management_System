@@ -30,13 +30,13 @@ namespace CMS.Controllers
 
             if (customer == null)
             {
-                return NotFound("Customer not found.");
+                return Ok("Customer not found.");
             }
 
             // Check if the customer is active
             if (!customer.IsActive)
             {
-                return BadRequest("Customer is not active.");
+                return Ok("Customer is not active.");
             }
 
             // Return the CustomerId
