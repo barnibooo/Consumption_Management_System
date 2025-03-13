@@ -1,4 +1,5 @@
-﻿namespace CMS.Dtos
+﻿/*
+namespace CMS.Dtos
 {
     public class Demo
     {
@@ -15,3 +16,4 @@
         public int AdmissionId { get; set; }
     }
 }
+*/
