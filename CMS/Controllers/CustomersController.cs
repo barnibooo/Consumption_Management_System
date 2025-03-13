@@ -60,21 +60,26 @@ namespace CMS.Controllers
 
         // GET: api/Customers/5
         [HttpGet("{cardid}")]
-        public async Task<ActionResult<Customer>> GetCustomer(string cardid)
+        public async Task<ActionResult<CustomerGetIdDto>> GetCustomer(string cardid)
         {
-            var employee = await _context.Customers
-            .Where(ci => ci.CardId == cardid)
-            .Select(ci => ci.Name)
-            .FirstOrDefaultAsync();
-            if (cardid == null)
+            var customer = await _context.Customers
+                .Where(ci => ci.CardId == cardid)
+                .FirstOrDefaultAsync();
+
+            if (customer == null)
             {
                 return NotFound(new { message = "Customer not found." });
             }
-            var customer = await _context.Customers.FindAsync(Cardid);
-            var customerGetDto = new customerGetDto
 
-            return customer;
+            // DTO-ba mapeljük az adatokat
+            var customerGetIdDto = new CustomerGetIdDto
+            {
+                Name = customer.Name
+            };
+
+            return Ok(customerGetIdDto); // 200 OK és a keresett adat
         }
+
 
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
