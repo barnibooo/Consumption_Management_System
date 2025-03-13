@@ -1,7 +1,9 @@
 import { useState } from "react";
 import "./OrderPage.css";
-import { Box, Card, CardContent, Typography, CardActions, Button, CardHeader, Avatar } from "@mui/material";
+import { Box, Card, CardContent, Typography, CardActions, Button, CardHeader, Avatar, CardMedia, IconButton, Divider } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { red } from "@mui/material/colors";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const darkTheme = createTheme({
   palette: {
@@ -31,24 +33,44 @@ function App() {
       }}
     >
         <ThemeProvider theme={darkTheme}>
-            <Card sx={{ minWidth: 275 }}>
+            <Card sx={{ bgcolor: "#202938", color: "#d5d6d6", width: {
+                      xs: "100%",
+                      sm: "90%",
+                      md: "70%",
+                      lg: "60%",
+                      xl: "50%",
+                    }}}>
+              <CardHeader
+                avatar={
+                  <Avatar sx={{ bgcolor: "#BFA181" }} aria-label="recipe">
+                    N
+                  </Avatar>
+                }
+                action={
+                  <IconButton aria-label="settings">
+                    <MoreVertIcon />
+                  </IconButton>
+                }
+                title="Customer Name"
+                subheader="Subheader"
+              />
+              <CardMedia
+                component="img"
+                height="194"
+                image="/img/landing/egyeb_temp.png"
+                alt="Paella dish"
+              />
                 <CardContent>
-                <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
-                <Avatar sx={{ bgcolor: "#000" }}>N</Avatar>
-                    Word of the Day
-                </Typography>
-                <Typography variant="h5" component="div">
-                    be{bull}nev{bull}o{bull}lent
-                </Typography>
-                <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>adjective</Typography>
-                <Typography variant="body2">
-                    well meaning and kindly.
-                    <br />
-                    {'"a benevolent smile"'}
-                </Typography>
+                <Divider sx={{fontFamily: "Arial"}}>Vezetéknév</Divider>
+                <Typography variant="h6" sx={{ color: 'text.secondary', marginTop: "10px", marginBottom: "10px", textIndent: "20px" }}>Minta Név</Typography>
+                <Divider sx={{fontFamily: "Arial"}}>Keresztnév</Divider>
+                <Typography variant="h6" sx={{ color: 'text.secondary', marginTop: "10px", marginBottom: "10px", textIndent: "20px" }}>Minta Név</Typography>
+                <Divider sx={{fontFamily: "Arial"}}>Felhasználónév</Divider>
+                <Typography variant="h6" sx={{ color: 'text.secondary', marginTop: "10px", marginBottom: "10px", textIndent: "20px" }}>Minta Név</Typography>
+                <Divider sx={{fontFamily: "Arial"}}>Beosztás</Divider>
+                <Typography variant="h6" sx={{ color: 'text.secondary', marginTop: "10px", marginBottom: "10px", textIndent: "20px"}}>Minta Név</Typography>
                 </CardContent>
                 <CardActions>
-                <Button size="small">Learn More</Button>
                 </CardActions>
             </Card>
         </ThemeProvider>
