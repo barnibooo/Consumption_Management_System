@@ -36,7 +36,6 @@ namespace CMS.Models
 
             modelBuilder.Entity<Employee>().HasIndex(u => u.Username).IsUnique();
         }
-        public DbSet<CMS.Models.Card> Card { get; set; } = default!;
         
 
 
