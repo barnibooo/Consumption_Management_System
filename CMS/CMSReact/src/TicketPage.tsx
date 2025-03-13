@@ -239,30 +239,33 @@ const Dashboard: React.FC = () => {
     const orderList = orders.map((ticketItem, index) => ({
       ticketId: ticketItem.ticketId,
       id: ids[index],
+      category: ticketItem.category,
     }));
 
     setFinalizedOrders(orderList);
 
-    const currentDateTime = new Date().toISOString();
+    // Separate ticket IDs and admission IDs
+    const ticketIds = orderList
+      .filter((order) => order.category === "Belépő")
+      .map((order) => order.ticketId);
+    const admissionIds = orderList
+      .filter((order) => order.category === "Kiegészítő")
+      .map((order) => order.ticketId);
 
-    // Log each order individually
-    orderList.forEach((order, index) => {
-      console.log({
-        cardId: ids[index],
-        name: "Order Name",
-        ticketsIds: [{ ticketId: order.ticketId }],
-        createdAt: currentDateTime,
-      });
-    });
+    // Log the card ID and the IDs of the items in the list in JSON format
+    const logData = {
+      cardId: guestId,
+      ticketIds: ticketIds,
+      admissionIds: admissionIds,
+    };
+    console.log(JSON.stringify(logData, null, 2));
 
     // Simulate successful order submission
     setOrderId("mockOrderId");
     setOpenSuccessDialogs(new Array(orders.length).fill(true));
   };
 
-  const handleClose = () => {
-    setDialogOpen(false);
-  };
+  // ...existing code...
 
   const hasBelepoInOrder = orders.some((item) => item.category === "Belépő");
 
@@ -372,6 +375,31 @@ const Dashboard: React.FC = () => {
                 padding: 1,
               }}
             >
+              <TextField
+                required
+                id="standard-required"
+                label="Kártyazonosító"
+                variant="standard"
+                value={guestId || ""}
+                onChange={(e) => setGuestId(e.target.value)}
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "#d5d6d6",
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "#d5d6d6",
+                  },
+                  "& .MuiInput-underline:before": {
+                    borderBottomColor: "#d5d6d6",
+                  },
+                  "& .MuiInput-underline:hover:before": {
+                    borderBottomColor: "#d5d6d6",
+                  },
+                  "& .MuiInput-underline:after": {
+                    borderBottomColor: "#d5d6d6",
+                  },
+                }}
+              />
               <List dense>
                 {orders.map((ticketItem, index) => (
                   <ListItem
@@ -417,7 +445,7 @@ const Dashboard: React.FC = () => {
                   backgroundColor: "#BFA181",
                   width: "80%",
                 }}
-                onClick={handleOpenDialog}
+                onClick={handleSubmitOrder}
                 disabled={!hasBelepoInOrder}
               >
                 Jegyfoglalás
