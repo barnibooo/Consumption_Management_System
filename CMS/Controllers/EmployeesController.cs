@@ -28,11 +28,11 @@ namespace CMS.Controllers
             return await _context.Employees.ToListAsync();
         }
 
-        [HttpGet("{token}")]
-        public async Task<IActionResult> GetEmployeeById(string token)
+        [HttpGet("{refreshtoken}")]
+        public async Task<IActionResult> GetEmployeeById(string refreshtoken)
         {
             var employee = await _context.RefreshTokens
-                .Where(rt => rt.Token == token)
+                .Where(rt => rt.Token == refreshtoken)
                 .Select(rt => rt.Employee)
                 .FirstOrDefaultAsync();
             if (employee == null)
@@ -45,7 +45,8 @@ namespace CMS.Controllers
             {
                 FirstName = employee.FirstName,
                 LastName = employee.LastName,
-                Role = employee.Role
+                Role = employee.Role,
+                Username = employee.Username,
             };
 
             return Ok(employeeDto); // 200 OK és a keresett adat
