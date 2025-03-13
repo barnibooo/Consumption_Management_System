@@ -59,15 +59,19 @@ namespace CMS.Controllers
 
 
         // GET: api/Customers/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(int id)
+        [HttpGet("{cardid}")]
+        public async Task<ActionResult<Customer>> GetCustomer(string cardid)
         {
-            var customer = await _context.Customers.FindAsync(id);
-
-            if (customer == null)
+            var employee = await _context.Customers
+            .Where(ci => ci.CardId == cardid)
+            .Select(ci => ci.Name)
+            .FirstOrDefaultAsync();
+            if (cardid == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Customer not found." });
             }
+            var customer = await _context.Customers.FindAsync(Cardid);
+            var customerGetDto = new customerGetDto
 
             return customer;
         }
