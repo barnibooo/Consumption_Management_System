@@ -24,12 +24,10 @@ import {
   TextField,
   DialogActions,
 } from "@mui/material";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import ExtensionOutlinedIcon from "@mui/icons-material/ExtensionOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
-
+import AddShoppingCartOutlinedIcon from "@mui/icons-material/AddShoppingCartOutlined";
 import AppsIcon from "@mui/icons-material/Apps";
 import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
@@ -42,7 +40,6 @@ const darkTheme = createTheme({
 });
 
 interface ticketItem {
-  quantity: number;
   imagePath: string | undefined;
   ticketId: number;
   ticketName: string;
@@ -50,6 +47,16 @@ interface ticketItem {
   price: number;
   description: string;
   isAvailable: boolean;
+}
+
+interface admissionItem {
+  admissionId: number;
+  admissionName: string;
+  category: string;
+  price: number;
+  description: string;
+  isAvailable: boolean;
+  imagePath: string;
 }
 
 const iconStyle = {
@@ -67,6 +74,7 @@ const categoryIcons: { [key: string]: React.ReactElement } = {
 
 const Dashboard: React.FC = () => {
   const [ticketItems, setticketItems] = useState<ticketItem[]>([]);
+  const [admissionItems, setAdmissionItems] = useState<admissionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -74,7 +82,7 @@ const Dashboard: React.FC = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [guestId, setGuestId] = useState<string | null>(null);
   const [finalizedOrders, setFinalizedOrders] = useState<
-    { ticketId: number; quantity: number }[]
+    { ticketId: number }[]
   >([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
@@ -87,20 +95,19 @@ const Dashboard: React.FC = () => {
   };
 
   const handleAddToOrder = (item: ticketItem) => {
-    setOrders((prevOrders) => [...prevOrders, { ...item, quantity: 1 }]);
-  };
-
-  const handleRemoveFromOrder = (item: ticketItem) => {
     setOrders((prevOrders) => {
-      const index = prevOrders.findIndex(
-        (ticketItem) => ticketItem.ticketId === item.ticketId
-      );
-      if (index !== -1) {
-        const newOrders = [...prevOrders];
-        newOrders.splice(index, 1);
-        return newOrders;
+      if (item.category === "Belépő") {
+        if (prevOrders.some((orderItem) => orderItem.category === "Belépő")) {
+          return prevOrders;
+        }
+      } else {
+        if (
+          prevOrders.some((orderItem) => orderItem.ticketId === item.ticketId)
+        ) {
+          return prevOrders;
+        }
       }
-      return prevOrders;
+      return [...prevOrders, item];
     });
   };
 
@@ -111,22 +118,38 @@ const Dashboard: React.FC = () => {
   };
 
   const calculateTotalPrice = () => {
-    return orders.reduce(
-      (total, ticketItem) => total + ticketItem.price * ticketItem.quantity,
-      0
-    );
+    return orders.reduce((total, ticketItem) => total + ticketItem.price, 0);
   };
 
   useEffect(() => {
-    axios
-      .get("https://localhost:5000/api/Tickets")
-      .then((response) => {
-        console.log(response.data);
-        if (Array.isArray(response.data)) {
-          setticketItems(response.data);
+    const fetchTickets = axios.get("https://localhost:5000/api/Tickets");
+    const fetchAdmissions = axios.get("https://localhost:5000/api/Admissions");
+
+    Promise.all([fetchTickets, fetchAdmissions])
+      .then(([ticketsResponse, admissionsResponse]) => {
+        if (Array.isArray(ticketsResponse.data)) {
+          setticketItems(ticketsResponse.data);
         } else {
-          console.error("Hibás API válasz: nem tömb", response.data);
+          console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
         }
+
+        if (Array.isArray(admissionsResponse.data)) {
+          const admissionsAsTickets = admissionsResponse.data.map(
+            (admission: admissionItem) => ({
+              ticketId: admission.admissionId,
+              ticketName: admission.admissionName,
+              category: admission.category,
+              price: admission.price,
+              description: admission.description,
+              isAvailable: admission.isAvailable,
+              imagePath: admission.imagePath,
+            })
+          );
+          setticketItems((prevItems) => [...prevItems, ...admissionsAsTickets]);
+        } else {
+          console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
+        }
+
         setLoading(false);
       })
       .catch((error) => {
@@ -215,7 +238,6 @@ const Dashboard: React.FC = () => {
   const handleSubmitOrder = () => {
     const orderList = orders.map((ticketItem, index) => ({
       ticketId: ticketItem.ticketId,
-      quantity: ticketItem.quantity,
       id: ids[index],
     }));
 
@@ -242,17 +264,7 @@ const Dashboard: React.FC = () => {
     setDialogOpen(false);
   };
 
-  const groupedOrders = orders.reduce((acc, item) => {
-    const existingItem = acc.find(
-      (orderItem) => orderItem.ticketId === item.ticketId
-    );
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      acc.push({ ...item });
-    }
-    return acc;
-  }, [] as ticketItem[]);
+  const hasBelepoInOrder = orders.some((item) => item.category === "Belépő");
 
   return (
     <>
@@ -361,7 +373,7 @@ const Dashboard: React.FC = () => {
               }}
             >
               <List dense>
-                {groupedOrders.map((ticketItem, index) => (
+                {orders.map((ticketItem, index) => (
                   <ListItem
                     key={index}
                     secondaryAction={
@@ -386,8 +398,7 @@ const Dashboard: React.FC = () => {
                       {categoryIcons[ticketItem.category]}
                     </ListItemAvatar>
                     <Typography variant="body2" color="#e7e6dd" fontSize={16}>
-                      {ticketItem.ticketName} x{ticketItem.quantity} <br />{" "}
-                      {ticketItem.price * ticketItem.quantity} Ft
+                      {ticketItem.ticketName} <br /> {ticketItem.price} Ft
                     </Typography>
                   </ListItem>
                 ))}
@@ -407,6 +418,7 @@ const Dashboard: React.FC = () => {
                   width: "80%",
                 }}
                 onClick={handleOpenDialog}
+                disabled={!hasBelepoInOrder}
               >
                 Jegyfoglalás
               </Button>
@@ -480,42 +492,13 @@ const Dashboard: React.FC = () => {
                     disableSpacing
                     sx={{ mt: "auto", justifyContent: "flex-start" }}
                   >
-                    <IconButton
+                    <Button
+                      variant="contained"
+                      endIcon={<AddShoppingCartOutlinedIcon />}
                       onClick={() => handleAddToOrder(item)}
-                      disabled={item.isAvailable === false}
                     >
-                      <AddCircleOutlineIcon
-                        sx={{
-                          fontSize: 35,
-                          color:
-                            item.isAvailable === false ? "#6d737d" : "#d5d6d6",
-                          "&:hover": {
-                            color:
-                              item.isAvailable === false
-                                ? "#6d737d"
-                                : "#BFA181",
-                          },
-                        }}
-                      />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => handleRemoveFromOrder(item)}
-                      disabled={item.isAvailable === false}
-                    >
-                      <RemoveCircleOutlineIcon
-                        sx={{
-                          fontSize: 35,
-                          color:
-                            item.isAvailable === false ? "#6d737d" : "#d5d6d6",
-                          "&:hover": {
-                            color:
-                              item.isAvailable === false
-                                ? "#6d737d"
-                                : "#BFA181",
-                          },
-                        }}
-                      />
-                    </IconButton>
+                      Send
+                    </Button>
                   </CardActions>
                 </Card>
               ))}
@@ -523,51 +506,6 @@ const Dashboard: React.FC = () => {
           </Box>
         </Box>
       </Box>
-      <ThemeProvider theme={darkTheme}>
-        {orders.map((orderItem, index) => (
-          <Dialog
-            key={index}
-            open={openDialogs[index]}
-            onClose={() => handleCloseDialog(index)}
-            slotProps={{
-              paper: {
-                component: "form",
-                onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-                  event.preventDefault();
-                  handleCloseDialog(index);
-                  if (index === orders.length - 1) {
-                    handleSubmitOrder();
-                  }
-                },
-              },
-            }}
-          >
-            <DialogTitle>Jegyfoglalás</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                Kérjük adja meg a kártyaszámot a következő jegyhez:{" "}
-                {orderItem.ticketName}
-              </DialogContentText>
-              <TextField
-                required
-                margin="dense"
-                id={`id-${index}`}
-                name={`id-${index}`}
-                label="Azonosító"
-                type="text"
-                fullWidth
-                variant="standard"
-                value={ids[index] || ""}
-                onChange={(e) => handleIdChange(index, e.target.value)}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => handleCloseDialog(index)}>Mégse</Button>
-              <Button type="submit">Leadás</Button>
-            </DialogActions>
-          </Dialog>
-        ))}
-      </ThemeProvider>
     </>
   );
 };
