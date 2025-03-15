@@ -118,7 +118,6 @@ function App() {
               component="img"
               height="194"
               image="/img/profile/profile_temp.png"
-              alt="Paella dish"
             />
             <CardContent>
               <Typography
