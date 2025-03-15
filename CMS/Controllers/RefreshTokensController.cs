@@ -68,7 +68,8 @@ public class AuthController : ControllerBase
         return Ok(new
         {
             Token = token,
-            RefreshToken = refreshToken.Token
+            RefreshToken = refreshToken.Token,
+            Monogram= user.FirstName[0].ToString() + user.LastName[0].ToString()
         });
     }
 

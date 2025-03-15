@@ -39,7 +39,7 @@ function App() {
 
   const handlePageNavigation = (page: string) => {
     if (page === "Főoldal") {
-      window.location.href = "/landingpage.html";
+      window.location.href = "/";
     } else if (page === "Menü") {
       window.location.href = "/restaurant.html";
     } else if (page === "Jegyértékesítés") {
@@ -210,13 +210,11 @@ function App() {
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar
                     sx={{
-                      fontSize: 25,
+                      fontSize: 20,
                       color: "#d5d6d6",
                       bgcolor: "#bfa181",
                     }}
-                  >
-                    N
-                  </Avatar>
+                  ></Avatar>
                 </IconButton>
               </Tooltip>
               <Menu
