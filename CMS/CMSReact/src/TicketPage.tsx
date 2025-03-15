@@ -387,7 +387,53 @@ const Dashboard: React.FC = () => {
           >
             <CardHeader
               title="Rendelés"
-              subheader={`Összesen: ${calculateTotalPrice()} Ft`}
+              subheader={
+                <>
+                  {`Összesen: ${calculateTotalPrice()} Ft`}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <TextField
+                      required
+                      id="standard-required"
+                      label="Kártyazonosító"
+                      variant="standard"
+                      value={cardId || ""}
+                      onChange={(e) => setCardId(e.target.value)}
+                      sx={{
+                        width: "80%",
+                        "& .MuiInputBase-root": {
+                          color: "#d5d6d6",
+                        },
+                        "& .MuiInputLabel-root": {
+                          color: "#d5d6d6",
+                        },
+                        "& .MuiInput-underline:before": {
+                          borderBottomColor: "#d5d6d6",
+                        },
+                        "& .MuiInput-underline:hover:before": {
+                          borderBottomColor: "#d5d6d6",
+                        },
+                        "& .MuiInput-underline:after": {
+                          borderBottomColor: "#d5d6d6",
+                        },
+                        "& .Mui-focused .MuiInputLabel-root": {
+                          color: "#d5d6d6 !important",
+                        },
+                        "& .Mui-focused .MuiInput-underline:before": {
+                          borderBottomColor: "#d5d6d6 !important",
+                        },
+                        "& .Mui-focused .MuiInput-underline:after": {
+                          borderBottomColor: "#d5d6d6 !important",
+                        },
+                      }}
+                    />
+                  </Box>
+                </>
+              }
               sx={{
                 "& .MuiCardHeader-subheader": {
                   color: "#d5d6d6",
@@ -404,33 +450,9 @@ const Dashboard: React.FC = () => {
                 overflowY: "auto",
                 maxHeight: "550px",
                 padding: 1,
+                marginLeft: 2,
               }}
             >
-              <TextField
-                required
-                id="standard-required"
-                label="Kártyazonosító"
-                variant="standard"
-                value={cardId || ""}
-                onChange={(e) => setCardId(e.target.value)}
-                sx={{
-                  "& .MuiInputBase-root": {
-                    color: "#d5d6d6",
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "#d5d6d6",
-                  },
-                  "& .MuiInput-underline:before": {
-                    borderBottomColor: "#d5d6d6",
-                  },
-                  "& .MuiInput-underline:hover:before": {
-                    borderBottomColor: "#d5d6d6",
-                  },
-                  "& .MuiInput-underline:after": {
-                    borderBottomColor: "#d5d6d6",
-                  },
-                }}
-              />
               <List dense>
                 {orders.map((ticketItem, index) => (
                   <ListItem
@@ -475,6 +497,10 @@ const Dashboard: React.FC = () => {
                   m: 2,
                   backgroundColor: "#BFA181",
                   width: "80%",
+                  "&.Mui-disabled": {
+                    backgroundColor: "#9e9386",
+                    color: "#d5d6d6",
+                  },
                 }}
                 onClick={handleSubmitOrder}
                 disabled={!hasBelepoInOrder}
@@ -551,13 +577,24 @@ const Dashboard: React.FC = () => {
                     disableSpacing
                     sx={{ mt: "auto", justifyContent: "flex-start" }}
                   >
-                    <Button
-                      variant="contained"
-                      endIcon={<AddShoppingCartOutlinedIcon />}
+                    <IconButton
                       onClick={() => handleAddToOrder(item)}
+                      sx={{
+                        color: "#d5d6d6",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        "&:hover": {
+                          color: "#BFA181",
+                        },
+                      }}
                     >
-                      Send
-                    </Button>
+                      <AddShoppingCartOutlinedIcon
+                        sx={{
+                          fontSize: 35,
+                        }}
+                      />
+                    </IconButton>
                   </CardActions>
                 </Card>
               ))}

@@ -39,8 +39,11 @@ function App() {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = (setting: string) => {
     setAnchorElUser(null);
+    if (setting === "Profil") {
+      window.location.href = "/profileEmployee.html";
+    }
   };
 
   const handlePageNavigation = (page: string) => {
@@ -246,7 +249,7 @@ function App() {
                 {settings.map((setting) => (
                   <MenuItem
                     key={setting}
-                    onClick={handleCloseUserMenu}
+                    onClick={() => handleCloseUserMenu(setting)}
                     sx={{
                       color: "#d5d6d6",
                       "&:hover": {

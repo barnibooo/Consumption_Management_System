@@ -37,7 +37,7 @@ function App() {
 
   /*useEffect(() => {
     axios
-      .get("https://localhost:5000/api/Employees/1")
+      .get("https://localhost:5000/api/Employees/refreshtoken")
       .then((response) => {
         console.log(response.data);
         setEmployee(response.data);
@@ -90,17 +90,20 @@ function App() {
               color: "#d5d6d6",
               width: {
                 xs: "100%",
-                sm: "90%",
-                md: "70%",
-                lg: "60%",
-                xl: "50%",
+                sm: "70%",
+                md: "60%",
+                lg: "50%",
+                xl: "40%",
               },
             }}
           >
             <CardHeader
               avatar={
-                <Avatar sx={{ bgcolor: "#BFA181" }} aria-label="recipe">
-                  {employee?.firstName.charAt(0)}
+                <Avatar
+                  sx={{ bgcolor: "#BFA181", color: "#d5d6d6" }}
+                  aria-label="recipe"
+                >
+                  B
                 </Avatar>
               }
               action={
@@ -108,13 +111,13 @@ function App() {
                   <MoreVertIcon />
                 </IconButton>
               }
-              title={`Kovács Béla`}
-              subheader={employee?.role}
+              title={`Felhasználónév`}
+              subheader={"Személyes adatok"}
             />
             <CardMedia
               component="img"
               height="194"
-              image="/img/landing/egyeb_temp.png"
+              image="/img/profile/profile_temp.png"
               alt="Paella dish"
             />
             <CardContent>
@@ -123,14 +126,14 @@ function App() {
                 sx={{
                   color: "text.secondary",
                   marginTop: "10px",
-                  marginBottom: "30px",
+                  marginBottom: "10px",
                   textIndent: "20px",
                   fontWeight: 500,
+                  textAlign: "center",
                 }}
               >
-                Személyes Adatok
+                Kovács Béla
               </Typography>
-              <Divider sx={{ fontFamily: "Arial" }}>Vezetéknév</Divider>
               <Typography
                 variant="h6"
                 sx={{
@@ -138,49 +141,11 @@ function App() {
                   marginTop: "10px",
                   marginBottom: "10px",
                   textIndent: "20px",
-                  fontWeight: 350,
+                  fontWeight: 300,
+                  textAlign: "center",
                 }}
               >
-                Kovács
-              </Typography>
-              <Divider sx={{ fontFamily: "Arial" }}>Keresztnév</Divider>
-              <Typography
-                variant="h6"
-                sx={{
-                  color: "text.secondary",
-                  marginTop: "10px",
-                  marginBottom: "10px",
-                  textIndent: "20px",
-                  fontWeight: 350,
-                }}
-              >
-                Béla
-              </Typography>
-              <Divider sx={{ fontFamily: "Arial" }}>Felhasználónév</Divider>
-              <Typography
-                variant="h6"
-                sx={{
-                  color: "text.secondary",
-                  marginTop: "10px",
-                  marginBottom: "10px",
-                  textIndent: "20px",
-                  fontWeight: 350,
-                }}
-              >
-                kbela
-              </Typography>
-              <Divider sx={{ fontFamily: "Arial" }}>Beosztás</Divider>
-              <Typography
-                variant="h6"
-                sx={{
-                  color: "text.secondary",
-                  marginTop: "10px",
-                  marginBottom: "10px",
-                  textIndent: "20px",
-                  fontWeight: 350,
-                }}
-              >
-                Takarító
+                Beosztás
               </Typography>
             </CardContent>
             <CardActions></CardActions>
