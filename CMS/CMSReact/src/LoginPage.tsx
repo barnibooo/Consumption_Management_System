@@ -34,6 +34,7 @@ function MediaCard() {
         if (response.data.token && response.data.refreshToken) {
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("refreshToken", response.data.refreshToken);
+          localStorage.setItem("monogram", response.data.monogram);
           setError("");
           setTimeout(() => {
             window.location.href = "/";

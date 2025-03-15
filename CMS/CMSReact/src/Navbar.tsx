@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ThemeProvider } from "@emotion/react";
 import {
   AppBar,
@@ -20,6 +20,12 @@ import { createTheme } from "@mui/material/styles";
 function App() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [monogram, setMonogram] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedMonogram = localStorage.getItem("monogram");
+    setMonogram(storedMonogram);
+  }, []);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -41,9 +47,9 @@ function App() {
     if (page === "Főoldal") {
       window.location.href = "/";
     } else if (page === "Menü") {
-      window.location.href = "/restaurant.html";
+      window.location.href = "/restaurant";
     } else if (page === "Jegyértékesítés") {
-      window.location.href = "/tickets.html";
+      window.location.href = "/tickets";
     } else {
       handleCloseNavMenu();
     }
@@ -210,11 +216,13 @@ function App() {
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar
                     sx={{
-                      fontSize: 20,
+                      fontSize: 18,
                       color: "#d5d6d6",
                       bgcolor: "#bfa181",
                     }}
-                  ></Avatar>
+                  >
+                    {monogram}
+                  </Avatar>
                 </IconButton>
               </Tooltip>
               <Menu

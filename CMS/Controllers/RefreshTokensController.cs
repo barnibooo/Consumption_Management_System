@@ -69,7 +69,7 @@ public class AuthController : ControllerBase
         {
             Token = token,
             RefreshToken = refreshToken.Token,
-            Monogram= user.FirstName[0].ToString() + user.LastName[0].ToString()
+            Monogram = (user.FirstName[0].ToString() + user.LastName[0].ToString()).ToUpper()
         });
     }
 

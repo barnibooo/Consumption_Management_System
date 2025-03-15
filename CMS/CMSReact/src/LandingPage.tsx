@@ -8,6 +8,9 @@ import {
   Typography,
   Box,
 } from "@mui/material";
+import Navbar from "./Navbar";
+import { useEffect, useState } from "react";
+import { refreshToken } from "./AuthService";
 
 function App() {
   const darkTheme = createTheme({
@@ -15,6 +18,18 @@ function App() {
       mode: "dark",
     },
   });
+
+  useEffect(() => {
+    const handleRefreshToken = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "/login.html";
+        return;
+      }
+    };
+
+    handleRefreshToken();
+  }, []);
 
   const cardContent = (image: string, text: string, link: string) => (
     <CardActionArea onClick={() => (window.location.href = link)}>
@@ -60,6 +75,7 @@ function App() {
 
   return (
     <>
+      <Navbar />
       <ThemeProvider theme={darkTheme}>
         <Box
           display="flex"

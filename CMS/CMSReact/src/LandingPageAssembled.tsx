@@ -6,7 +6,6 @@ import "./OrderPage.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Navbar />
     <LandingPage />
   </StrictMode>
 );
