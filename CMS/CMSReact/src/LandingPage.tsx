@@ -10,8 +10,7 @@ import {
 } from "@mui/material";
 import Navbar from "./Navbar";
 import { useEffect, useState } from "react";
-import { checkRefreshToken } from "./AuthService";
-import axios from "axios";
+import { checkToken } from "./AuthService";
 
 const darkTheme = createTheme({
   palette: {
@@ -60,55 +59,50 @@ const cardContent = (image: string, text: string, link: string) => (
     </Box>
   </CardActionArea>
 );
+
+// JWT parser
 function parseJwt(token: string): any {
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const base64Url = token.split(".")[1];
+  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
   const jsonPayload = decodeURIComponent(
     atob(base64)
-      .split('')
-      .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-      .join('')
+      .split("")
+      .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+      .join("")
   );
 
   return JSON.parse(jsonPayload);
 }
-const vissza = localStorage.getItem("token");
-if (vissza) {
-  console.log(parseJwt(vissza));
-}
+
 function App() {
   const [role, setRole] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    console.log("Page refreshed");
     const handleAuth = async () => {
-      const isValid = await checkRefreshToken();
+      const isValid = await checkToken();
       if (!isValid) {
         window.location.href = "/login";
         return;
       }
 
-      const token = localStorage.getItem("refreshToken");
+      const token = localStorage.getItem("token");
       if (token) {
-        try {
-          const response = await axios.post(
-            "https://localhost:5000/api/Permission/PostEmployeePermission",
-            {},
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          setRole(response.data.role);
-          console.log("Role:", response.data.role);
-        } catch (error) {
-          console.error("Error fetching role:", error);
-        }
+        const parsedToken = parseJwt(token);
+        setRole(parsedToken.role);
+        setIsLoading(false);
+      } else {
+        window.location.href = "/login.html";
       }
     };
 
     handleAuth();
   }, []);
+
+  if (isLoading) {
+    return null; // Render nothing while checking the token
+  }
 
   return (
     <>
@@ -142,7 +136,9 @@ function App() {
               </Card>
             </Box>
           ) : null}
-           {role === "Admin" || role === "TicketAssistant" || role === "RestaurantAssistant"? (
+          {role === "Admin" ||
+          role === "TicketAssistant" ||
+          role === "RestaurantAssistant" ? (
             <Box
               sx={{
                 width: {
@@ -164,7 +160,7 @@ function App() {
               </Card>
             </Box>
           ) : null}
-          {role === "Admin"? (
+          {role === "Admin" ? (
             <Box
               sx={{
                 width: {
@@ -209,26 +205,26 @@ function App() {
             </Box>
           ) : null}
           {role === "Admin" || role === "TicketAssistant" ? (
-          <Box
-            sx={{
-              width: {
-                xs: "100%",
-                sm: "50%",
-                md: "50%",
-                lg: "35%",
-                xl: "35%",
-              },
-              p: 1,
-            }}
-          >
-            <Card sx={{ maxWidth: "100%", height: "auto" }}>
-              {cardContent(
-                "/img/landing/egyeb_temp.png",
-                "Kicsekkolás",
-                "landingpage.html"
-              )}
-            </Card>
-          </Box>
+            <Box
+              sx={{
+                width: {
+                  xs: "100%",
+                  sm: "50%",
+                  md: "50%",
+                  lg: "35%",
+                  xl: "35%",
+                },
+                p: 1,
+              }}
+            >
+              <Card sx={{ maxWidth: "100%", height: "auto" }}>
+                {cardContent(
+                  "/img/landing/egyeb_temp.png",
+                  "Kicsekkolás",
+                  "landingpage.html"
+                )}
+              </Card>
+            </Box>
           ) : null}
         </Box>
       </ThemeProvider>

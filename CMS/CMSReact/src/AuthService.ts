@@ -1,14 +1,14 @@
 import axios from "axios";
 
-export const checkRefreshToken = async () => {
-  const token = localStorage.getItem("refreshToken");
+export const checkToken = async () => {
+  const token = localStorage.getItem("token");
   if (!token) {
     return false;
   }
 
   try {
     const response = await axios.post(
-      "https://localhost:5000/api/Auth/checkRefreshToken",
+      "https://localhost:5000/api/Auth/Checktoken",
       {},
       {
         headers: {
@@ -18,8 +18,14 @@ export const checkRefreshToken = async () => {
       }
     );
 
-    return true;
+    // Check if the response status is 200 (OK)
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
   } catch (error) {
+    console.error("Token validation error:", error);
     return false;
   }
 };

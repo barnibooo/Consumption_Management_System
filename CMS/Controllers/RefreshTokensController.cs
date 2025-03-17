@@ -1,5 +1,6 @@
 ﻿using CMS.Dtos;
 using CMS.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -95,26 +96,10 @@ public class AuthController : ControllerBase
             RefreshToken = newRefreshToken.Token
         });
     }
-    [HttpPost("checkRefreshToken")]
-    public async Task<IActionResult> CheckToken()
+    [HttpPost("Checktoken")]
+   [Authorize]
+    public IActionResult CheckToken()
     {
-        var authHeader = Request.Headers["Authorization"].ToString();
-        if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
-        {
-            return Unauthorized("Authorization header is missing or invalid.");
-        }
-
-        var token = authHeader.Substring("Bearer ".Length).Trim();
-
-        var refreshToken = await _context.RefreshTokens
-            .Include(rt => rt.Employee)
-            .SingleOrDefaultAsync(rt => rt.Token == token);
-
-        if (refreshToken == null || refreshToken.Expires < DateTime.UtcNow)
-        {
-            return Unauthorized("Invalid or expired refresh token.");
-        }
-
         return Ok(new { message = "Token is valid." });
     }
 
