@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -8,6 +8,7 @@ import LoginIcon from "@mui/icons-material/Login";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Button, TextField, useMediaQuery, useTheme } from "@mui/material";
+import { checkToken } from "./AuthService";
 
 function MediaCard() {
   const theme = useTheme();
@@ -16,6 +17,17 @@ function MediaCard() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const validateToken = async () => {
+      const isValid = await checkToken();
+      if (isValid) {
+        window.location.href = "/";
+      }
+    };
+
+    validateToken();
+  }, []);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();

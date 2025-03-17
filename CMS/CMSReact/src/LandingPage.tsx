@@ -106,7 +106,7 @@ function App() {
 
   return (
     <>
-      <Navbar />
+      <Navbar role={role} />
       <ThemeProvider theme={darkTheme}>
         <Box
           display="flex"
@@ -130,8 +130,8 @@ function App() {
               <Card sx={{ maxWidth: "100%", height: "auto" }}>
                 {cardContent(
                   "/img/landing/ticket_temp.png",
-                  "Jegyeladás",
-                  "tickets.html"
+                  "Jegyértékesítés",
+                  "tickets"
                 )}
               </Card>
             </Box>
@@ -155,7 +155,7 @@ function App() {
                 {cardContent(
                   "/img/landing/egyeb_temp.png",
                   "Jegyellenőrzés",
-                  "lanfingpage.html"
+                  "ticketvalidator"
                 )}
               </Card>
             </Box>
@@ -199,7 +199,7 @@ function App() {
                 {cardContent(
                   "/img/landing/restaurant_temp.png",
                   "Étterem",
-                  "restaurant.html"
+                  "restaurant"
                 )}
               </Card>
             </Box>
@@ -220,8 +220,8 @@ function App() {
               <Card sx={{ maxWidth: "100%", height: "auto" }}>
                 {cardContent(
                   "/img/landing/egyeb_temp.png",
-                  "Kicsekkolás",
-                  "landingpage.html"
+                  "Vendég munkamenet zárása",
+                  "guestcheckout"
                 )}
               </Card>
             </Box>

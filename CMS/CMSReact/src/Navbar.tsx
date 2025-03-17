@@ -18,7 +18,11 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import MenuIcon from "@mui/icons-material/Menu";
 import { createTheme } from "@mui/material/styles";
 
-function App() {
+interface NavbarProps {
+  role: string | null;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ role }) => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [monogram, setMonogram] = useState<string | null>(null);
@@ -73,10 +77,16 @@ function App() {
   const handlePageNavigation = (page: string) => {
     if (page === "Főoldal") {
       window.location.href = "/";
-    } else if (page === "Menü") {
-      window.location.href = "/restaurant";
     } else if (page === "Jegyértékesítés") {
       window.location.href = "/tickets";
+    } else if (page === "Jegyellenőrzés") {
+      window.location.href = "/ticketvalidator";
+    } else if (page === "Éttermi rendelés") {
+      window.location.href = "/restaurant";
+    } else if (page === "Vendég munkamenet zárása") {
+      window.location.href = "/guestcheckout";
+    } else if (page === "Regisztráció") {
+      window.location.href = "/registration";
     } else {
       handleCloseNavMenu();
     }
@@ -92,7 +102,20 @@ function App() {
     },
   });
 
-  const pages = ["Főoldal", "Menü", "Jegyértékesítés"];
+  const pages = [
+    {
+      name: "Főoldal",
+      roles: ["Admin", "TicketAssistant", "RestaurantAssistant"],
+    },
+    { name: "Jegyértékesítés", roles: ["Admin", "TicketAssistant"] },
+    {
+      name: "Jegyellenőrzés",
+      roles: ["Admin", "TicketAssistant", "RestaurantAssistant"],
+    },
+    { name: "Éttermi rendelés", roles: ["Admin", "RestaurantAssistant"] },
+    { name: "Regisztráció", roles: ["Admin"] },
+    { name: "Vendég munkamenet zárása", roles: ["Admin", "TicketAssistant"] },
+  ];
   const settings = ["Profil", "Kijelentkezés"];
 
   return (
@@ -122,7 +145,7 @@ function App() {
               variant="h6"
               noWrap
               component="a"
-              href=""
+              href="/"
               sx={{
                 mr: 2,
                 display: { xs: "none", md: "flex" },
@@ -176,21 +199,25 @@ function App() {
                   display: { xs: "block", md: "none" },
                 }}
               >
-                {pages.map((page) => (
-                  <MenuItem
-                    key={page}
-                    onClick={() => handlePageNavigation(page)}
-                    sx={{
-                      "&:hover": {
-                        backgroundColor: "#37404f",
-                      },
-                    }}
-                  >
-                    <Typography sx={{ textAlign: "center", color: "#d5d6d6" }}>
-                      {page}
-                    </Typography>
-                  </MenuItem>
-                ))}
+                {pages
+                  .filter((page) => page.roles.includes(role || ""))
+                  .map((page) => (
+                    <MenuItem
+                      key={page.name}
+                      onClick={() => handlePageNavigation(page.name)}
+                      sx={{
+                        "&:hover": {
+                          backgroundColor: "#37404f",
+                        },
+                      }}
+                    >
+                      <Typography
+                        sx={{ textAlign: "center", color: "#d5d6d6" }}
+                      >
+                        {page.name}
+                      </Typography>
+                    </MenuItem>
+                  ))}
               </Menu>
             </Box>
 
@@ -216,25 +243,27 @@ function App() {
 
             {/* Desktop Menu */}
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              {pages.map((page) => (
-                <Button
-                  key={page}
-                  onClick={() => handlePageNavigation(page)}
-                  sx={{
-                    color: "#d5d6d6",
-                    display: "block",
-                    textTransform: "none",
-                    fontSize: 20,
-                    "&:hover": {
-                      color: "#BFA181",
-                    },
-                  }}
-                >
-                  <Typography variant="h2" sx={{ fontSize: "inherit" }}>
-                    {page}
-                  </Typography>
-                </Button>
-              ))}
+              {pages
+                .filter((page) => page.roles.includes(role || ""))
+                .map((page) => (
+                  <Button
+                    key={page.name}
+                    onClick={() => handlePageNavigation(page.name)}
+                    sx={{
+                      color: "#d5d6d6",
+                      display: "block",
+                      textTransform: "none",
+                      fontSize: 20,
+                      "&:hover": {
+                        color: "#BFA181",
+                      },
+                    }}
+                  >
+                    <Typography variant="h2" sx={{ fontSize: "inherit" }}>
+                      {page.name}
+                    </Typography>
+                  </Button>
+                ))}
             </Box>
 
             {/* User Avatar and Menu */}
@@ -293,6 +322,6 @@ function App() {
       </AppBar>
     </ThemeProvider>
   );
-}
+};
 
-export default App;
+export default Navbar;
