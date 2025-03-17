@@ -153,7 +153,7 @@ function App() {
             >
               <Card sx={{ maxWidth: "100%", height: "auto" }}>
                 {cardContent(
-                  "/img/landing/egyeb_temp.png",
+                  "/img/landing/ticketcheck_temp.png",
                   "Jegyellenőrzés",
                   "ticketvalidator"
                 )}
@@ -219,7 +219,7 @@ function App() {
             >
               <Card sx={{ maxWidth: "100%", height: "auto" }}>
                 {cardContent(
-                  "/img/landing/egyeb_temp.png",
+                  "/img/landing/checkout_temp.png",
                   "Vendég munkamenet zárása",
                   "guestcheckout"
                 )}
