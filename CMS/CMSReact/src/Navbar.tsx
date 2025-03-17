@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ThemeProvider } from "@emotion/react";
+import axios from "axios";
 import {
   AppBar,
   Container,
@@ -39,10 +40,33 @@ function App() {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = (setting: string) => {
+  const handleCloseUserMenu = async (setting: string) => {
     setAnchorElUser(null);
     if (setting === "Profil") {
       window.location.href = "/profileEmployee.html";
+    }
+    if (setting === "Kijelentkezés") {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          await axios.post(
+            "https://localhost:5000/api/Auth/logout",
+            {},
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+        } catch (error) {
+          console.error("Logout failed", error);
+        }
+      }
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("monogram");
+      window.location.href = "/login";
     }
   };
 

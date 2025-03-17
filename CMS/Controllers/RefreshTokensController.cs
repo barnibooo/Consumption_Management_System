@@ -121,9 +121,17 @@ public class AuthController : ControllerBase
 
 
     [HttpPost("logout")]
-    public async Task<IActionResult> Logout([FromBody] RefreshTokenDto model)
+    public async Task<IActionResult> Logout()
     {
-        var refreshToken = await _context.RefreshTokens.SingleOrDefaultAsync(rt => rt.Token == model.Refreshtoken);
+        var authHeader = Request.Headers["Authorization"].ToString();
+        if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+        {
+            return Unauthorized("Authorization header is missing or invalid.");
+        }
+
+        var token = authHeader.Substring("Bearer ".Length).Trim();
+
+        var refreshToken = await _context.RefreshTokens.SingleOrDefaultAsync(rt => rt.Token == token);
 
         if (refreshToken != null)
         {
@@ -133,6 +141,7 @@ public class AuthController : ControllerBase
 
         return Ok(new { message = "Logged out successfully." });
     }
+
 
     private string GenerateJwtToken(Employee user)
     {
