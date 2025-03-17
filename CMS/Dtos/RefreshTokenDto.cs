@@ -3,6 +3,6 @@
     public class RefreshTokenDto
 
     {
-        public string Token { get; set; }
+        public string Refreshtoken { get; set; }
     }
 }

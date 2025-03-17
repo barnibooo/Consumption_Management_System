@@ -78,7 +78,7 @@ public class AuthController : ControllerBase
     {
         var refreshToken = await _context.RefreshTokens
             .Include(rt => rt.Employee)
-            .SingleOrDefaultAsync(rt => rt.Token == model.Token);
+            .SingleOrDefaultAsync(rt => rt.Token == model.Refreshtoken);
 
         if (refreshToken == null || refreshToken.Expires < DateTime.UtcNow)
             return Unauthorized("Invalid or expired refresh token.");
@@ -96,11 +96,34 @@ public class AuthController : ControllerBase
             RefreshToken = newRefreshToken.Token
         });
     }
+    [HttpPost("checkRefreshToken")]
+    public async Task<IActionResult> CheckToken()
+    {
+        var authHeader = Request.Headers["Authorization"].ToString();
+        if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+        {
+            return Unauthorized("Authorization header is missing or invalid.");
+        }
+
+        var token = authHeader.Substring("Bearer ".Length).Trim();
+
+        var refreshToken = await _context.RefreshTokens
+            .Include(rt => rt.Employee)
+            .SingleOrDefaultAsync(rt => rt.Token == token);
+
+        if (refreshToken == null || refreshToken.Expires < DateTime.UtcNow)
+        {
+            return Unauthorized("Invalid or expired refresh token.");
+        }
+
+        return Ok(new { message = "Token is valid." });
+    }
+
 
     [HttpPost("logout")]
     public async Task<IActionResult> Logout([FromBody] RefreshTokenDto model)
     {
-        var refreshToken = await _context.RefreshTokens.SingleOrDefaultAsync(rt => rt.Token == model.Token);
+        var refreshToken = await _context.RefreshTokens.SingleOrDefaultAsync(rt => rt.Token == model.Refreshtoken);
 
         if (refreshToken != null)
         {

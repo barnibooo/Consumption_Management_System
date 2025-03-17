@@ -1,22 +1,25 @@
 import axios from "axios";
 
-export const refreshToken = async () => {
+export const checkRefreshToken = async () => {
+  const token = localStorage.getItem("refreshToken");
+  if (!token) {
+    return false;
+  }
+
   try {
-    const refreshToken = localStorage.getItem("refreshToken");
     const response = await axios.post(
-      "https://localhost:5000/api/Auth/refreshToken",
+      "https://localhost:5000/api/Auth/checkRefreshToken",
+      {},
       {
-        refreshToken,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
-    if (response.data.token) {
-      localStorage.setItem("token", response.data.token);
-      return response.data.token;
-    } else {
-      throw new Error("Invalid response from server");
-    }
+
+    return true;
   } catch (error) {
-    console.error("Error refreshing token:", error);
-    throw error;
+    return false;
   }
 };

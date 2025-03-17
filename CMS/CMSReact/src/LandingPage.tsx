@@ -10,7 +10,8 @@ import {
 } from "@mui/material";
 import Navbar from "./Navbar";
 import { useEffect, useState } from "react";
-//import { refreshToken } from "./AuthService";
+import { checkRefreshToken } from "./AuthService";
+//import { refreshToken } from "./RefreshService";
 
 function App() {
   const darkTheme = createTheme({
@@ -20,15 +21,16 @@ function App() {
   });
 
   useEffect(() => {
-    const handleRefreshToken = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        window.location.href = "/login.html";
+    const handleAuth = async () => {
+      const isValid = await checkRefreshToken();
+      if (!isValid) {
+        window.location.href = "/login";
         return;
       }
+      //await refreshToken();
     };
 
-    handleRefreshToken();
+    handleAuth();
   }, []);
 
   const cardContent = (image: string, text: string, link: string) => (
