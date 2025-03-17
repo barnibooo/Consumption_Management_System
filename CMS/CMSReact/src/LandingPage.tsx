@@ -11,14 +11,58 @@ import {
 import Navbar from "./Navbar";
 import { useEffect, useState } from "react";
 import { checkRefreshToken } from "./AuthService";
-//import { refreshToken } from "./RefreshService";
+import axios from "axios";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
+
+const cardContent = (image: string, text: string, link: string) => (
+  <CardActionArea onClick={() => (window.location.href = link)}>
+    <Box sx={{ position: "relative" }}>
+      <CardMedia
+        component="img"
+        height="300"
+        image={image}
+        alt={text}
+        sx={{
+          width: "100%",
+          height: "300px",
+          objectFit: "cover",
+        }}
+      />
+      <Typography
+        variant="h2"
+        component="div"
+        fontFamily={"Roboto"}
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          color: "white",
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          opacity: 0,
+          transition: "opacity 0.3s",
+          "&:hover": {
+            opacity: 1,
+          },
+        }}
+      >
+        {text}
+      </Typography>
+    </Box>
+  </CardActionArea>
+);
 
 function App() {
-  const darkTheme = createTheme({
-    palette: {
-      mode: "dark",
-    },
-  });
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     const handleAuth = async () => {
@@ -27,53 +71,29 @@ function App() {
         window.location.href = "/login";
         return;
       }
-      //await refreshToken();
+
+      const token = localStorage.getItem("refreshToken");
+      if (token) {
+        try {
+          const response = await axios.post(
+            "https://localhost:5000/api/Permission/PostEmployeePermission",
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setRole(response.data.role);
+          console.log("Role:", response.data.role);
+        } catch (error) {
+          console.error("Error fetching role:", error);
+        }
+      }
     };
 
     handleAuth();
   }, []);
-
-  const cardContent = (image: string, text: string, link: string) => (
-    <CardActionArea onClick={() => (window.location.href = link)}>
-      <Box sx={{ position: "relative" }}>
-        <CardMedia
-          component="img"
-          height="300"
-          image={image}
-          alt={text}
-          sx={{
-            width: "100%",
-            height: "300px",
-            objectFit: "cover",
-          }}
-        />
-        <Typography
-          variant="h2"
-          component="div"
-          fontFamily={"Roboto"}
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            color: "white",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            opacity: 0,
-            transition: "opacity 0.3s",
-            "&:hover": {
-              opacity: 1,
-            },
-          }}
-        >
-          {text}
-        </Typography>
-      </Box>
-    </CardActionArea>
-  );
 
   return (
     <>
@@ -85,62 +105,116 @@ function App() {
           justifyContent="center"
           sx={{ mt: 4, mb: 4, width: "100%" }}
         >
+          {role === "Admin" || role === "TicketAssistant" ? (
+            <Box
+              sx={{
+                width: {
+                  xs: "100%",
+                  sm: "50%",
+                  md: "50%",
+                  lg: "35%",
+                  xl: "35%",
+                },
+                p: 1,
+              }}
+            >
+              <Card sx={{ maxWidth: "100%", height: "auto" }}>
+                {cardContent(
+                  "/img/landing/ticket_temp.png",
+                  "Jegyeladás",
+                  "tickets.html"
+                )}
+              </Card>
+            </Box>
+          ) : null}
+           {role === "Admin" || role === "TicketAssistant" || role === "RestaurantAssistant"? (
+            <Box
+              sx={{
+                width: {
+                  xs: "100%",
+                  sm: "50%",
+                  md: "50%",
+                  lg: "35%",
+                  xl: "35%",
+                },
+                p: 1,
+              }}
+            >
+              <Card sx={{ maxWidth: "100%", height: "auto" }}>
+                {cardContent(
+                  "/img/landing/egyeb_temp.png",
+                  "Jegyellenőrzés",
+                  "lanfingpage.html"
+                )}
+              </Card>
+            </Box>
+          ) : null}
+          {role === "Admin"? (
+            <Box
+              sx={{
+                width: {
+                  xs: "100%",
+                  sm: "50%",
+                  md: "50%",
+                  lg: "35%",
+                  xl: "35%",
+                },
+                p: 1,
+              }}
+            >
+              <Card sx={{ maxWidth: "100%", height: "auto" }}>
+                {cardContent(
+                  "/img/landing/registration_temp.png",
+                  "Regisztráció",
+                  "registration"
+                )}
+              </Card>
+            </Box>
+          ) : null}
+          {role === "Admin" || role === "RestaurantAssistant" ? (
+            <Box
+              sx={{
+                width: {
+                  xs: "100%",
+                  sm: "50%",
+                  md: "50%",
+                  lg: "35%",
+                  xl: "35%",
+                },
+                p: 1,
+              }}
+            >
+              <Card sx={{ maxWidth: "100%", height: "auto" }}>
+                {cardContent(
+                  "/img/landing/restaurant_temp.png",
+                  "Étterem",
+                  "restaurant.html"
+                )}
+              </Card>
+            </Box>
+          ) : null}
+          {role === "Admin" || role === "TicketAssistant" ? (
           <Box
             sx={{
-              width: { xs: "100%", sm: "50%", md: "50%", lg: "35%", xl: "35%" },
-              p: 1,
-            }}
-          >
-            <Card sx={{ maxWidth: "100%", height: "auto" }}>
-              {cardContent(
-                "/img/landing/registration_temp.png",
-                "Regisztráció",
-                "registrationpage.html"
-              )}
-            </Card>
-          </Box>
-          <Box
-            sx={{
-              width: { xs: "100%", sm: "50%", md: "50%", lg: "35%", xl: "35%" },
-              p: 1,
-            }}
-          >
-            <Card sx={{ maxWidth: "100%", height: "auto" }}>
-              {cardContent(
-                "/img/landing/ticket_temp.png",
-                "Jegyeladás",
-                "tickets.html"
-              )}
-            </Card>
-          </Box>
-          <Box
-            sx={{
-              width: { xs: "100%", sm: "50%", md: "50%", lg: "35%", xl: "35%" },
-              p: 1,
-            }}
-          >
-            <Card sx={{ maxWidth: "100%", height: "auto" }}>
-              {cardContent(
-                "/img/landing/restaurant_temp.png",
-                "Étterem",
-                "restaurant.html"
-              )}
-            </Card>
-          </Box>
-          <Box
-            sx={{
-              width: { xs: "100%", sm: "50%", md: "50%", lg: "35%", xl: "35%" },
+              width: {
+                xs: "100%",
+                sm: "50%",
+                md: "50%",
+                lg: "35%",
+                xl: "35%",
+              },
               p: 1,
             }}
           >
             <Card sx={{ maxWidth: "100%", height: "auto" }}>
               {cardContent(
                 "/img/landing/egyeb_temp.png",
-                "Folyamatban...",
+                "Kicsekkolás",
                 "landingpage.html"
               )}
             </Card>
           </Box>
+          ) : null}
         </Box>
       </ThemeProvider>
     </>

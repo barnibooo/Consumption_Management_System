@@ -20,11 +20,11 @@ namespace CMS.Controllers
         [HttpPost("PostEmployeePermission")]
         public async Task<IActionResult> PostEmployeePermission()
         {
-            var authHeader = Request.Headers["Authorization"].ToString();
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
-            {
-                return Unauthorized("Authorization header is missing or invalid.");
-            }
+             var authHeader = Request.Headers["Authorization"].ToString();
+              if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+              {
+                  return Unauthorized("Authorization header is missing or invalid.");
+              }
 
             var token = authHeader.Substring("Bearer ".Length).Trim();
 
