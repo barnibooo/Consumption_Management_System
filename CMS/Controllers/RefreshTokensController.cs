@@ -31,7 +31,6 @@ public class AuthController : ControllerBase
         if (!role)
             return BadRequest("Invalid role.");
 
-        // Ellenőrizzük, hogy csak admin regisztrálhat admin role-t
         var currentUserRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
         if (model.Role == Roles.Admin && currentUserRole != nameof(Roles.Admin))
             return Unauthorized("Only admins can register admin users.");
