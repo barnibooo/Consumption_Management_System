@@ -116,25 +116,44 @@ const Dashboard: React.FC = () => {
 
   const handleAddAdmissionToOrder = (itema: admissionItem) => {
     setOrdersa((prevOrders) => {
-      if (prevOrders.some((orderItem) => orderItem.admissionId === itema.admissionId)) {
+      if (
+        prevOrders.some(
+          (orderItem) => orderItem.admissionId === itema.admissionId
+        )
+      ) {
         return prevOrders; // Prevent duplicates of the same admission ticket
       }
       return [...prevOrders, itema]; // Add the new admission ticket
     });
   };
 
-  const handleDeleteFromOrder = (item: ticketItem) => {
-    setOrders((prevOrders) =>
-      prevOrders.filter((ticketItem) => ticketItem.ticketId !== item.ticketId)
-    );
+  const handleDeleteFromOrder = (item: ticketItem | admissionItem) => {
+    if ("ticketId" in item) {
+      setOrders((prevOrders) =>
+        prevOrders.filter((ticketItem) => ticketItem.ticketId !== item.ticketId)
+      );
+    } else {
+      setOrdersa((prevOrders) =>
+        prevOrders.filter(
+          (admissionItem) => admissionItem.admissionId !== item.admissionId
+        )
+      );
+    }
   };
 
   const calculateTotalPrice = () => {
-    return orders.reduce((total, ticketItem) => total + ticketItem.price, 0);
+    const ticketTotal = orders.reduce(
+      (total, ticketItem) => total + ticketItem.price,
+      0
+    );
+    const admissionTotal = ordersa.reduce(
+      (total, admissionItem) => total + admissionItem.price,
+      0
+    );
+    return ticketTotal + admissionTotal;
   };
 
-
-      useEffect(() => {
+  useEffect(() => {
     const fetchTickets = axios.get("https://localhost:5000/api/Tickets");
     const fetchAdmissions = axios.get("https://localhost:5000/api/Admissions");
 
@@ -154,17 +173,15 @@ const Dashboard: React.FC = () => {
         }
 
         if (Array.isArray(ticketsResponse.data)) {
-          const tickets = ticketsResponse.data.map(
-            (ticket: ticketItem) => ({
-              ticketId: ticket.ticketId,
-              ticketName: ticket.ticketName,
-              category: ticket.category,
-              price: ticket.price,
-              description: ticket.description,
-              isAvailable: ticket.isAvailable,
-              imagePath: ticket.imagePath,
-            })
-          );
+          const tickets = ticketsResponse.data.map((ticket: ticketItem) => ({
+            ticketId: ticket.ticketId,
+            ticketName: ticket.ticketName,
+            category: ticket.category,
+            price: ticket.price,
+            description: ticket.description,
+            isAvailable: ticket.isAvailable,
+            imagePath: ticket.imagePath,
+          }));
         } else {
           console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
         }
@@ -192,9 +209,9 @@ const Dashboard: React.FC = () => {
         setError(error.message);
         setLoading(false);
       });
-        }, []);
+  }, []);
 
-/*
+  /*
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -262,19 +279,18 @@ const Dashboard: React.FC = () => {
     const categories: string[] = [];
     for (let i = 0; i < ticketItems.length; i++) {
       const ticketCategory = ticketItems[i].category;
-      if ( !categories.includes(ticketCategory )) {
+      if (!categories.includes(ticketCategory)) {
         categories.push(ticketCategory);
       }
     }
 
     for (let i = 0; i < l; i++) {
       const admissionCategory = admissionItems[i].category;
-     // console.log("admissionCategory:", admissionCategory);
-      if ( !categories.includes(admissionCategory )) {
+      // console.log("admissionCategory:", admissionCategory);
+      if (!categories.includes(admissionCategory)) {
         categories.push(admissionCategory);
       }
     }
- 
 
     return categories;
   };
@@ -290,7 +306,7 @@ const Dashboard: React.FC = () => {
   const filteredticketItems = selectedCategory
     ? ticketItems.filter((item) => item.category === selectedCategory)
     : ticketItems;
-  
+
   const filteredadmissionItems = selectedCategory
     ? admissionItems.filter((item) => item.category === selectedCategory)
     : admissionItems;
@@ -563,6 +579,36 @@ const Dashboard: React.FC = () => {
                     </Typography>
                   </ListItem>
                 ))}
+                {ordersa.map((admissionItem, index) => (
+                  <ListItem
+                    key={index}
+                    secondaryAction={
+                      <IconButton
+                        edge="end"
+                        aria-label="delete"
+                        onClick={() => handleDeleteFromOrder(admissionItem)}
+                      >
+                        <DeleteOutlineOutlinedIcon
+                          sx={{
+                            fontSize: 35,
+                            color: "#d5d6d6",
+                            "&:hover": {
+                              color: "#BFA181",
+                            },
+                          }}
+                        />
+                      </IconButton>
+                    }
+                  >
+                    <ListItemAvatar>
+                      {categoryIcons[admissionItem.category]}
+                    </ListItemAvatar>
+                    <Typography variant="body2" color="#e7e6dd" fontSize={16}>
+                      {admissionItem.admissionName} <br /> {admissionItem.price}{" "}
+                      Ft
+                    </Typography>
+                  </ListItem>
+                ))}
               </List>
             </Box>
             {/* Gomb a rendelés leadására */}
@@ -720,7 +766,9 @@ const Dashboard: React.FC = () => {
                       <Typography fontWeight="bold">
                         {itema.isAvailable ? "Elérhető" : "Nem elérhető"}
                       </Typography>
-                      <Typography fontWeight="bold">{itema.price} Ft</Typography>
+                      <Typography fontWeight="bold">
+                        {itema.price} Ft
+                      </Typography>
                     </Box>
                   </CardContent>
                   <CardActions

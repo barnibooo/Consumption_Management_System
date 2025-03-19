@@ -37,9 +37,5 @@ namespace CMS.Models
             modelBuilder.Entity<Employee>().HasIndex(u => u.Username).IsUnique();
         }
         
-
-
-
-
     }
 }
