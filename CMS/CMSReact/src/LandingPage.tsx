@@ -11,6 +11,7 @@ import {
 import Navbar from "./Navbar";
 import { useEffect, useState } from "react";
 import { checkToken } from "./AuthService";
+import { parseJwt } from "./JWTParser";
 
 const darkTheme = createTheme({
   palette: {
@@ -60,20 +61,6 @@ const cardContent = (image: string, text: string, link: string) => (
   </CardActionArea>
 );
 
-// JWT parser
-function parseJwt(token: string): any {
-  const base64Url = token.split(".")[1];
-  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  const jsonPayload = decodeURIComponent(
-    atob(base64)
-      .split("")
-      .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-      .join("")
-  );
-
-  return JSON.parse(jsonPayload);
-}
-
 function App() {
   const [role, setRole] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -90,6 +77,7 @@ function App() {
       const token = localStorage.getItem("token");
       if (token) {
         const parsedToken = parseJwt(token);
+        console.log(parsedToken);
         setRole(parsedToken.role);
         setIsLoading(false);
       } else {
@@ -106,7 +94,6 @@ function App() {
 
   return (
     <>
-      <Navbar role={role} />
       <ThemeProvider theme={darkTheme}>
         <Box
           display="flex"
