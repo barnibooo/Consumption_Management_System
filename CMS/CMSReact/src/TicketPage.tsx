@@ -80,6 +80,7 @@ const Dashboard: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [orders, setOrders] = useState<ticketItem[]>([]);
+  const [ordersa, setOrdersa] = useState<admissionItem[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [cardId, setCardId] = useState<string | null>(null);
   const [finalizedOrders, setFinalizedOrders] = useState<
@@ -96,7 +97,7 @@ const Dashboard: React.FC = () => {
     console.log("Selected category:", category);
   };
 
-  const handleAddToOrder = (item: ticketItem) => {
+  const handleAddTicketToOrder = (item: ticketItem) => {
     setOrders((prevOrders) => {
       if (item.category === "Belépő") {
         if (prevOrders.some((orderItem) => orderItem.category === "Belépő")) {
@@ -110,6 +111,15 @@ const Dashboard: React.FC = () => {
         }
       }
       return [...prevOrders, item];
+    });
+  };
+
+  const handleAddAdmissionToOrder = (itema: admissionItem) => {
+    setOrdersa((prevOrders) => {
+      if (prevOrders.some((orderItem) => orderItem.admissionId === itema.admissionId)) {
+        return prevOrders; // Prevent duplicates of the same admission ticket
+      }
+      return [...prevOrders, itema]; // Add the new admission ticket
     });
   };
 
@@ -648,7 +658,7 @@ const Dashboard: React.FC = () => {
                     sx={{ mt: "auto", justifyContent: "flex-start" }}
                   >
                     <IconButton
-                      onClick={() => handleAddToOrder(item)}
+                      onClick={() => handleAddTicketToOrder(item)}
                       sx={{
                         color: "#d5d6d6",
                         display: "flex",
@@ -668,7 +678,7 @@ const Dashboard: React.FC = () => {
                   </CardActions>
                 </Card>
               ))}
-              {filteredadmissionItems.map((item) => (
+              {filteredadmissionItems.map((itema) => (
                 <Card
                   sx={{
                     width: {
@@ -683,11 +693,11 @@ const Dashboard: React.FC = () => {
                     display: "flex",
                     flexDirection: "column",
                   }}
-                  key={item.admissionId}
+                  key={itema.admissionId}
                 >
                   <CardHeader
-                    title={item.admissionName}
-                    subheader={item.category}
+                    title={itema.admissionName}
+                    subheader={itema.category}
                     sx={{
                       "& .MuiCardHeader-subheader": { color: "#d5d6d6" },
                     }}
@@ -695,7 +705,7 @@ const Dashboard: React.FC = () => {
                   <CardMedia
                     component="img"
                     height="200"
-                    image={item.imagePath}
+                    image={itema.imagePath}
                     alt="Kép"
                   />
                   <CardContent
@@ -705,12 +715,12 @@ const Dashboard: React.FC = () => {
                       flexGrow: 1,
                     }}
                   >
-                    <Typography mb={2}>{item.description}</Typography>
+                    <Typography mb={2}>{itema.description}</Typography>
                     <Box sx={{ mt: "auto" }}>
                       <Typography fontWeight="bold">
-                        {item.isAvailable ? "Elérhető" : "Nem elérhető"}
+                        {itema.isAvailable ? "Elérhető" : "Nem elérhető"}
                       </Typography>
-                      <Typography fontWeight="bold">{item.price} Ft</Typography>
+                      <Typography fontWeight="bold">{itema.price} Ft</Typography>
                     </Box>
                   </CardContent>
                   <CardActions
@@ -718,7 +728,7 @@ const Dashboard: React.FC = () => {
                     sx={{ mt: "auto", justifyContent: "flex-start" }}
                   >
                     <IconButton
-                      onClick={() => handleAddToOrder(item)}
+                      onClick={() => handleAddAdmissionToOrder(itema)}
                       sx={{
                         color: "#d5d6d6",
                         display: "flex",
