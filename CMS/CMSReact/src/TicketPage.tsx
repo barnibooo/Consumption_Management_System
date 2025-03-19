@@ -32,6 +32,7 @@ import AppsIcon from "@mui/icons-material/Apps";
 import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
 import { createTheme } from "@mui/material/styles";
+import { Category } from "@mui/icons-material";
 
 const darkTheme = createTheme({
   palette: {
@@ -92,6 +93,7 @@ const Dashboard: React.FC = () => {
 
   const handleCategoryClick = (category: string | null) => {
     setSelectedCategory(category);
+    console.log("Selected category:", category);
   };
 
   const handleAddToOrder = (item: ticketItem) => {
@@ -121,7 +123,8 @@ const Dashboard: React.FC = () => {
     return orders.reduce((total, ticketItem) => total + ticketItem.price, 0);
   };
 
-  useEffect(() => {
+
+      useEffect(() => {
     const fetchTickets = axios.get("https://localhost:5000/api/Tickets");
     const fetchAdmissions = axios.get("https://localhost:5000/api/Admissions");
 
@@ -129,15 +132,38 @@ const Dashboard: React.FC = () => {
       .then(([ticketsResponse, admissionsResponse]) => {
         if (Array.isArray(ticketsResponse.data)) {
           setticketItems(ticketsResponse.data);
+          console.log("jegyeshalal", ticketsResponse.data);
         } else {
           console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
         }
-
         if (Array.isArray(admissionsResponse.data)) {
-          const admissionsAsTickets = admissionsResponse.data.map(
+          setAdmissionItems(admissionsResponse.data);
+          console.log("A3sdewdxexc", admissionsResponse.data);
+        } else {
+          console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
+        }
+
+        if (Array.isArray(ticketsResponse.data)) {
+          const tickets = ticketsResponse.data.map(
+            (ticket: ticketItem) => ({
+              ticketId: ticket.ticketId,
+              ticketName: ticket.ticketName,
+              category: ticket.category,
+              price: ticket.price,
+              description: ticket.description,
+              isAvailable: ticket.isAvailable,
+              imagePath: ticket.imagePath,
+            })
+          );
+        } else {
+          console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
+        }
+        console.log("Tickets:", admissionsResponse.data);
+        if (Array.isArray(admissionsResponse.data)) {
+          const admissions = admissionsResponse.data.map(
             (admission: admissionItem) => ({
-              ticketId: admission.admissionId,
-              ticketName: admission.admissionName,
+              admissionId: admission.admissionId,
+              admissionName: admission.admissionName,
               category: admission.category,
               price: admission.price,
               description: admission.description,
@@ -145,7 +171,6 @@ const Dashboard: React.FC = () => {
               imagePath: admission.imagePath,
             })
           );
-          setticketItems((prevItems) => [...prevItems, ...admissionsAsTickets]);
         } else {
           console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
         }
@@ -157,8 +182,40 @@ const Dashboard: React.FC = () => {
         setError(error.message);
         setLoading(false);
       });
-  }, []);
+        }, []);
 
+/*
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        if (selectedCategory === "Belépő") {
+          // Ha a kategória "Belépő", akkor a Tickets API-t hívjuk meg
+          const response = await axios.get("https://localhost:5000/api/Tickets");
+          if (Array.isArray(response.data)) {
+            setticketItems(response.data);
+          } else {
+            console.error("Hibás API válasz: nem tömb", response.data);
+          }
+        } else if (selectedCategory === "Kiegészítő") {
+          // Ha a kategória "Kiegészítő", akkor az Admissions API-t hívjuk meg
+          const response = await axios.get("https://localhost:5000/api/Admissions");
+          if (Array.isArray(response.data)) {
+            setAdmissionItems(response.data);
+          } else {
+            console.error("Hibás API válasz: nem tömb", response.data);
+          }
+        }
+      } catch (error) {
+        console.error("Hiba történt:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, [selectedCategory]); // Az useEffect újra lefut, ha a selectedCategory változik
+*/
   if (loading)
     return (
       <Box
@@ -189,17 +246,26 @@ const Dashboard: React.FC = () => {
       </ThemeProvider>
     );
 
-  var l = ticketItems.length;
+  var l = admissionItems.length;
 
   const getUniqueCategories = () => {
     const categories: string[] = [];
-
-    for (let i = 0; i < l; i++) {
-      const category = ticketItems[i].category;
-      if (!categories.includes(category)) {
-        categories.push(category);
+    for (let i = 0; i < ticketItems.length; i++) {
+      const ticketCategory = ticketItems[i].category;
+      if ( !categories.includes(ticketCategory )) {
+        categories.push(ticketCategory);
       }
     }
+
+    for (let i = 0; i < l; i++) {
+      const admissionCategory = admissionItems[i].category;
+     // console.log("admissionCategory:", admissionCategory);
+      if ( !categories.includes(admissionCategory )) {
+        categories.push(admissionCategory);
+      }
+    }
+ 
+
     return categories;
   };
 
@@ -214,6 +280,10 @@ const Dashboard: React.FC = () => {
   const filteredticketItems = selectedCategory
     ? ticketItems.filter((item) => item.category === selectedCategory)
     : ticketItems;
+  
+  const filteredadmissionItems = selectedCategory
+    ? admissionItems.filter((item) => item.category === selectedCategory)
+    : admissionItems;
 
   const handleOpenDialog = () => {
     setOpenDialogs(new Array(orders.length).fill(true));
@@ -547,6 +617,76 @@ const Dashboard: React.FC = () => {
                 >
                   <CardHeader
                     title={item.ticketName}
+                    subheader={item.category}
+                    sx={{
+                      "& .MuiCardHeader-subheader": { color: "#d5d6d6" },
+                    }}
+                  />
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={item.imagePath}
+                    alt="Kép"
+                  />
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      flexGrow: 1,
+                    }}
+                  >
+                    <Typography mb={2}>{item.description}</Typography>
+                    <Box sx={{ mt: "auto" }}>
+                      <Typography fontWeight="bold">
+                        {item.isAvailable ? "Elérhető" : "Nem elérhető"}
+                      </Typography>
+                      <Typography fontWeight="bold">{item.price} Ft</Typography>
+                    </Box>
+                  </CardContent>
+                  <CardActions
+                    disableSpacing
+                    sx={{ mt: "auto", justifyContent: "flex-start" }}
+                  >
+                    <IconButton
+                      onClick={() => handleAddToOrder(item)}
+                      sx={{
+                        color: "#d5d6d6",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        "&:hover": {
+                          color: "#BFA181",
+                        },
+                      }}
+                    >
+                      <AddShoppingCartOutlinedIcon
+                        sx={{
+                          fontSize: 35,
+                        }}
+                      />
+                    </IconButton>
+                  </CardActions>
+                </Card>
+              ))}
+              {filteredadmissionItems.map((item) => (
+                <Card
+                  sx={{
+                    width: {
+                      xs: "100%",
+                      sm: "45%",
+                      md: "90%",
+                      lg: "45%",
+                      xl: "30%",
+                    },
+                    background: "#202938",
+                    color: "#d5d6d6",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                  key={item.admissionId}
+                >
+                  <CardHeader
+                    title={item.admissionName}
                     subheader={item.category}
                     sx={{
                       "& .MuiCardHeader-subheader": { color: "#d5d6d6" },
