@@ -211,38 +211,6 @@ const Dashboard: React.FC = () => {
       });
   }, []);
 
-  /*
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        if (selectedCategory === "Belépő") {
-          // Ha a kategória "Belépő", akkor a Tickets API-t hívjuk meg
-          const response = await axios.get("https://localhost:5000/api/Tickets");
-          if (Array.isArray(response.data)) {
-            setticketItems(response.data);
-          } else {
-            console.error("Hibás API válasz: nem tömb", response.data);
-          }
-        } else if (selectedCategory === "Kiegészítő") {
-          // Ha a kategória "Kiegészítő", akkor az Admissions API-t hívjuk meg
-          const response = await axios.get("https://localhost:5000/api/Admissions");
-          if (Array.isArray(response.data)) {
-            setAdmissionItems(response.data);
-          } else {
-            console.error("Hibás API válasz: nem tömb", response.data);
-          }
-        }
-      } catch (error) {
-        console.error("Hiba történt:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    fetchData();
-  }, [selectedCategory]); // Az useEffect újra lefut, ha a selectedCategory változik
-*/
   if (loading)
     return (
       <Box
@@ -332,66 +300,34 @@ const Dashboard: React.FC = () => {
   };
 
   const handleSubmitOrder = () => {
-    const orderList = orders.map((ticketItem, index) => ({
-      ticketId: ticketItem.ticketId,
-      id: ids[index],
-      category: ticketItem.category,
-    }));
+    const customerData = {
+      cardId: cardId,
+      name: "Minta Név",
+      createdBy: 1,
+      ticketsIds: orders.map((ticketItem) => ({
+        ticketId: ticketItem.ticketId,
+      })),
+      admissions: ordersa.map((admissionItem) => ({
+        admissionId: admissionItem.admissionId,
+      })),
+    };
 
-    setFinalizedOrders(orderList);
+    console.log("Customer data:", customerData);
 
     axios
-      .get("https://localhost:5000/api/Cards/GetCustomerIdByCardId/" + cardId)
+      .post("https://localhost:5000/api/Customers", customerData)
       .then((response) => {
-        console.log(response.data);
-        if (isNaN(response.data)) {
-          axios
-            .post("https://localhost:5000/api/Customers", {
-              cardId: cardId,
-              employeeId: 1,
-              name: "Teszt Elek",
-              ticketIds: orders.map((ticketIds) => ({
-                ticketIds: ticketIds,
-              })),
-              admissionIds: orders.map((admissionIds) => ({
-                admissionIds: admissionIds,
-              })),
-            })
-            .then((response) => {
-              console.log("Order submitted successfully:", response.data);
-              setOrderId(response.data.orderId);
-              setDialogOpen(true);
-            })
-            .catch((error) => {
-              console.error("Error submitting order:", error);
-            });
-        } else {
-          console.error("Nincs ilyen felhasználó", response.data);
-        }
-        setLoading(false);
+        console.log("Customer created successfully:", response.data);
+        setOrderId(response.data.orderId);
+        setDialogOpen(true);
       })
       .catch((error) => {
-        console.error("Hiba történt:", error);
+        console.error("Error creating customer:", error);
         setError(error.message);
+      })
+      .finally(() => {
         setLoading(false);
       });
-    /*
-    const ticketIds = orderList
-      .filter((order) => order.category === "Belépő")
-      .map((order) => order.ticketId);
-    const admissionIds = orderList
-      .filter((order) => order.category === "Kiegészítő")
-      .map((order) => order.ticketId);
-
-    const logData = {
-      cardId: cardId,
-      ticketIds: ticketIds,
-      admissionIds: admissionIds,
-    };
-    console.log(JSON.stringify(logData, null, 2));
-
-    setOrderId("mockOrderId");
-    setOpenSuccessDialogs(new Array(orders.length).fill(true));*/
   };
 
   const hasBelepoInOrder = orders.some((item) => item.category === "Belépő");
