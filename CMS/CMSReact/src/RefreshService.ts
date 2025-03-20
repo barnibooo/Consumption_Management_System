@@ -1,6 +1,7 @@
 export const refreshToken = async () => {
-  const token = localStorage.getItem("refreshToken");
-  if (!token) {
+  const refreshabletoken = localStorage.getItem("refreshToken");
+  console.log(refreshabletoken);
+  if (!refreshabletoken) {
     return;
   }
 
@@ -8,17 +9,21 @@ export const refreshToken = async () => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${refreshabletoken}`,
     },
   });
 
-  if (response.ok) {
-    const data = await response.json();
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("refreshToken", data.refreshToken);
-    console.log("Token refreshed");
-    console.log(data.refreshToken);
-  } else {
-    //window.location.href = "/login";
+  if (!response.ok) {
+    console.error("Failed to refresh token");
+    return; // Break and do not run multiple times if the response is not OK
   }
+
+  const data = await response.json();
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("refreshToken", data.refreshToken);
+  console.log("Token refreshed");
+  console.log(data.refreshToken);
+
+  // Add a return statement to ensure the function exits
+  return;
 };

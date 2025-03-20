@@ -99,7 +99,6 @@ const Dashboard: React.FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [isUnauthorized, setIsUnauthorized] = useState(false);
-  const [tokenRefreshed, setTokenRefreshed] = useState(false); // Add state to track token refresh
 
   const handleCategoryClick = (category: string | null) => {
     setSelectedCategory(category);
@@ -146,22 +145,38 @@ const Dashboard: React.FC = () => {
       0
     );
   };
+  const [tokenValidated, setTokenValidated] = useState(false);
+  const [tokenRefreshed, setTokenRefreshed] = useState(false);
+  const [dataFetched, setDataFetched] = useState(false);
 
   useEffect(() => {
     const validateAndFetchData = async () => {
-      const isValidToken = await checkToken(); // Validate the token
-      console.log("Token is valid:", isValidToken);
-      if (!isValidToken) {
-        console.error("Invalid token. Redirecting to login...");
-        //window.location.href = "/login"; // Redirect to login if the token is invalid
-        return;
+      if (!tokenValidated) {
+        const isValidToken = await checkToken();
+
+        if (!isValidToken) {
+          console.error("Invalid token. Redirecting to login...");
+          window.location.href = "/login";
+          return;
+        }
+        setTokenValidated(true);
       }
 
       if (!tokenRefreshed) {
-        await refreshToken(); // Refresh the token
-        setTokenRefreshed(true); // Set the flag to true after refreshing the token
+        await refreshToken();
+        setTokenRefreshed(true);
+
+        // Add a delay before proceeding
       }
 
+      setDataFetched(true);
+    };
+
+    validateAndFetchData();
+  }, []);
+
+  useEffect(() => {
+    if (dataFetched) {
       const token = localStorage.getItem("token");
 
       axios
@@ -171,7 +186,6 @@ const Dashboard: React.FC = () => {
           },
         })
         .then((response) => {
-          console.log(response.data);
           if (Array.isArray(response.data)) {
             setMenuItems(response.data);
           } else {
@@ -192,10 +206,8 @@ const Dashboard: React.FC = () => {
           }
           setLoading(false);
         });
-    };
-
-    validateAndFetchData(); // Call the function
-  }, [isUnauthorized, tokenRefreshed]);
+    }
+  }, [dataFetched]);
 
   if (loading)
     return (

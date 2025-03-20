@@ -72,7 +72,6 @@ public class AuthController : ControllerBase
             Monogram = (user.FirstName[0].ToString() + user.LastName[0].ToString()).ToUpper()
         });
     }
-
     [HttpPost("refreshToken")]
     public async Task<IActionResult> RefreshToken()
     {
@@ -98,7 +97,22 @@ public class AuthController : ControllerBase
 
         _context.RefreshTokens.Remove(refreshToken);
         _context.RefreshTokens.Add(newRefreshToken);
-        await _context.SaveChangesAsync();
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!RefreshTokenExists(refreshToken.Token))
+            {
+                return NotFound("Refresh token not found.");
+            }
+            else
+            {
+                throw;
+            }
+        }
 
         return Ok(new
         {
@@ -205,6 +219,10 @@ public class AuthController : ControllerBase
             Expires = DateTime.UtcNow.AddDays(_configuration.GetValue<int>("Jwt:RefreshExpireDays")),
             EmployeeId = userId
         };
+    }
+    private bool RefreshTokenExists(string token)
+    {
+        return _context.RefreshTokens.Any(e => e.Token == token);
     }
 
 }

@@ -8,7 +8,7 @@ export const checkToken = async () => {
 
   try {
     console.log("Checking token...");
-    console.log("Token:", token);
+
     const response = await axios.post(
       "https://localhost:5000/api/Auth/Checktoken",
       {},
