@@ -144,10 +144,17 @@ const Dashboard: React.FC = () => {
       0
     );
   };
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+  
     axios
-      .get("https://localhost:5000/api/MenuItems")
+      .get("https://localhost:5000/api/MenuItems", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         console.log(response.data);
         if (Array.isArray(response.data)) {
@@ -159,11 +166,15 @@ const Dashboard: React.FC = () => {
       })
       .catch((error) => {
         console.error("Hiba történt:", error);
-        setError(error.message);
+        if (error.response && error.response.status === 403 && !isUnauthorized) {
+          setIsUnauthorized(true);
+        } else {
+          setError(error.message);
+        }
         setLoading(false);
       });
-  }, []);
-
+  }, [isUnauthorized]);
+  
   if (loading)
     return (
       <Box
@@ -173,6 +184,20 @@ const Dashboard: React.FC = () => {
         height="100vh"
       >
         <CircularProgress size={120} sx={{ color: "#bfa181" }} />
+      </Box>
+    );
+  
+  if (isUnauthorized)
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <ThemeProvider theme={darkTheme}>
+        <Alert severity="warning">Az oldal használatához magasabb jogosultság szükséges!</Alert>
+        </ThemeProvider>
       </Box>
     );
   if (error)
@@ -277,31 +302,7 @@ const Dashboard: React.FC = () => {
     setDialogOpen(false);
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    console.log("bármi");
 
-    axios
-      .get("https://localhost:5000/api/MenuItems", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-        if (Array.isArray(response.data)) {
-          setMenuItems(response.data);
-        } else {
-          console.error("Hibás API válasz: nem tömb", response.data);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Hiba történt:", error);
-        setError(error.message);
-        setLoading(false);
-      });
-  }, []);
 
   return (
     <>

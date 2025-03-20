@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { checkToken } from "./AuthService";
 import { parseJwt } from "./JWTParser";
 
+
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -66,7 +67,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log("Page refreshed");
+
     const handleAuth = async () => {
       const isValid = await checkToken();
       if (!isValid) {
@@ -77,7 +78,6 @@ function App() {
       const token = localStorage.getItem("token");
       if (token) {
         const parsedToken = parseJwt(token);
-        console.log(parsedToken);
         setRole(parsedToken.role);
         setIsLoading(false);
       } else {
