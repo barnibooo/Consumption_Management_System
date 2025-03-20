@@ -74,14 +74,24 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("refreshToken")]
-    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDto model)
+    public async Task<IActionResult> RefreshToken()
     {
+        var authHeader = Request.Headers["Authorization"].ToString();
+        if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+        {
+            return Unauthorized("Authorization header is missing or invalid.");
+        }
+
+        var token = authHeader.Substring("Bearer ".Length).Trim();
+
         var refreshToken = await _context.RefreshTokens
             .Include(rt => rt.Employee)
-            .SingleOrDefaultAsync(rt => rt.Token == model.Refreshtoken);
+            .SingleOrDefaultAsync(rt => rt.Token == token);
 
         if (refreshToken == null || refreshToken.Expires < DateTime.UtcNow)
+        {
             return Unauthorized("Invalid or expired refresh token.");
+        }
 
         var newToken = GenerateJwtToken(refreshToken.Employee);
         var newRefreshToken = GenerateRefreshToken(refreshToken.EmployeeId);
@@ -96,6 +106,10 @@ public class AuthController : ControllerBase
             RefreshToken = newRefreshToken.Token
         });
     }
+
+
+
+
     [HttpPost("Checktoken")]
     [Authorize]
     public IActionResult CheckToken()
@@ -185,13 +199,10 @@ public class AuthController : ControllerBase
 
     private RefreshToken GenerateRefreshToken(int userId)
     {
-        var utcPlusOneTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
-        var expirationTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow.AddDays(_configuration.GetValue<int>("Jwt:RefreshExpireDays")), utcPlusOneTimeZone);
-
         return new RefreshToken
         {
             Token = Guid.NewGuid().ToString(),
-            Expires = expirationTime,
+            Expires = DateTime.UtcNow.AddDays(_configuration.GetValue<int>("Jwt:RefreshExpireDays")),
             EmployeeId = userId
         };
     }

@@ -8,6 +8,7 @@ import {
   Typography,
   Box,
 } from "@mui/material";
+
 import { useEffect, useState } from "react";
 import { checkToken } from "./AuthService";
 import { parseJwt } from "./JWTParser";

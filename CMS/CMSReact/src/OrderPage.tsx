@@ -18,6 +18,12 @@ import {
   Alert,
   AlertTitle,
   ThemeProvider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  DialogActions,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
@@ -37,17 +43,9 @@ import BakeryDiningOutlinedIcon from "@mui/icons-material/BakeryDiningOutlined";
 import AppsIcon from "@mui/icons-material/Apps";
 import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  TextField,
-  DialogActions,
-} from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { checkToken } from "./AuthService"; // Import the checkToken function
-
+import { refreshToken } from "./RefreshService"; // Import the refreshToken function
 
 const darkTheme = createTheme({
   palette: {
@@ -75,15 +73,15 @@ const iconStyle = {
 };
 
 const categoryIcons: { [key: string]: React.ReactElement } = {
-  Leves: <RamenDiningOutlined sx={iconStyle} />, 
-  Előétel: <BakeryDiningOutlinedIcon sx={iconStyle} />, 
-  Főétel: <DinnerDiningOutlined sx={iconStyle} />, 
-  Hamburger: <LunchDiningOutlined sx={iconStyle} />, 
-  Pizza: <LocalPizzaOutlinedIcon sx={iconStyle} />, 
-  Desszert: <CookieOutlined sx={iconStyle} />, 
-  Menü: <FastfoodOutlined sx={iconStyle} />, 
-  Ital: <LocalBarOutlined sx={iconStyle} />, 
-  Kávé: <EmojiFoodBeverageOutlinedIcon sx={iconStyle} />, 
+  Leves: <RamenDiningOutlined sx={iconStyle} />,
+  Előétel: <BakeryDiningOutlinedIcon sx={iconStyle} />,
+  Főétel: <DinnerDiningOutlined sx={iconStyle} />,
+  Hamburger: <LunchDiningOutlined sx={iconStyle} />,
+  Pizza: <LocalPizzaOutlinedIcon sx={iconStyle} />,
+  Desszert: <CookieOutlined sx={iconStyle} />,
+  Menü: <FastfoodOutlined sx={iconStyle} />,
+  Ital: <LocalBarOutlined sx={iconStyle} />,
+  Kávé: <EmojiFoodBeverageOutlinedIcon sx={iconStyle} />,
   Egyéb: <MoreHorizIcon sx={iconStyle} />,
 };
 
@@ -99,7 +97,9 @@ const Dashboard: React.FC = () => {
     { itemId: number; quantity: number }[]
   >([]);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [orderId, setOrderId] = useState('');
+  const [orderId, setOrderId] = useState("");
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
+  const [tokenRefreshed, setTokenRefreshed] = useState(false); // Add state to track token refresh
 
   const handleCategoryClick = (category: string | null) => {
     setSelectedCategory(category);
@@ -146,20 +146,24 @@ const Dashboard: React.FC = () => {
       0
     );
   };
-  const [isUnauthorized, setIsUnauthorized] = useState(false);
 
   useEffect(() => {
     const validateAndFetchData = async () => {
       const isValidToken = await checkToken(); // Validate the token
-      console.log(isValidToken);
+      console.log("Token is valid:", isValidToken);
       if (!isValidToken) {
         console.error("Invalid token. Redirecting to login...");
-        window.location.href = "/login"; // Redirect to login if the token is invalid
+        //window.location.href = "/login"; // Redirect to login if the token is invalid
         return;
       }
-  
+
+      if (!tokenRefreshed) {
+        await refreshToken(); // Refresh the token
+        setTokenRefreshed(true); // Set the flag to true after refreshing the token
+      }
+
       const token = localStorage.getItem("token");
-  
+
       axios
         .get("https://localhost:5000/api/MenuItems", {
           headers: {
@@ -177,7 +181,11 @@ const Dashboard: React.FC = () => {
         })
         .catch((error) => {
           console.error("Hiba történt:", error);
-          if (error.response && error.response.status === 403 && !isUnauthorized) {
+          if (
+            error.response &&
+            error.response.status === 403 &&
+            !isUnauthorized
+          ) {
             setIsUnauthorized(true);
           } else {
             setError(error.message);
@@ -185,10 +193,10 @@ const Dashboard: React.FC = () => {
           setLoading(false);
         });
     };
-  
+
     validateAndFetchData(); // Call the function
-  }, [isUnauthorized]);
-  
+  }, [isUnauthorized, tokenRefreshed]);
+
   if (loading)
     return (
       <Box
@@ -200,7 +208,7 @@ const Dashboard: React.FC = () => {
         <CircularProgress size={120} sx={{ color: "#bfa181" }} />
       </Box>
     );
-  
+
   if (isUnauthorized)
     return (
       <Box
@@ -210,7 +218,9 @@ const Dashboard: React.FC = () => {
         height="100vh"
       >
         <ThemeProvider theme={darkTheme}>
-        <Alert severity="warning">Az oldal használatához magasabb jogosultság szükséges!</Alert>
+          <Alert severity="warning">
+            Az oldal használatához magasabb jogosultság szükséges!
+          </Alert>
         </ThemeProvider>
       </Box>
     );
@@ -278,27 +288,27 @@ const Dashboard: React.FC = () => {
     setFinalizedOrders(orderList);
 
     axios
-      .get("https://localhost:5000/api/Cards/GetCustomerIdByCardId/"+cId)
+      .get("https://localhost:5000/api/Cards/GetCustomerIdByCardId/" + cId)
       .then((response) => {
         console.log(response.data);
         if (!isNaN(response.data)) {
-          axios.post("https://localhost:5000/api/Orders", {
-            customerId: response.data,
-            employeeId: 1,
-            menuItems: orders.map((orderItem) => ({
-              menuItemId: orderItem.itemId,
-              quantity: orderItem.quantity,
-            })),
-          })
-          .then((response) => {
-            console.log("Order submitted successfully:", response.data);
-            setOrderId(response.data.orderId);
-            setDialogOpen(true);
-          })
-          .catch((error) => {
-            console.error("Error submitting order:", error);
-          });
-          
+          axios
+            .post("https://localhost:5000/api/Orders", {
+              customerId: response.data,
+              employeeId: 1,
+              menuItems: orders.map((orderItem) => ({
+                menuItemId: orderItem.itemId,
+                quantity: orderItem.quantity,
+              })),
+            })
+            .then((response) => {
+              console.log("Order submitted successfully:", response.data);
+              setOrderId(response.data.orderId);
+              setDialogOpen(true);
+            })
+            .catch((error) => {
+              console.error("Error submitting order:", error);
+            });
         } else {
           console.error("Nincs ilyen felhasználó", response.data);
         }
@@ -309,14 +319,11 @@ const Dashboard: React.FC = () => {
         setError(error.message);
         setLoading(false);
       });
-      
   };
 
   const handleClose = () => {
     setDialogOpen(false);
   };
-
-
 
   return (
     <>
@@ -327,7 +334,7 @@ const Dashboard: React.FC = () => {
       >
         <Box
           sx={{
-            display: { xs: 'none', sm: 'none', md: 'none', lg: 'flex' },
+            display: { xs: "none", sm: "none", md: "none", lg: "flex" },
             flexDirection: { xs: "column", md: "row" },
             justifyContent: { xs: "center", md: "flex-start" },
             alignItems: "flex-start",
@@ -340,28 +347,26 @@ const Dashboard: React.FC = () => {
             backgroundColor: "#202938",
           }}
         >
-
           <Stack direction={{ xs: "row", md: "column" }} spacing={2}>
-            <IconButton
-              onClick={() => handleCategoryClick(null)}
-              
-            >
-              <AppsIcon sx={{
-                fontSize: 35,
-                color: "#d5d6d6",
-                "&:hover": {
-                  color: "#BFA181",
-                },
-                "&:active": {
-                  color: "#BFA181",
-                },
-              }}/>
+            <IconButton onClick={() => handleCategoryClick(null)}>
+              <AppsIcon
+                sx={{
+                  fontSize: 35,
+                  color: "#d5d6d6",
+                  "&:hover": {
+                    color: "#BFA181",
+                  },
+                  "&:active": {
+                    color: "#BFA181",
+                  },
+                }}
+              />
             </IconButton>
             {filteredCategories.map((category) => (
               <IconButton
                 key={category}
                 onClick={() => handleCategoryClick(category)}
-                sx={{iconStyle}}
+                sx={{ iconStyle }}
               >
                 {categoryIcons[category]}
               </IconButton>
@@ -393,7 +398,6 @@ const Dashboard: React.FC = () => {
           justifyContent={{ xs: "center", md: "flex-start" }}
           sx={{ height: "93%", p: 2 }}
         >
-
           <Card
             sx={{
               width: {
@@ -453,7 +457,8 @@ const Dashboard: React.FC = () => {
                       {categoryIcons[orderItem.category]}
                     </ListItemAvatar>
                     <Typography variant="body2" color="#e7e6dd" fontSize={16}>
-                      {orderItem.name} x{orderItem.quantity} <br /> {orderItem.price * orderItem.quantity} Ft
+                      {orderItem.name} x{orderItem.quantity} <br />{" "}
+                      {orderItem.price * orderItem.quantity} Ft
                     </Typography>
                   </ListItem>
                 ))}
@@ -470,7 +475,7 @@ const Dashboard: React.FC = () => {
                 sx={{
                   m: 2,
                   backgroundColor: "#BFA181",
-                  width: "80%"
+                  width: "80%",
                 }}
                 onClick={handleOpenDialog}
               >
@@ -527,15 +532,19 @@ const Dashboard: React.FC = () => {
                     image={item.imagePath}
                     alt="Kép"
                   />
-                  <CardContent sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      flexGrow: 1,
+                    }}
+                  >
                     <Typography mb={2}>{item.description}</Typography>
-                    <Box sx={{ mt: 'auto' }}>
+                    <Box sx={{ mt: "auto" }}>
                       <Typography fontWeight="bold">
                         {item.isAvailable ? "Elérhető" : "Nem elérhető"}
                       </Typography>
-                      <Typography fontWeight="bold">
-                        {item.price} Ft
-                      </Typography>
+                      <Typography fontWeight="bold">{item.price} Ft</Typography>
                     </Box>
                   </CardContent>
                   <CardActions
@@ -627,29 +636,32 @@ const Dashboard: React.FC = () => {
           </DialogActions>
         </Dialog>
         <Dialog
-        open={dialogOpen}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Sikeres rendelés leadás"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-          <Typography>A rendelés leadva!</Typography>
-          <Typography>Rendelési szám: {orderId}</Typography>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => {
-        handleClose();
-        window.location.reload();
-      }} autoFocus>
-            Rendben
-          </Button>
-        </DialogActions>
-      </Dialog>
+          open={dialogOpen}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Sikeres rendelés leadás"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <Typography>A rendelés leadva!</Typography>
+              <Typography>Rendelési szám: {orderId}</Typography>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                handleClose();
+                window.location.reload();
+              }}
+              autoFocus
+            >
+              Rendben
+            </Button>
+          </DialogActions>
+        </Dialog>
       </ThemeProvider>
     </>
   );

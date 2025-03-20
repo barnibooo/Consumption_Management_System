@@ -1,5 +1,5 @@
 export const refreshToken = async () => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("refreshToken");
   if (!token) {
     return;
   }
@@ -14,8 +14,11 @@ export const refreshToken = async () => {
 
   if (response.ok) {
     const data = await response.json();
-    localStorage.setItem("token", data.newToken);
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("refreshToken", data.refreshToken);
+    console.log("Token refreshed");
+    console.log(data.refreshToken);
   } else {
-    window.location.href = "/login.html";
+    //window.location.href = "/login";
   }
 };
