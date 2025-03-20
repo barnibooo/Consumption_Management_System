@@ -13,6 +13,7 @@ namespace CMS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = "AdminOrRestaurantOnly")]
     public class MenuItemsController : ControllerBase
     {
         private readonly CMSContext _context;

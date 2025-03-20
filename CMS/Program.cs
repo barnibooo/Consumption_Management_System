@@ -67,6 +67,8 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("RestaurantOnly", policy => policy.RequireRole(nameof(Roles.RestaurantAssistant)));
     options.AddPolicy("TicketOnly", policy => policy.RequireRole(nameof(Roles.TicketAssistant)));
+        options.AddPolicy("AdminOrRestaurantOnly", policy =>
+            policy.RequireRole(nameof(Roles.Admin), nameof(Roles.RestaurantAssistant)));
 
 });
 

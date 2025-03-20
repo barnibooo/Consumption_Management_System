@@ -277,6 +277,32 @@ const Dashboard: React.FC = () => {
     setDialogOpen(false);
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    console.log("bármi");
+
+    axios
+      .get("https://localhost:5000/api/MenuItems", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        if (Array.isArray(response.data)) {
+          setMenuItems(response.data);
+        } else {
+          console.error("Hibás API válasz: nem tömb", response.data);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Hiba történt:", error);
+        setError(error.message);
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <>
       <Box
