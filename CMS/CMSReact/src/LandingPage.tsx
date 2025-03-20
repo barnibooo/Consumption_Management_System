@@ -8,11 +8,9 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import Navbar from "./Navbar";
 import { useEffect, useState } from "react";
 import { checkToken } from "./AuthService";
 import { parseJwt } from "./JWTParser";
-
 
 const darkTheme = createTheme({
   palette: {
@@ -67,9 +65,9 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-
     const handleAuth = async () => {
       const isValid = await checkToken();
+
       if (!isValid) {
         window.location.href = "/login";
         return;
@@ -81,7 +79,7 @@ function App() {
         setRole(parsedToken.role);
         setIsLoading(false);
       } else {
-        window.location.href = "/login.html";
+        window.location.href = "/login";
       }
     };
 

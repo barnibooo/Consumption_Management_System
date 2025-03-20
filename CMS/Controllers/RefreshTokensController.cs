@@ -97,11 +97,45 @@ public class AuthController : ControllerBase
         });
     }
     [HttpPost("Checktoken")]
-   [Authorize]
+    [Authorize]
     public IActionResult CheckToken()
     {
+        var authHeader = Request.Headers["Authorization"].ToString();
+        if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+        {
+            return Unauthorized("Authorization header is missing or invalid.");
+        }
+
+        var token = authHeader.Substring("Bearer ".Length).Trim();
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+
+        try
+        {
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = _configuration["Jwt:Issuer"],
+                ValidAudience = _configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ClockSkew = TimeSpan.Zero // Ensure no additional time is added to the token's expiration
+            }, out SecurityToken validatedToken);
+        }
+        catch (SecurityTokenExpiredException)
+        {
+            return Unauthorized("Token has expired.");
+        }
+        catch (Exception)
+        {
+            return Unauthorized("Invalid token.");
+        }
+
         return Ok(new { message = "Token is valid." });
     }
+
 
 
     [HttpPost("logout")]
@@ -126,7 +160,6 @@ public class AuthController : ControllerBase
         return Ok(new { message = "Logged out successfully." });
     }
 
-
     private string GenerateJwtToken(Employee user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -136,9 +169,9 @@ public class AuthController : ControllerBase
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
-            }),
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, user.Role.ToString())
+        }),
             Expires = DateTime.UtcNow.AddMinutes(_configuration.GetValue<int>("Jwt:ExpireMinutes")),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             Issuer = _configuration["Jwt:Issuer"],
