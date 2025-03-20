@@ -78,11 +78,13 @@ const Dashboard: React.FC = () => {
   const [admissionItems, setAdmissionItems] = useState<admissionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [orders, setOrders] = useState<ticketItem[]>([]);
   const [ordersa, setOrdersa] = useState<admissionItem[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [cardId, setCardId] = useState<string | null>(null);
+// Your useEffect and other logic here
   const [finalizedOrders, setFinalizedOrders] = useState<
     { ticketId: number }[]
   >([]);
@@ -153,64 +155,107 @@ const Dashboard: React.FC = () => {
     return ticketTotal + admissionTotal;
   };
 
-  useEffect(() => {
-    const fetchTickets = axios.get("https://localhost:5000/api/Tickets");
-    const fetchAdmissions = axios.get("https://localhost:5000/api/Admissions");
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  console.log("Token:", token);
 
-    Promise.all([fetchTickets, fetchAdmissions])
-      .then(([ticketsResponse, admissionsResponse]) => {
-        if (Array.isArray(ticketsResponse.data)) {
-          setticketItems(ticketsResponse.data);
-          console.log("jegyeshalal", ticketsResponse.data);
-        } else {
-          console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
-        }
-        if (Array.isArray(admissionsResponse.data)) {
-          setAdmissionItems(admissionsResponse.data);
-          console.log("A3sdewdxexc", admissionsResponse.data);
-        } else {
-          console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
-        }
+  const fetchTickets = axios.get("https://localhost:5000/api/Tickets", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-        if (Array.isArray(ticketsResponse.data)) {
-          const tickets = ticketsResponse.data.map((ticket: ticketItem) => ({
-            ticketId: ticket.ticketId,
-            ticketName: ticket.ticketName,
-            category: ticket.category,
-            price: ticket.price,
-            description: ticket.description,
-            isAvailable: ticket.isAvailable,
-            imagePath: ticket.imagePath,
-          }));
-        } else {
-          console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
-        }
-        console.log("Tickets:", admissionsResponse.data);
-        if (Array.isArray(admissionsResponse.data)) {
-          const admissions = admissionsResponse.data.map(
-            (admission: admissionItem) => ({
-              admissionId: admission.admissionId,
-              admissionName: admission.admissionName,
-              category: admission.category,
-              price: admission.price,
-              description: admission.description,
-              isAvailable: admission.isAvailable,
-              imagePath: admission.imagePath,
-            })
-          );
-        } else {
-          console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
-        }
+  const fetchAdmissions = axios.get("https://localhost:5000/api/Admissions", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Hiba történt:", error);
+  Promise.all([fetchTickets, fetchAdmissions])
+    .then(([ticketsResponse, admissionsResponse]) => {
+      if (Array.isArray(ticketsResponse.data)) {
+        setticketItems(ticketsResponse.data);
+        console.log("jegyeshalal", ticketsResponse.data);
+      } else {
+        console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
+      }
+
+      if (Array.isArray(admissionsResponse.data)) {
+        setAdmissionItems(admissionsResponse.data);
+        console.log("A3sdewdxexc", admissionsResponse.data);
+      } else {
+        console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
+      }
+
+      if (Array.isArray(ticketsResponse.data)) {
+        const tickets = ticketsResponse.data.map((ticket: ticketItem) => ({
+          ticketId: ticket.ticketId,
+          ticketName: ticket.ticketName,
+          category: ticket.category,
+          price: ticket.price,
+          description: ticket.description,
+          isAvailable: ticket.isAvailable,
+          imagePath: ticket.imagePath,
+        }));
+      } else {
+        console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
+      }
+
+      if (Array.isArray(admissionsResponse.data)) {
+        const admissions = admissionsResponse.data.map(
+          (admission: admissionItem) => ({
+            admissionId: admission.admissionId,
+            admissionName: admission.admissionName,
+            category: admission.category,
+            price: admission.price,
+            description: admission.description,
+            isAvailable: admission.isAvailable,
+            imagePath: admission.imagePath,
+          })
+        );
+      } else {
+        console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
+      }
+
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error("Hiba történt:", error);
+      if (error.response && error.response.status === 403 && !isUnauthorized) {
+        setIsUnauthorized(true);
+      } else {
         setError(error.message);
-        setLoading(false);
-      });
-  }, []);
+      }
+      setLoading(false);
+    });
+}, [isUnauthorized]);
+if (loading)
+  return (
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      height="100vh"
+    >
+      <CircularProgress size={120} sx={{ color: "#bfa181" }} />
+    </Box>
+  );
 
+if (isUnauthorized)
+  return (
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      height="100vh"
+    >
+      <ThemeProvider theme={darkTheme}>
+        <Alert severity="warning">
+          Az oldal használatához magasabb jogosultság szükséges!
+        </Alert>
+      </ThemeProvider>
+    </Box>
+  );
   if (loading)
     return (
       <Box
@@ -240,6 +285,7 @@ const Dashboard: React.FC = () => {
         </Box>
       </ThemeProvider>
     );
+
 
   var l = admissionItems.length;
 
@@ -331,6 +377,7 @@ const Dashboard: React.FC = () => {
   };
 
   const hasBelepoInOrder = orders.some((item) => item.category === "Belépő");
+
 
   return (
     <>
