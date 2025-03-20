@@ -46,6 +46,8 @@ import {
   DialogActions,
 } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
+import { checkToken } from "./AuthService"; // Import the checkToken function
+
 
 const darkTheme = createTheme({
   palette: {
@@ -147,32 +149,44 @@ const Dashboard: React.FC = () => {
   const [isUnauthorized, setIsUnauthorized] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const validateAndFetchData = async () => {
+      const isValidToken = await checkToken(); // Validate the token
+      console.log(isValidToken);
+      if (!isValidToken) {
+        console.error("Invalid token. Redirecting to login...");
+        window.location.href = "/login"; // Redirect to login if the token is invalid
+        return;
+      }
   
-    axios
-      .get("https://localhost:5000/api/MenuItems", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-        if (Array.isArray(response.data)) {
-          setMenuItems(response.data);
-        } else {
-          console.error("Hibás API válasz: nem tömb", response.data);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Hiba történt:", error);
-        if (error.response && error.response.status === 403 && !isUnauthorized) {
-          setIsUnauthorized(true);
-        } else {
-          setError(error.message);
-        }
-        setLoading(false);
-      });
+      const token = localStorage.getItem("token");
+  
+      axios
+        .get("https://localhost:5000/api/MenuItems", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          console.log(response.data);
+          if (Array.isArray(response.data)) {
+            setMenuItems(response.data);
+          } else {
+            console.error("Hibás API válasz: nem tömb", response.data);
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Hiba történt:", error);
+          if (error.response && error.response.status === 403 && !isUnauthorized) {
+            setIsUnauthorized(true);
+          } else {
+            setError(error.message);
+          }
+          setLoading(false);
+        });
+    };
+  
+    validateAndFetchData(); // Call the function
   }, [isUnauthorized]);
   
   if (loading)

@@ -152,11 +152,15 @@ public class AuthController : ControllerBase
 
     private RefreshToken GenerateRefreshToken(int userId)
     {
+        var utcPlusOneTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+        var expirationTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow.AddDays(_configuration.GetValue<int>("Jwt:RefreshExpireDays")), utcPlusOneTimeZone);
+
         return new RefreshToken
         {
             Token = Guid.NewGuid().ToString(),
-            Expires = DateTime.UtcNow.AddDays(_configuration.GetValue<int>("Jwt:RefreshExpireDays")),
+            Expires = expirationTime,
             EmployeeId = userId
         };
     }
+
 }
