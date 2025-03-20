@@ -22,12 +22,24 @@ const darkTheme = createTheme({
   },
 });
 
+interface Ticket {
+  ticketId: number;
+  ticketName: string;
+}
+
+interface Admission {
+  admissionId: number;
+  admissionName: string;
+}
+
 interface Customer {
+  customerId: number;
+  cardId: string;
   name: string;
   createdAt: string;
-  createdBy: string;
-  tickets: string[];
-  admissions: string[];
+  createdBy: number;
+  tickets: Ticket[];
+  admissions: Admission[];
 }
 
 function App() {
@@ -184,8 +196,9 @@ function App() {
                 fontWeight: 500,
                 textAlign: "center",
               }}
-            />
-            dfs
+            >
+              {customer ? `${customer.name}` : ""}
+            </Typography>
             <Typography
               variant="h6"
               sx={{
@@ -197,7 +210,30 @@ function App() {
                 textAlign: "center",
               }}
             >
-              gfhfgh
+              {customer
+                ? customer.tickets.map((ticket) => (
+                    <div key={ticket.ticketId}>{ticket.ticketName}</div>
+                  ))
+                : "N/A"}
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                color: "text.secondary",
+                marginTop: "10px",
+                marginBottom: "10px",
+                textIndent: "20px",
+                fontWeight: 300,
+                textAlign: "center",
+              }}
+            >
+              {customer
+                ? customer.admissions.map((admission) => (
+                    <div key={admission.admissionId}>
+                      {admission.admissionName}
+                    </div>
+                  ))
+                : "N/A"}
             </Typography>
           </CardContent>
           <CardActions></CardActions>
