@@ -142,7 +142,7 @@ function App() {
                 {cardContent(
                   "/img/landing/ticketcheck_temp.png",
                   "Jegyellenőrzés",
-                  "ticketvalidator"
+                  "ticketvalidation"
                 )}
               </Card>
             </Box>
@@ -208,7 +208,7 @@ function App() {
                 {cardContent(
                   "/img/landing/checkout_temp.png",
                   "Vendég munkamenet zárása",
-                  "guestcheckout"
+                  "customercheckout"
                 )}
               </Card>
             </Box>
