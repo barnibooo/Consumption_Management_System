@@ -8,8 +8,8 @@ import { parseJwt } from "./JWTParser";
 const userRole = parseJwt(localStorage.getItem("token")!).role;
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+  <>
     <Navbar role={userRole} />
     <OrderPage />
-  </StrictMode>
+  </>
 );

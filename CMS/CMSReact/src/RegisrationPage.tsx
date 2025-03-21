@@ -5,11 +5,43 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Button, TextField, useMediaQuery, useTheme } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import { checkToken } from "./AuthService"; // Import the checkToken function
+import { refreshToken } from "./RefreshService"; // Import the refreshToken function
+import axios from "axios";
+import { useState, useEffect } from "react";
 
 function RegistrationCard() {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("lg"));
+  const [tokenValidated, setTokenValidated] = useState(false);
+  const [tokenRefreshed, setTokenRefreshed] = useState(false);
+  const [dataFetched, setDataFetched] = useState(false);
 
+  useEffect(() => {
+    const validateAndFetchData = async () => {
+      if (!tokenValidated) {
+        const isValidToken = await checkToken();
+
+        if (!isValidToken) {
+          console.error("Invalid token. Redirecting to login...");
+          window.location.href = "/login";
+          return;
+        }
+        setTokenValidated(true);
+      }
+
+      if (!tokenRefreshed) {
+        await refreshToken();
+        setTokenRefreshed(true);
+
+        // Add a delay before proceeding
+      }
+
+      setDataFetched(true);
+    };
+
+    validateAndFetchData();
+  }, []);
   return (
     <Box
       sx={{

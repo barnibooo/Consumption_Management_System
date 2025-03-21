@@ -33,6 +33,8 @@ import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
 import { createTheme } from "@mui/material/styles";
 import { Category } from "@mui/icons-material";
+import { checkToken } from "./AuthService"; // Import the checkToken function
+import { refreshToken } from "./RefreshService"; // Import the refreshToken function
 
 const darkTheme = createTheme({
   palette: {
@@ -93,6 +95,16 @@ const Dashboard: React.FC = () => {
   const [openSuccessDialogs, setOpenSuccessDialogs] = useState<boolean[]>([]);
   const [ids, setIds] = useState<string[]>([]);
   const [openDialogs, setOpenDialogs] = useState<boolean[]>([]);
+
+  useEffect(() => {
+    const initialize = async () => {
+      const tokenRefreshed = await refreshToken();
+      if (tokenRefreshed) {
+      }
+    };
+
+    initialize();
+  }, []);
 
   const handleCategoryClick = (category: string | null) => {
     setSelectedCategory(category);
