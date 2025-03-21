@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Models;
 using CMS.Dtos;
-
+using Microsoft.AspNetCore.Authorization;
 namespace CMS.Controllers
 {
     [Route("api/[controller]")]
@@ -82,31 +82,9 @@ namespace CMS.Controllers
 
         // POST: api/Employees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<IActionResult> CreateEmployee([FromBody] EmployeePostDto EmployeePostDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState); // 400-as válasz, ha a DTO nem érvényes
-            }
+       
 
-            var employee = new Employee
-            {
-                FirstName = EmployeePostDto.FirstName,
-                LastName = EmployeePostDto.LastName,
-                Role = EmployeePostDto.Role,
-                Username = EmployeePostDto.UserName,
-                PasswordHash = EmployeePostDto.PasswordHash,
-            };
 
-            _context.Employees.Add(employee);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetEmployeeById), new { id = employee.EmployeeId }, new
-            {
-                message = "Employee created successfully.",
-            });
-        }
 
         private bool EmployeeExists(int id)
         {

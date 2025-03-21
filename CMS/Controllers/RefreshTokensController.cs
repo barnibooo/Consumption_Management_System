@@ -22,7 +22,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    //[Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> Register([FromBody] RegisterDto model)
     {
         if (await _context.Employees.AnyAsync(u => u.Username == model.Username))
