@@ -88,7 +88,7 @@ function App() {
   }, []);
 
   if (isLoading) {
-    return null; // Render nothing while checking the token
+    return null;
   }
 
   return (

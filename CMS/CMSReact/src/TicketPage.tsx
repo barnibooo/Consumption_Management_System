@@ -86,7 +86,7 @@ const Dashboard: React.FC = () => {
   const [ordersa, setOrdersa] = useState<admissionItem[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [cardId, setCardId] = useState<string | null>(null);
-// Your useEffect and other logic here
+  // Your useEffect and other logic here
   const [finalizedOrders, setFinalizedOrders] = useState<
     { ticketId: number }[]
   >([]);
@@ -167,107 +167,111 @@ const Dashboard: React.FC = () => {
     return ticketTotal + admissionTotal;
   };
 
-useEffect(() => {
-  const token = localStorage.getItem("token");
-  console.log("Token:", token);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    console.log("Token:", token);
 
-  const fetchTickets = axios.get("https://localhost:5000/api/Tickets", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  const fetchAdmissions = axios.get("https://localhost:5000/api/Admissions", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  Promise.all([fetchTickets, fetchAdmissions])
-    .then(([ticketsResponse, admissionsResponse]) => {
-      if (Array.isArray(ticketsResponse.data)) {
-        setticketItems(ticketsResponse.data);
-        console.log("jegyeshalal", ticketsResponse.data);
-      } else {
-        console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
-      }
-
-      if (Array.isArray(admissionsResponse.data)) {
-        setAdmissionItems(admissionsResponse.data);
-        console.log("A3sdewdxexc", admissionsResponse.data);
-      } else {
-        console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
-      }
-
-      if (Array.isArray(ticketsResponse.data)) {
-        const tickets = ticketsResponse.data.map((ticket: ticketItem) => ({
-          ticketId: ticket.ticketId,
-          ticketName: ticket.ticketName,
-          category: ticket.category,
-          price: ticket.price,
-          description: ticket.description,
-          isAvailable: ticket.isAvailable,
-          imagePath: ticket.imagePath,
-        }));
-      } else {
-        console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
-      }
-
-      if (Array.isArray(admissionsResponse.data)) {
-        const admissions = admissionsResponse.data.map(
-          (admission: admissionItem) => ({
-            admissionId: admission.admissionId,
-            admissionName: admission.admissionName,
-            category: admission.category,
-            price: admission.price,
-            description: admission.description,
-            isAvailable: admission.isAvailable,
-            imagePath: admission.imagePath,
-          })
-        );
-      } else {
-        console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
-      }
-
-      setLoading(false);
-    })
-    .catch((error) => {
-      console.error("Hiba történt:", error);
-      if (error.response && error.response.status === 403 && !isUnauthorized) {
-        setIsUnauthorized(true);
-      } else {
-        setError(error.message);
-      }
-      setLoading(false);
+    const fetchTickets = axios.get("https://localhost:5000/api/Tickets", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
-}, [isUnauthorized]);
-if (loading)
-  return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      height="100vh"
-    >
-      <CircularProgress size={120} sx={{ color: "#bfa181" }} />
-    </Box>
-  );
 
-if (isUnauthorized)
-  return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      height="100vh"
-    >
-      <ThemeProvider theme={darkTheme}>
-        <Alert severity="warning">
-          Az oldal használatához magasabb jogosultság szükséges!
-        </Alert>
-      </ThemeProvider>
-    </Box>
-  );
+    const fetchAdmissions = axios.get("https://localhost:5000/api/Admissions", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    Promise.all([fetchTickets, fetchAdmissions])
+      .then(([ticketsResponse, admissionsResponse]) => {
+        if (Array.isArray(ticketsResponse.data)) {
+          setticketItems(ticketsResponse.data);
+          console.log("jegyeshalal", ticketsResponse.data);
+        } else {
+          console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
+        }
+
+        if (Array.isArray(admissionsResponse.data)) {
+          setAdmissionItems(admissionsResponse.data);
+          console.log("A3sdewdxexc", admissionsResponse.data);
+        } else {
+          console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
+        }
+
+        if (Array.isArray(ticketsResponse.data)) {
+          const tickets = ticketsResponse.data.map((ticket: ticketItem) => ({
+            ticketId: ticket.ticketId,
+            ticketName: ticket.ticketName,
+            category: ticket.category,
+            price: ticket.price,
+            description: ticket.description,
+            isAvailable: ticket.isAvailable,
+            imagePath: ticket.imagePath,
+          }));
+        } else {
+          console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
+        }
+
+        if (Array.isArray(admissionsResponse.data)) {
+          const admissions = admissionsResponse.data.map(
+            (admission: admissionItem) => ({
+              admissionId: admission.admissionId,
+              admissionName: admission.admissionName,
+              category: admission.category,
+              price: admission.price,
+              description: admission.description,
+              isAvailable: admission.isAvailable,
+              imagePath: admission.imagePath,
+            })
+          );
+        } else {
+          console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
+        }
+
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Hiba történt:", error);
+        if (
+          error.response &&
+          error.response.status === 403 &&
+          !isUnauthorized
+        ) {
+          setIsUnauthorized(true);
+        } else {
+          setError(error.message);
+        }
+        setLoading(false);
+      });
+  }, [isUnauthorized]);
+  if (loading)
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <CircularProgress size={120} sx={{ color: "#bfa181" }} />
+      </Box>
+    );
+
+  if (isUnauthorized)
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <ThemeProvider theme={darkTheme}>
+          <Alert severity="warning">
+            Az oldal használatához magasabb jogosultság szükséges!
+          </Alert>
+        </ThemeProvider>
+      </Box>
+    );
   if (loading)
     return (
       <Box
@@ -297,7 +301,6 @@ if (isUnauthorized)
         </Box>
       </ThemeProvider>
     );
-
 
   var l = admissionItems.length;
 
@@ -360,7 +363,6 @@ if (isUnauthorized)
   const handleSubmitOrder = () => {
     const customerData = {
       cardId: cardId,
-      name: "Minta Név",
       createdBy: 1,
       ticketsIds: orders.map((ticketItem) => ({
         ticketId: ticketItem.ticketId,
@@ -389,7 +391,6 @@ if (isUnauthorized)
   };
 
   const hasBelepoInOrder = orders.some((item) => item.category === "Belépő");
-
 
   return (
     <>

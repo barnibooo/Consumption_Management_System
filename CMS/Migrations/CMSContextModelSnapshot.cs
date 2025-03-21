@@ -50,16 +50,6 @@ namespace CMS.Migrations
                     b.ToTable("Admissions");
                 });
 
-            modelBuilder.Entity("CMS.Models.Card", b =>
-                {
-                    b.Property<string>("CardId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("CardId");
-
-                    b.ToTable("Card");
-                });
-
             modelBuilder.Entity("CMS.Models.Customer", b =>
                 {
                     b.Property<int>("CustomerId")
@@ -78,10 +68,6 @@ namespace CMS.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.HasKey("CustomerId");
 

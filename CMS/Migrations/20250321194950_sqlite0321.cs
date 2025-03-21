@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CMS.Migrations
 {
     /// <inheritdoc />
-    public partial class _0308sqllite : Migration
+    public partial class sqlite0321 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,24 +30,12 @@ namespace CMS.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Card",
-                columns: table => new
-                {
-                    CardId = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Card", x => x.CardId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Customers",
                 columns: table => new
                 {
                     CustomerId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     CardId = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
                     CreatedBy = table.Column<int>(type: "INTEGER", nullable: false)
@@ -292,9 +280,6 @@ namespace CMS.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Card");
-
             migrationBuilder.DropTable(
                 name: "CustomerAdmissions");
 

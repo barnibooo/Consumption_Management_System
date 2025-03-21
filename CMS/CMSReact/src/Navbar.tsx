@@ -17,6 +17,7 @@ import {
 import BarChartIcon from "@mui/icons-material/BarChart";
 import MenuIcon from "@mui/icons-material/Menu";
 import { createTheme } from "@mui/material/styles";
+import { parseJwt } from "./JWTParser"; // Import the parseJwt function
 
 interface NavbarProps {
   role: string | null;
@@ -28,8 +29,13 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
   const [monogram, setMonogram] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedMonogram = localStorage.getItem("monogram");
-    setMonogram(storedMonogram);
+    const token = localStorage.getItem("token");
+    if (token) {
+      const parsedToken = parseJwt(token);
+      if (parsedToken && parsedToken.Monogram) {
+        setMonogram(parsedToken.Monogram);
+      }
+    }
   }, []);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -227,7 +233,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
               variant="h6"
               noWrap
               component="a"
-              href=""
+              href="/"
               sx={{
                 mr: 2,
                 display: { xs: "flex", md: "none" },

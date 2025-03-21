@@ -37,7 +37,6 @@ namespace CMS.Controllers
             {
                 CustomerId = customer.CustomerId,
                 CardId = customer.CardId,
-                Name = customer.Name,
                 CreatedAt = customer.CreatedAt,
                 CreatedBy = customer.CreatedBy,
                 Tickets = customer.CustomerTickets.Select(ct => new CustomerTicketsDto
@@ -77,7 +76,6 @@ namespace CMS.Controllers
             // DTO-ba mapeljük az adatokat
             var customerGetIdDto = new CustomerGetIdDto
             {
-                Name = customer.Name,
                 Tickets = customer.CustomerTickets.Select(ct => new CustomerTicketsDto
                 {
                     TicketName = ct.Tickets.TicketName
@@ -173,7 +171,6 @@ namespace CMS.Controllers
             var customer = new Customer
             {
                 CardId = customerpostdto.CardId,
-                Name = customerpostdto.Name,
                 CreatedBy = customerpostdto.createdBy,
                 CreatedAt = DateTime.Now,
                 IsActive = true,

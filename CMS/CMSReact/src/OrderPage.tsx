@@ -155,7 +155,6 @@ const Dashboard: React.FC = () => {
         const isValidToken = await checkToken();
 
         if (!isValidToken) {
-          console.error("Invalid token. Redirecting to login...");
           window.location.href = "/login";
           return;
         }
@@ -165,8 +164,6 @@ const Dashboard: React.FC = () => {
       if (!tokenRefreshed) {
         await refreshToken();
         setTokenRefreshed(true);
-
-        // Add a delay before proceeding
       }
 
       setDataFetched(true);

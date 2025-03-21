@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CMS.Migrations
 {
     [DbContext(typeof(CMSContext))]
-    [Migration("20250310183829_0310sqlitev1")]
-    partial class _0310sqlitev1
+    [Migration("20250321194950_sqlite0321")]
+    partial class sqlite0321
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,16 +53,6 @@ namespace CMS.Migrations
                     b.ToTable("Admissions");
                 });
 
-            modelBuilder.Entity("CMS.Models.Card", b =>
-                {
-                    b.Property<string>("CardId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("CardId");
-
-                    b.ToTable("Card");
-                });
-
             modelBuilder.Entity("CMS.Models.Customer", b =>
                 {
                     b.Property<int>("CustomerId")
@@ -81,10 +71,6 @@ namespace CMS.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.HasKey("CustomerId");
 

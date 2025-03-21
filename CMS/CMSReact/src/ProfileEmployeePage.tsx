@@ -13,6 +13,9 @@ import {
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { parseJwt } from "./JWTParser";
+import { refreshToken } from "./RefreshService";
+import { checkToken } from "./AuthService";
 
 const darkTheme = createTheme({
   palette: {
@@ -32,31 +35,37 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [monogram, setMonogram] = useState<string | null>(null);
+  const [tokenValidated, setTokenValidated] = useState(false);
 
   useEffect(() => {
-    const storedMonogram = localStorage.getItem("monogram");
-    setMonogram(storedMonogram);
-  }, []);
+    const initialize = async () => {
+      const isValidToken = await checkToken();
+      if (!isValidToken) {
+        console.error("Invalid token. Redirecting to login...");
+        window.location.href = "/login";
+        return;
+      }
 
-  useEffect(() => {
-    const refreshToken = localStorage.getItem("refreshToken");
-    if (refreshToken) {
-      axios
-        .get(`https://localhost:5000/api/Employees/${refreshToken}`)
-        .then((response) => {
-          console.log(response.data);
-          setEmployee(response.data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Hiba történt:", error);
-          setError(error.message);
-          setLoading(false);
-        });
-    } else {
-      setError("No refresh token found");
+      const tokenRefreshed = await refreshToken();
+      if (tokenRefreshed) {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const parsedToken = parseJwt(token);
+          if (parsedToken) {
+            setMonogram(parsedToken.monogram);
+            setEmployee({
+              firstName: parsedToken.FirstName,
+              lastName: parsedToken.LastName,
+              username: parsedToken.Username,
+              role: parsedToken.role,
+            });
+          }
+        }
+      }
       setLoading(false);
-    }
+    };
+
+    initialize();
   }, []);
 
   if (loading) {
@@ -92,23 +101,6 @@ function App() {
             marginTop: 2, // Add margin to the top
           }}
         >
-          <CardHeader
-            avatar={
-              <Avatar
-                sx={{ bgcolor: "#BFA181", color: "#d5d6d6" }}
-                aria-label="recipe"
-              >
-                {monogram}
-              </Avatar>
-            }
-            action={
-              <IconButton aria-label="settings">
-                <MoreVertIcon />
-              </IconButton>
-            }
-            title={employee?.username}
-            subheader={"Személyes adatok"}
-          />
           <CardMedia
             component="img"
             height="194"
@@ -126,7 +118,9 @@ function App() {
                 textAlign: "center",
               }}
             >
-              {employee ? `${employee.firstName} ${employee.lastName}` : "N/A"}
+              {employee
+                ? `${employee.firstName} ${employee.lastName}`
+                : "Hiba a lekérés során!"}
             </Typography>
             <Typography
               variant="h6"
@@ -139,7 +133,7 @@ function App() {
                 textAlign: "center",
               }}
             >
-              {employee?.role}
+              {"Beosztás: " + employee?.role}
             </Typography>
           </CardContent>
           <CardActions></CardActions>

@@ -22,7 +22,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    [Authorize(Policy = "AdminOnly")]
+    //[Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> Register([FromBody] RegisterDto model)
     {
         if (await _context.Employees.AnyAsync(u => u.Username == model.Username))
@@ -32,9 +32,9 @@ public class AuthController : ControllerBase
         if (!role)
             return BadRequest("Invalid role.");
 
-        var currentUserRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+      /*  var currentUserRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
         if (model.Role == Roles.Admin && currentUserRole != nameof(Roles.Admin))
-            return Unauthorized("Only admins can register admin users.");
+            return Unauthorized("Only admins can register admin users.");*/
 
         var user = new Employee
         {
@@ -68,8 +68,7 @@ public class AuthController : ControllerBase
         return Ok(new
         {
             Token = token,
-            RefreshToken = refreshToken.Token,
-            Monogram = (user.FirstName[0].ToString() + user.LastName[0].ToString()).ToUpper()
+            RefreshToken = refreshToken.Token
         });
     }
     [HttpPost("refreshToken")]
@@ -198,7 +197,11 @@ public class AuthController : ControllerBase
             Subject = new ClaimsIdentity(new[]
             {
             new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, user.Role.ToString())
+            new Claim(ClaimTypes.Role, user.Role.ToString()),
+            new Claim("EmployeeId", user.EmployeeId.ToString()),
+            new Claim("FirstName", user.FirstName.ToString()),
+            new Claim("LastName", user.LastName.ToString()),
+            new Claim("Monogram", (user.LastName[0].ToString() + user.FirstName[0].ToString()).ToUpper())
         }),
             Expires = DateTime.UtcNow.AddMinutes(_configuration.GetValue<int>("Jwt:ExpireMinutes")),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),

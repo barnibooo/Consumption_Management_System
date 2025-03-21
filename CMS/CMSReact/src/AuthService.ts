@@ -7,7 +7,6 @@ export const checkToken = async () => {
   }
 
   try {
-
     const response = await axios.post(
       "https://localhost:5000/api/Auth/Checktoken",
       {},
@@ -26,7 +25,6 @@ export const checkToken = async () => {
       return false;
     }
   } catch (error) {
-
     console.error("Token validation error:", error);
     return false;
   }
