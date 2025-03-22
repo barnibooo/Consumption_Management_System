@@ -4,7 +4,8 @@
     {
         //public int CustomerId { get; set; }
         public string CardId { get; set; }
-        public int createdBy { get; set; }
+        public string Name { get; set; }
+        public int CreatedBy { get; set; }
 
         public List<CustomerTicketsOnlyIdDto> TicketsIds { get; set; }
         public List<CustomerAdmissionOnlyIdDto> Admissions { get; set; }

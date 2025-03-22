@@ -37,6 +37,7 @@ namespace CMS.Controllers
             {
                 CustomerId = customer.CustomerId,
                 CardId = customer.CardId,
+                Name = customer.Name,
                 CreatedAt = customer.CreatedAt,
                 CreatedBy = customer.CreatedBy,
                 Tickets = customer.CustomerTickets.Select(ct => new CustomerTicketsDto
@@ -73,20 +74,25 @@ namespace CMS.Controllers
                 return NotFound(new { message = "Customer not found." });
             }
 
-            // DTO-ba mapeljük az adatokat
+            // Map the data to the DTO
             var customerGetIdDto = new CustomerGetIdDto
             {
+                Name = customer.Name,
+                CustomerId = customer.CustomerId,
+                CreatedAt = customer.CreatedAt,
                 Tickets = customer.CustomerTickets.Select(ct => new CustomerTicketsDto
                 {
+                    TicketId = ct.TicketId,
                     TicketName = ct.Tickets.TicketName
                 }).ToList(),
                 Admissions = customer.CustomerAdmissions.Select(ca => new CustomerAdmissionDto
                 {
+                    AdmissionId = ca.AdmissionId,
                     AdmissionName = ca.Admissions.AdmissionName
                 }).ToList()
             };
 
-            return Ok(customerGetIdDto); // 200 OK és a keresett adat
+            return Ok(customerGetIdDto); // 200 OK and the requested data
         }
 
 
@@ -140,7 +146,7 @@ namespace CMS.Controllers
                 return BadRequest(new { message = "A customer with the same CardId and IsActive = true already exists." });
             }
 
-            var employeeExists = await _context.Employees.AnyAsync(e => e.EmployeeId == customerpostdto.createdBy);
+            var employeeExists = await _context.Employees.AnyAsync(e => e.EmployeeId == customerpostdto.CreatedBy);
             if (!employeeExists)
             {
                 return BadRequest(new { message = "The CreatedBy ID does not exist in the Employee table." });
@@ -171,7 +177,8 @@ namespace CMS.Controllers
             var customer = new Customer
             {
                 CardId = customerpostdto.CardId,
-                CreatedBy = customerpostdto.createdBy,
+                Name = customerpostdto.Name,
+                CreatedBy = customerpostdto.CreatedBy,
                 CreatedAt = DateTime.Now,
                 IsActive = true,
                 CustomerTickets = new List<CustomerTicket>(),

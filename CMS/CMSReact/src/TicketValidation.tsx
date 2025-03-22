@@ -11,16 +11,23 @@ import {
   CardMedia,
   IconButton,
   TextField,
+  Alert,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import { format } from "date-fns";
 
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
   },
 });
+
+const formatDateTime = (dateTimeString: string) => {
+  const date = new Date(dateTimeString);
+  return format(date, "yyyy-MM-dd HH:mm");
+};
 
 interface Ticket {
   ticketId: number;
@@ -64,8 +71,13 @@ function App() {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Hiba történt:", error);
-        setError(error.message);
+        if (error.response && error.status === 404) {
+          setError("A megadott kártyaazonosító nem található!");
+        } else if (error.response && error.status === 401) {
+          setError("Az oldal használatához magasabb jogosultság szükséges!");
+        } else {
+          setError(error.message);
+        }
         setLoading(false);
       });
   };
@@ -75,7 +87,18 @@ function App() {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <ThemeProvider theme={darkTheme}>
+          <Alert severity="warning">{error}</Alert>
+        </ThemeProvider>
+      </Box>
+    );
   }
 
   return (
@@ -125,7 +148,7 @@ function App() {
           }}
           required
           id="outlined-search"
-          label="Felhasználónév"
+          label="Kártyaazonosító"
           type="search"
           margin="dense"
           value={customerId}
@@ -148,117 +171,116 @@ function App() {
           <SearchOutlinedIcon fontSize="inherit" />
         </IconButton>
       </Box>
-      <ThemeProvider theme={darkTheme}>
-        <Card
-          sx={{
-            bgcolor: "#202938",
-            color: "#d5d6d6",
-            width: {
-              xs: "100%",
-              sm: "70%",
-              md: "60%",
-              lg: "50%",
-              xl: "40%",
-            },
-            marginTop: 2, // Add margin to the top
-          }}
-        >
-          <CardHeader
-            avatar={
-              <Avatar
-                sx={{ bgcolor: "#BFA181", color: "#d5d6d6" }}
-                aria-label="recipe"
-              ></Avatar>
-            }
-            action={
-              <IconButton aria-label="settings">
-                <MoreVertIcon />
-              </IconButton>
-            }
-            title={
-              <Typography variant="h5" sx={{ color: "#d5d6d6" }}>
-                Teljes Név
+      {customer && (
+        <ThemeProvider theme={darkTheme}>
+          <Card
+            sx={{
+              bgcolor: "#202938",
+              color: "#d5d6d6",
+              width: {
+                xs: "100%",
+                sm: "70%",
+                md: "60%",
+                lg: "50%",
+                xl: "40%",
+              },
+              marginTop: 2, // Add margin to the top
+            }}
+          >
+            <CardHeader
+              avatar={
+                <Avatar
+                  sx={{ bgcolor: "#BFA181", color: "#d5d6d6" }}
+                  aria-label="recipe"
+                ></Avatar>
+              }
+              title={
+                <Typography variant="h5" sx={{ color: "#d5d6d6" }}>
+                  {customer?.name} #{customer?.customerId}
+                </Typography>
+              }
+              subheader={
+                <Typography variant="subtitle1" sx={{ color: "#d5d6d6" }}>
+                  Adatok
+                </Typography>
+              }
+            />
+            <CardMedia
+              component="img"
+              height="194"
+              image="/img/profile/profile_temp.png"
+            />
+            <CardContent>
+              <Typography
+                variant="h4"
+                sx={{
+                  color: "text.secondary",
+                  marginTop: "10px",
+                  marginBottom: "10px",
+                  textIndent: "20px",
+                  fontWeight: 400,
+                  textAlign: "left",
+                }}
+              >
+                {customer ? `Hello ${customer?.name}!` : ""}
               </Typography>
-            }
-            subheader={
-              <Typography variant="subtitle1" sx={{ color: "#d5d6d6" }}>
-                Személyes adatok
+              <Typography
+                variant="h6"
+                sx={{
+                  color: "text.secondary",
+                  marginTop: "10px",
+                  marginBottom: "10px",
+                  textIndent: "20px",
+                  fontWeight: 300,
+                  textAlign: "left",
+                }}
+              >
+                {customer
+                  ? `Belépés ideje: ${formatDateTime(customer.createdAt)}`
+                  : ""}
               </Typography>
-            }
-          />
-          <CardMedia
-            component="img"
-            height="194"
-            image="/img/profile/profile_temp.png"
-          />
-          <CardContent>
-            <Typography
-              variant="h4"
-              sx={{
-                color: "text.secondary",
-                marginTop: "10px",
-                marginBottom: "10px",
-                textIndent: "20px",
-                fontWeight: 400,
-                textAlign: "left",
-              }}
-            >
-              {customer ? `Hello ${customer.name}!` : ""}
-            </Typography>
-            <Typography
-              variant="h6"
-              sx={{
-                color: "text.secondary",
-                marginTop: "10px",
-                marginBottom: "10px",
-                textIndent: "20px",
-                fontWeight: 300,
-                textAlign: "left",
-              }}
-            >
-              {customer ? `Belépés ideje: ${customer.createdAt}` : ""}
-            </Typography>
-            <Typography
-              variant="h6"
-              sx={{
-                color: "text.secondary",
-                marginTop: "10px",
-                marginBottom: "10px",
-                textIndent: "20px",
-                fontWeight: 300,
-                textAlign: "left",
-              }}
-            >
-              {customer
-                ? customer.tickets.map((ticket) => (
-                    <div key={ticket.ticketId}>Jegy: {ticket.ticketName}</div>
-                  ))
-                : "N/A"}
-            </Typography>
-            <Typography
-              variant="h6"
-              sx={{
-                color: "text.secondary",
-                marginTop: "10px",
-                marginBottom: "10px",
-                textIndent: "20px",
-                fontWeight: 300,
-                textAlign: "left",
-              }}
-            >
-              Kiegészítő jegy(ek):
-              {customer
-                ? customer.admissions.map((admission) => (
-                    <li key={admission.admissionId}>
-                      {admission.admissionName}
-                    </li>
-                  ))
-                : "N/A"}
-            </Typography>
-          </CardContent>
-          <CardActions></CardActions>
-        </Card>
-      </ThemeProvider>
+              <Typography
+                variant="h6"
+                sx={{
+                  color: "text.secondary",
+                  marginTop: "10px",
+                  marginBottom: "10px",
+                  textIndent: "20px",
+                  fontWeight: 300,
+                  textAlign: "left",
+                }}
+              >
+                {customer
+                  ? customer.tickets.map((ticket) => (
+                      <div key={ticket.ticketId}>Jegy: {ticket.ticketName}</div>
+                    ))
+                  : "N/A"}
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  color: "text.secondary",
+                  marginTop: "10px",
+                  marginBottom: "10px",
+                  textIndent: "20px",
+                  fontWeight: 300,
+                  textAlign: "left",
+                }}
+              >
+                Kiegészítő jegy(ek):
+                {customer
+                  ? customer.admissions.map((admission) => (
+                      <li key={admission.admissionId}>
+                        {admission.admissionName}
+                      </li>
+                    ))
+                  : "N/A"}
+              </Typography>
+            </CardContent>
+            <CardActions></CardActions>
+          </Card>
+        </ThemeProvider>
+      )}
     </Box>
   );
 }

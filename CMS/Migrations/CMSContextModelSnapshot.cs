@@ -69,6 +69,10 @@ namespace CMS.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("CustomerId");
 
                     b.ToTable("Customers");
