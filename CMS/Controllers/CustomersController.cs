@@ -67,11 +67,11 @@ namespace CMS.Controllers
                 .ThenInclude(ct => ct.Tickets)
                 .Include(c => c.CustomerAdmissions)
                 .ThenInclude(ca => ca.Admissions)
-                .FirstOrDefaultAsync(ci => ci.CardId == cardid);
+                .FirstOrDefaultAsync(ci => ci.CardId == cardid && ci.IsActive);
 
             if (customer == null)
             {
-                return NotFound(new { message = "Customer not found." });
+                return NotFound(new { message = "Customer not found or is not active." });
             }
 
             // Map the data to the DTO
@@ -97,17 +97,23 @@ namespace CMS.Controllers
 
 
 
-        // PUT: api/Customers/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(int id, Customer customer)
+
+
+        [HttpPut("resetcardid/{cardid}")]
+        public async Task<IActionResult> PutCustomer(string cardid, [FromBody] CustomerIsActiveDto customerIsActiveDto)
         {
-            if (id != customer.CustomerId)
+            // Check if there is an active customer with the same cardId
+            var existingCustomer = await _context.Customers
+                .FirstOrDefaultAsync(c => c.CardId == cardid && c.IsActive);
+
+            if (existingCustomer == null)
             {
-                return BadRequest();
+                return NotFound(new { message = "Active customer with the given cardId not found." });
             }
 
-            _context.Entry(customer).State = EntityState.Modified;
+            // Update the IsActive field of the existing customer
+            existingCustomer.IsActive = customerIsActiveDto.IsActive;
+            _context.Entry(existingCustomer).State = EntityState.Modified;
 
             try
             {
@@ -115,7 +121,7 @@ namespace CMS.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CustomerExists(id))
+                if (!CustomerExists(existingCustomer.CustomerId))
                 {
                     return NotFound();
                 }
@@ -128,8 +134,11 @@ namespace CMS.Controllers
             return NoContent();
         }
 
-        // POST: api/Customers
-        // POST: api/Customers
+
+
+
+
+
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] CustomerPostDto customerpostdto)
         {
