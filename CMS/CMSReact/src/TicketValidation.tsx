@@ -168,17 +168,23 @@ function App() {
               <Avatar
                 sx={{ bgcolor: "#BFA181", color: "#d5d6d6" }}
                 aria-label="recipe"
-              >
-                {monogram}
-              </Avatar>
+              ></Avatar>
             }
             action={
               <IconButton aria-label="settings">
                 <MoreVertIcon />
               </IconButton>
             }
-            title={customer?.name}
-            subheader={"Személyes adatok"}
+            title={
+              <Typography variant="h5" sx={{ color: "#d5d6d6" }}>
+                Teljes Név
+              </Typography>
+            }
+            subheader={
+              <Typography variant="subtitle1" sx={{ color: "#d5d6d6" }}>
+                Személyes adatok
+              </Typography>
+            }
           />
           <CardMedia
             component="img"
@@ -187,17 +193,17 @@ function App() {
           />
           <CardContent>
             <Typography
-              variant="h5"
+              variant="h4"
               sx={{
                 color: "text.secondary",
                 marginTop: "10px",
                 marginBottom: "10px",
                 textIndent: "20px",
-                fontWeight: 500,
-                textAlign: "center",
+                fontWeight: 400,
+                textAlign: "left",
               }}
             >
-              {customer ? `${customer.name}` : ""}
+              {customer ? `Hello ${customer.name}!` : ""}
             </Typography>
             <Typography
               variant="h6"
@@ -207,12 +213,25 @@ function App() {
                 marginBottom: "10px",
                 textIndent: "20px",
                 fontWeight: 300,
-                textAlign: "center",
+                textAlign: "left",
+              }}
+            >
+              {customer ? `Belépés ideje: ${customer.createdAt}` : ""}
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                color: "text.secondary",
+                marginTop: "10px",
+                marginBottom: "10px",
+                textIndent: "20px",
+                fontWeight: 300,
+                textAlign: "left",
               }}
             >
               {customer
                 ? customer.tickets.map((ticket) => (
-                    <div key={ticket.ticketId}>{ticket.ticketName}</div>
+                    <div key={ticket.ticketId}>Jegy: {ticket.ticketName}</div>
                   ))
                 : "N/A"}
             </Typography>
@@ -224,14 +243,15 @@ function App() {
                 marginBottom: "10px",
                 textIndent: "20px",
                 fontWeight: 300,
-                textAlign: "center",
+                textAlign: "left",
               }}
             >
+              Kiegészítő jegy(ek):
               {customer
                 ? customer.admissions.map((admission) => (
-                    <div key={admission.admissionId}>
+                    <li key={admission.admissionId}>
                       {admission.admissionName}
-                    </div>
+                    </li>
                   ))
                 : "N/A"}
             </Typography>
