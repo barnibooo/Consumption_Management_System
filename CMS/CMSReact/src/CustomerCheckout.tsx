@@ -11,9 +11,11 @@ import {
   IconButton,
   TextField,
   Alert,
+  Button,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import SendIcon from "@mui/icons-material/Send";
 import { format } from "date-fns";
 
 const darkTheme = createTheme({
@@ -46,6 +48,7 @@ interface Customer {
   name: string;
   createdAt: string;
   createdBy: number;
+  isActive: boolean;
 }
 
 function App() {
@@ -109,6 +112,24 @@ function App() {
         }
         setLoading(false);
       });
+  };
+
+  const finalizeCustomer = () => {
+    if (customer) {
+      axios
+        .put(`https://localhost:5000/api/Customers/${customerId}`, {
+          ...customer,
+          isActive: false,
+        })
+        .then((response) => {
+          setCustomer({ ...response.data, isActive: false });
+          alert("Customer finalized successfully!");
+        })
+        .catch((error) => {
+          console.error("Error finalizing customer:", error);
+          alert("Failed to finalize customer.");
+        });
+    }
   };
 
   if (loading) {
@@ -316,7 +337,19 @@ function App() {
                 ))}
               </Box>
             </CardContent>
-            <CardActions></CardActions>
+            <CardActions>
+              <Button
+                variant="contained"
+                endIcon={<SendIcon />}
+                onClick={finalizeCustomer}
+                sx={{
+                  bgcolor: "#BFA181",
+                  color: "#d5d6d6",
+                }}
+              >
+                Véglegesítés
+              </Button>
+            </CardActions>
           </Card>
         </ThemeProvider>
       )}

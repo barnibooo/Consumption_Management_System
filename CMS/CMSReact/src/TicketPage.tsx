@@ -95,6 +95,7 @@ const Dashboard: React.FC = () => {
   const [openSuccessDialogs, setOpenSuccessDialogs] = useState<boolean[]>([]);
   const [ids, setIds] = useState<string[]>([]);
   const [openDialogs, setOpenDialogs] = useState<boolean[]>([]);
+  const [fullName, setFullName] = useState<string>("");
 
   useEffect(() => {
     const initialize = async () => {
@@ -363,6 +364,7 @@ const Dashboard: React.FC = () => {
   const handleSubmitOrder = () => {
     const customerData = {
       cardId: cardId,
+      name: fullName,
       createdBy: 1,
       ticketsIds: orders.map((ticketItem) => ({
         ticketId: ticketItem.ticketId,
@@ -495,6 +497,48 @@ const Dashboard: React.FC = () => {
                       variant="standard"
                       value={cardId || ""}
                       onChange={(e) => setCardId(e.target.value)}
+                      sx={{
+                        width: "80%",
+                        "& .MuiInputBase-root": {
+                          color: "#d5d6d6",
+                        },
+                        "& .MuiInputLabel-root": {
+                          color: "#d5d6d6",
+                        },
+                        "& .MuiInput-underline:before": {
+                          borderBottomColor: "#d5d6d6",
+                        },
+                        "& .MuiInput-underline:hover:before": {
+                          borderBottomColor: "#d5d6d6",
+                        },
+                        "& .MuiInput-underline:after": {
+                          borderBottomColor: "#d5d6d6",
+                        },
+                        "& .Mui-focused .MuiInputLabel-root": {
+                          color: "#d5d6d6 !important",
+                        },
+                        "& .Mui-focused .MuiInput-underline:before": {
+                          borderBottomColor: "#d5d6d6 !important",
+                        },
+                        "& .Mui-focused .MuiInput-underline:after": {
+                          borderBottomColor: "#d5d6d6 !important",
+                        },
+                      }}
+                    />
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <TextField
+                      required
+                      id="standard-required"
+                      label="Teljes név"
+                      variant="standard"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
                       sx={{
                         width: "80%",
                         "& .MuiInputBase-root": {
