@@ -86,11 +86,11 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
     } else if (page === "Jegyértékesítés") {
       window.location.href = "/tickets";
     } else if (page === "Jegyellenőrzés") {
-      window.location.href = "/ticketvalidator";
+      window.location.href = "/ticketvalidation";
     } else if (page === "Éttermi rendelés") {
       window.location.href = "/restaurant";
     } else if (page === "Vendég munkamenet zárása") {
-      window.location.href = "/guestcheckout";
+      window.location.href = "/customercheckout";
     } else if (page === "Regisztráció") {
       window.location.href = "/registration";
     } else {
