@@ -84,7 +84,6 @@ const Dashboard: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [orders, setOrders] = useState<ticketItem[]>([]);
   const [ordersa, setOrdersa] = useState<admissionItem[]>([]);
-  const [openDialog, setOpenDialog] = useState(false);
   const [cardId, setCardId] = useState<string | null>(null);
   // Your useEffect and other logic here
   const [finalizedOrders, setFinalizedOrders] = useState<
@@ -97,19 +96,32 @@ const Dashboard: React.FC = () => {
   const [openDialogs, setOpenDialogs] = useState<boolean[]>([]);
   const [fullName, setFullName] = useState<string>("");
 
+  const [tokenValidated, setTokenValidated] = useState(false);
+  const [tokenRefreshed, setTokenRefreshed] = useState(false);
+  const [dataFetched, setDataFetched] = useState(false);
   useEffect(() => {
-    const initialize = async () => {
-      const tokenRefreshed = await refreshToken();
-      if (tokenRefreshed) {
+    const validateAndFetchData = async () => {
+      if (!tokenValidated) {
+        const isValidToken = await checkToken();
+
+        if (!isValidToken) {
+          window.location.href = "/login";
+          return;
+        }
+        if (isValidToken) {
+          if (!tokenRefreshed) {
+            await refreshToken();
+            setTokenRefreshed(true);
+          }
+        }
       }
     };
 
-    initialize();
+    validateAndFetchData();
   }, []);
 
   const handleCategoryClick = (category: string | null) => {
     setSelectedCategory(category);
-    console.log("Selected category:", category);
   };
 
   const handleAddTicketToOrder = (item: ticketItem) => {
@@ -170,7 +182,6 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("Token:", token);
 
     const fetchTickets = axios.get("https://localhost:5000/api/Tickets", {
       headers: {
@@ -188,14 +199,12 @@ const Dashboard: React.FC = () => {
       .then(([ticketsResponse, admissionsResponse]) => {
         if (Array.isArray(ticketsResponse.data)) {
           setticketItems(ticketsResponse.data);
-          console.log("jegyeshalal", ticketsResponse.data);
         } else {
           console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
         }
 
         if (Array.isArray(admissionsResponse.data)) {
           setAdmissionItems(admissionsResponse.data);
-          console.log("A3sdewdxexc", admissionsResponse.data);
         } else {
           console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
         }
@@ -374,12 +383,9 @@ const Dashboard: React.FC = () => {
       })),
     };
 
-    console.log("Customer data:", customerData);
-
     axios
       .post("https://localhost:5000/api/Customers", customerData)
       .then((response) => {
-        console.log("Customer created successfully:", response.data);
         setOrderId(response.data.orderId);
         setDialogOpen(true);
       })

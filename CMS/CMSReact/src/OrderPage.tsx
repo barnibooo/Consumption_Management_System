@@ -161,7 +161,7 @@ const Dashboard: React.FC = () => {
         setTokenValidated(true);
       }
 
-      if (!tokenRefreshed) {
+      if (!tokenRefreshed && tokenValidated) {
         await refreshToken();
         setTokenRefreshed(true);
       }

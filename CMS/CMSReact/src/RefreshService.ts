@@ -23,6 +23,7 @@ export const refreshToken = async () => {
     localStorage.setItem("refreshToken", data.refreshToken);
 
     // Add a return statement to ensure the function exits
+    console.log("A token frissítése sikeres volt!");
     return true;
   } catch (error) {
     localStorage.clear();

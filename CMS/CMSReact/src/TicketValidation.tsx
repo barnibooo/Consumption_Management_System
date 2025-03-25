@@ -17,6 +17,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { format } from "date-fns";
+import { checkToken } from "./AuthService";
+import { refreshToken } from "./RefreshService";
 
 const darkTheme = createTheme({
   palette: {
@@ -53,13 +55,65 @@ function App() {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [monogram, setMonogram] = useState<string | null>(null);
   const [customerId, setCustomerId] = useState<string>("");
+  const [tokenValidated, setTokenValidated] = useState(false);
+  const [tokenRefreshed, setTokenRefreshed] = useState(false);
+  useEffect(() => {
+    const validateAndFetchData = async () => {
+      if (!tokenValidated) {
+        const isValidToken = await checkToken();
+
+        if (!isValidToken) {
+          window.location.href = "/login";
+          return;
+        }
+        if (isValidToken) {
+          if (!tokenRefreshed) {
+            await refreshToken();
+            setTokenRefreshed(true);
+          }
+        }
+      }
+    };
+
+    validateAndFetchData();
+  }, []);
 
   useEffect(() => {
-    const storedMonogram = localStorage.getItem("monogram");
-    setMonogram(storedMonogram);
-  }, []);
+    const fetchRole = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("No token found");
+          return;
+        }
+        const response = await axios.post(
+          "https://localhost:5000/api/Auth/getrole",
+          {},
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          console.log("User role:", response.data.Role);
+        } else {
+          console.error("Failed to fetch role");
+        }
+      } catch (error) {
+        console.error("Error fetching role:", error);
+      }
+    };
+
+    if (tokenValidated && tokenRefreshed) {
+      fetchRole();
+    }
+  }, [tokenValidated, tokenRefreshed]);
 
   const fetchCustomerData = () => {
     setLoading(true);
@@ -81,7 +135,21 @@ function App() {
         setLoading(false);
       });
   };
-
+  if (isUnauthorized)
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <ThemeProvider theme={darkTheme}>
+          <Alert severity="warning">
+            Az oldal használatához magasabb jogosultság szükséges!
+          </Alert>
+        </ThemeProvider>
+      </Box>
+    );
   if (loading) {
     return <div>Loading...</div>;
   }

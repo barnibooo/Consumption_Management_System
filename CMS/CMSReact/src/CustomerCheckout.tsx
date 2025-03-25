@@ -17,6 +17,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import SendIcon from "@mui/icons-material/Send";
 import { format } from "date-fns";
+import { checkToken } from "./AuthService";
+import { refreshToken } from "./RefreshService";
 
 const darkTheme = createTheme({
   palette: {
@@ -60,6 +62,30 @@ function App() {
   const [checkoutData, setCheckoutData] = useState<CheckoutResponse | null>(
     null
   );
+  const [tokenValidated, setTokenValidated] = useState(false);
+  const [tokenRefreshed, setTokenRefreshed] = useState(false);
+  const [dataFetched, setDataFetched] = useState(false);
+
+  useEffect(() => {
+    const validateAndFetchData = async () => {
+      if (!tokenValidated) {
+        const isValidToken = await checkToken();
+
+        if (!isValidToken) {
+          window.location.href = "/login";
+          return;
+        }
+        if (isValidToken) {
+          if (!tokenRefreshed) {
+            await refreshToken();
+            setTokenRefreshed(true);
+          }
+        }
+      }
+    };
+
+    validateAndFetchData();
+  }, []);
 
   useEffect(() => {
     const storedMonogram = localStorage.getItem("monogram");

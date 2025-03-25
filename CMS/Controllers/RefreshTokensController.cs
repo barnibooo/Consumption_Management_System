@@ -186,6 +186,19 @@ public class AuthController : ControllerBase
 
         return Ok(new { message = "Logged out successfully." });
     }
+    [HttpPost("getrole")]
+    [Authorize]
+    public IActionResult GetRole()
+    {
+        var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+        if (role == null)
+        {
+            return Unauthorized("Role not found.");
+        }
+
+        return Ok(new { Role = role });
+    }
+
 
     private string GenerateJwtToken(Employee user)
     {
