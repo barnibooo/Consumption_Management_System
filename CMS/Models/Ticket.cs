@@ -20,8 +20,6 @@ namespace CMS.Models
         [Required]
         public string Description { get; set; }
 
-        [Required]
-        public bool IsAvailable { get; set; }
 
         [Required]
         public string ImagePath { get; set; }

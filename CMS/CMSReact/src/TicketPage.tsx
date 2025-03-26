@@ -49,7 +49,6 @@ interface ticketItem {
   category: string;
   price: number;
   description: string;
-  isAvailable: boolean;
 }
 
 interface admissionItem {
@@ -58,7 +57,6 @@ interface admissionItem {
   category: string;
   price: number;
   description: string;
-  isAvailable: boolean;
   imagePath: string;
 }
 
@@ -216,7 +214,6 @@ const Dashboard: React.FC = () => {
             category: ticket.category,
             price: ticket.price,
             description: ticket.description,
-            isAvailable: ticket.isAvailable,
             imagePath: ticket.imagePath,
           }));
         } else {
@@ -231,7 +228,6 @@ const Dashboard: React.FC = () => {
               category: admission.category,
               price: admission.price,
               description: admission.description,
-              isAvailable: admission.isAvailable,
               imagePath: admission.imagePath,
             })
           );
@@ -739,9 +735,6 @@ const Dashboard: React.FC = () => {
                   >
                     <Typography mb={2}>{item.description}</Typography>
                     <Box sx={{ mt: "auto" }}>
-                      <Typography fontWeight="bold">
-                        {item.isAvailable ? "Elérhető" : "Nem elérhető"}
-                      </Typography>
                       <Typography fontWeight="bold">{item.price} Ft</Typography>
                     </Box>
                   </CardContent>
@@ -809,9 +802,6 @@ const Dashboard: React.FC = () => {
                   >
                     <Typography mb={2}>{itema.description}</Typography>
                     <Box sx={{ mt: "auto" }}>
-                      <Typography fontWeight="bold">
-                        {itema.isAvailable ? "Elérhető" : "Nem elérhető"}
-                      </Typography>
                       <Typography fontWeight="bold">
                         {itema.price} Ft
                       </Typography>

@@ -39,9 +39,6 @@ namespace CMS.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Price")
                         .HasColumnType("INTEGER");
 
@@ -275,9 +272,6 @@ namespace CMS.Migrations
                     b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Price")
                         .HasColumnType("INTEGER");
