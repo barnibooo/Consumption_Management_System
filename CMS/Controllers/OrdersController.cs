@@ -22,7 +22,7 @@ namespace CMS.Controllers
         }
 
         // GET: api/Orders
-        [HttpGet]
+       /* [HttpGet]
         public async Task<ActionResult<IEnumerable<Object>>> GetOrders()
         {
             return await _context.Orders.Select(order => new
@@ -37,12 +37,12 @@ namespace CMS.Controllers
                     mio.Quantity
                 }).ToList()
             }).ToListAsync();
-        }
+        }*/
 
 
 
         // GET: api/Orders/5
-        [HttpGet("{id}")]
+       /* [HttpGet("{id}")]
         public async Task<ActionResult<OrderGetDto>> GetOrder(int id)
         {
             var order = await _context.Orders.FindAsync(id);
@@ -65,7 +65,7 @@ namespace CMS.Controllers
             };
 
             return orderdto;
-        }
+        }*/
 
         // POST: api/Orders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

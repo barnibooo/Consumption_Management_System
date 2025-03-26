@@ -30,7 +30,7 @@ namespace CMS.Controllers
         }
 
         // GET: api/Tickets/5
-        [HttpGet("{id}")]
+      /*  [HttpGet("{id}")]
         public async Task<ActionResult<Ticket>> GetTicket(int id)
         {
             var ticket = await _context.Tickets.FindAsync(id);
@@ -41,11 +41,11 @@ namespace CMS.Controllers
             }
 
             return ticket;
-        }
+        }*/
 
         // PUT: api/Tickets/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+      /*  [HttpPut("{id}")]
         public async Task<IActionResult> PutTicket(int id, Ticket ticket)
         {
             if (id != ticket.TicketId)
@@ -72,11 +72,11 @@ namespace CMS.Controllers
             }
 
             return NoContent();
-        }
+        }*/
 
         // POST: api/Tickets
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+       /* [HttpPost]
         public async Task<ActionResult<Ticket>> PostTicket(Ticket ticket)
         {
             _context.Tickets.Add(ticket);
@@ -85,8 +85,8 @@ namespace CMS.Controllers
             return CreatedAtAction("GetTicket", new { id = ticket.TicketId }, ticket);
         }
 
-        // DELETE: api/Tickets/5
-        [HttpDelete("{id}")]
+        // DELETE: api/Tickets/5*/
+        /*[HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTicket(int id)
         {
             var ticket = await _context.Tickets.FindAsync(id);
@@ -99,7 +99,7 @@ namespace CMS.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
+        }*/
 
         private bool TicketExists(int id)
         {

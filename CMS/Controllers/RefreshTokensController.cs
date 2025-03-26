@@ -22,7 +22,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    //[Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> Register([FromBody] RegisterDto model)
     {
         if (await _context.Employees.AnyAsync(u => u.Username == model.Username))
@@ -32,9 +32,9 @@ public class AuthController : ControllerBase
         if (!role)
             return BadRequest("Invalid role.");
 
-      /*  var currentUserRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+       var currentUserRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
         if (model.Role == Roles.Admin && currentUserRole != nameof(Roles.Admin))
-            return Unauthorized("Only admins can register admin users.");*/
+            return Unauthorized("Only admins can register admin users.");
 
         var user = new Employee
         {
@@ -186,18 +186,7 @@ public class AuthController : ControllerBase
 
         return Ok(new { message = "Logged out successfully." });
     }
-    [HttpPost("getrole")]
-    [Authorize]
-    public IActionResult GetRole()
-    {
-        var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-        if (role == null)
-        {
-            return Unauthorized("Role not found.");
-        }
-
-        return Ok(new { Role = role });
-    }
+   
 
 
     private string GenerateJwtToken(Employee user)

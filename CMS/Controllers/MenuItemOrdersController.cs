@@ -22,7 +22,7 @@ namespace CMS.Controllers
 
         // GET: api/MenuItemOrders
         // GET: api/MenuItemOrders
-        [HttpGet]
+       /* [HttpGet]
         public async Task<ActionResult<IEnumerable<MenuItemOrderDto>>> GetMenuItemOrders()
         {
             var menuItemOrders = await _context.MenuItemOrders
@@ -93,7 +93,7 @@ namespace CMS.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetMenuItemOrder", new { id = menuItemOrder.MenuItemOrderId }, menuItemOrder);
-        }
+        }*/
 
         private bool MenuItemOrderExists(int id)
         {

@@ -27,50 +27,7 @@ namespace CMS.Controllers
             return await _context.Admissions.ToListAsync();
         }
 
-        // GET: api/Admissions/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Admission>> GetAdmission(int id)
-        {
-            var admission = await _context.Admissions.FindAsync(id);
 
-            if (admission == null)
-            {
-                return NotFound();
-            }
-
-            return admission;
-        }
-
-        // PUT: api/Admissions/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAdmission(int id, Admission admission)
-        {
-            if (id != admission.AdmissionId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(admission).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AdmissionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
 
         // POST: api/Admissions
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

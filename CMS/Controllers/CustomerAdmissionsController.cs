@@ -20,7 +20,7 @@ namespace CMS.Controllers
             _context = context;
         }
 
-        // GET: api/CustomerAdmissions
+        /*
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerAdmission>>> GetCustomerAdmissions()
         {
@@ -87,5 +87,6 @@ namespace CMS.Controllers
         {
             return _context.CustomerAdmissions.Any(e => e.CustomerAdmissionId == id);
         }
+        */
     }
 }

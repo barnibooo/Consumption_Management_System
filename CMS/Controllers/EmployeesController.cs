@@ -28,34 +28,12 @@ namespace CMS.Controllers
             return await _context.Employees.ToListAsync();
         }
 
-        [HttpGet("{refreshtoken}")]
-        public async Task<IActionResult> GetEmployeeById(string refreshtoken)
-        {
-            var employee = await _context.RefreshTokens
-                .Where(rt => rt.Token == refreshtoken)
-                .Select(rt => rt.Employee)
-                .FirstOrDefaultAsync();
-            if (employee == null)
-            {
-                return NotFound(new { message = "Employee not found." });
-            }
-
-            // DTO-ba mapeljük az adatokat
-            var employeeDto = new EmployeeGetIdDto
-            {
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                Role = employee.Role,
-                Username = employee.Username,
-            };
-
-            return Ok(employeeDto); // 200 OK és a keresett adat
-        }
+        
 
 
         // PUT: api/Employees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+     /*   [HttpPut("{id}")]
         public async Task<ActionResult<Employee>> UpdateEmployee(int id, [FromBody] EmployeePutDto EmployeePutDto)
         {
             if (!ModelState.IsValid)
@@ -77,7 +55,7 @@ namespace CMS.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new {message ="Employee was sucessfully updated."}); // 200 - sikeres frissítés, de nincs visszatérő adat
-        }
+        }*/
 
 
         // POST: api/Employees

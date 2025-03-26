@@ -22,6 +22,7 @@ namespace CMS.Controllers
         }
 
         // GET: api/CustomerTickets
+        /*
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerTicketGetDto>>> GetCustomerTickets()
         {
@@ -110,6 +111,6 @@ namespace CMS.Controllers
         private bool CustomerTicketExists(int id)
         {
             return _context.CustomerTickets.Any(e => e.CustomerTicketId == id);
-        }
+        }*/
     }
 }

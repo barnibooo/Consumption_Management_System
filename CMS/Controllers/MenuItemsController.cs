@@ -32,7 +32,7 @@ namespace CMS.Controllers
 
         // PUT: api/MenuItems/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+       /* [HttpPut("{id}")]
         public async Task<IActionResult> PutMenuItem(int id, MenuItem menuItem)
         {
             if (id != menuItem.ItemId)
@@ -88,7 +88,7 @@ namespace CMS.Controllers
             {
                 message = "Item created successfully.",
             });
-        }
+        }*/
 
         private bool MenuItemExists(int id)
         {
