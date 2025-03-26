@@ -40,6 +40,7 @@ namespace CMS.Controllers
                 Name = customer.Name,
                 CreatedAt = customer.CreatedAt,
                 CreatedBy = customer.CreatedBy,
+                IsActive = customer.IsActive,
                 Tickets = customer.CustomerTickets.Select(ct => new CustomerTicketsDto
                 {
                     TicketId = ct.TicketId,
@@ -189,7 +190,7 @@ namespace CMS.Controllers
                 Name = customerpostdto.Name,
                 CreatedBy = customerpostdto.CreatedBy,
                 CreatedAt = DateTime.Now,
-                IsActive = true,
+                IsActive = customerpostdto.IsActive, // Ensure IsActive is set correctly
                 CustomerTickets = new List<CustomerTicket>(),
                 CustomerAdmissions = new List<CustomerAdmission>()
             };
@@ -217,6 +218,7 @@ namespace CMS.Controllers
 
             return Ok(new { message = "Customer created successfully.", CustomerId = customer.CustomerId });
         }
+
 
 
 

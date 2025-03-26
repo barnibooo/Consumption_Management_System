@@ -3,12 +3,27 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Button, TextField, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Alert,
+  Button,
+  TextField,
+  ThemeProvider,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { checkToken } from "./AuthService"; // Import the checkToken function
 import { refreshToken } from "./RefreshService"; // Import the refreshToken function
 import axios from "axios";
+import { parseJwt } from "./JWTParser";
 import { useState, useEffect } from "react";
+import { createTheme } from "@mui/material/styles";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
 
 function RegistrationCard() {
   const theme = useTheme();
@@ -16,32 +31,63 @@ function RegistrationCard() {
   const [tokenValidated, setTokenValidated] = useState(false);
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
 
   useEffect(() => {
     const validateAndFetchData = async () => {
-      if (!tokenValidated) {
-        const isValidToken = await checkToken();
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found. Redirecting to login...");
+        setIsUnauthorized(true);
+        return;
+      }
 
+      const decodedToken = parseJwt(token);
+      if (!decodedToken || decodedToken.role !== "Admin") {
+        setIsUnauthorized(true);
+        return;
+      }
+
+      // Proceed with token validation and data fetching if the role is Admin
+      try {
+        const isValidToken = await checkToken();
         if (!isValidToken) {
           console.error("Invalid token. Redirecting to login...");
-          window.location.href = "/login";
+          setIsUnauthorized(true);
           return;
         }
-        setTokenValidated(true);
-      }
 
-      if (!tokenRefreshed) {
+        setTokenValidated(true);
         await refreshToken();
         setTokenRefreshed(true);
-
-        // Add a delay before proceeding
+        setDataFetched(true);
+      } catch (error) {
+        console.error("Error during token validation or data fetching:", error);
+        setIsUnauthorized(true);
       }
-
-      setDataFetched(true);
     };
 
     validateAndFetchData();
   }, []);
+
+  // ...existing code...
+
+  if (isUnauthorized)
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <ThemeProvider theme={darkTheme}>
+          <Alert severity="warning">
+            Az oldal használatához magasabb jogosultság szükséges!
+          </Alert>
+        </ThemeProvider>
+      </Box>
+    );
+
   return (
     <Box
       sx={{

@@ -7,6 +7,7 @@
         public string Name { get; set; }
         public DateTime CreatedAt { get; set; }
         public int CreatedBy { get; set; }
+        public bool IsActive { get; set; }
         public List<CustomerTicketsDto> Tickets { get; set; }
         public List<CustomerAdmissionDto> Admissions { get; set; }
     }
