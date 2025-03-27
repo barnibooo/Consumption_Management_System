@@ -19,6 +19,7 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { format } from "date-fns";
 import { checkToken } from "./AuthService";
 import { refreshToken } from "./RefreshService";
+import { parseJwt } from "./JWTParser";
 
 const darkTheme = createTheme({
   palette: {
@@ -60,7 +61,7 @@ function App() {
   const [customerId, setCustomerId] = useState<string>("");
   const [tokenValidated, setTokenValidated] = useState(false);
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
-  
+
   useEffect(() => {
     const validateAndFetchData = async () => {
       if (!tokenValidated) {
@@ -77,44 +78,17 @@ function App() {
           }
         }
       }
+
     };
 
-    validateAndFetchData();
-  }, []);
+    //validateAndFetchData();
 
-  useEffect(() => {
-    const fetchRole = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.error("No token found");
-          return;
-        }
-        const response = await axios.post(
-          "https://localhost:5000/api/Auth/getrole",
-          {},
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          console.log("User role:", response.data.Role);
-        } else {
-          console.error("Failed to fetch role");
-        }
-      } catch (error) {
-        console.error("Error fetching role:", error);
-      }
-    };
-
-    if (tokenValidated && tokenRefreshed) {
-      fetchRole();
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = parseJwt(token);
+      console.log(decodedToken);
     }
-  }, [tokenValidated, tokenRefreshed]);
+  }, []);
 
   const fetchCustomerData = () => {
     setLoading(true);
