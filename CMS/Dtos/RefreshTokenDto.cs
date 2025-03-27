@@ -4,5 +4,6 @@
 
     {
         public string Refreshtoken { get; set; }
+        public string Token { get; set; }
     }
 }

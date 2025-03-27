@@ -32,7 +32,7 @@ public class AuthController : ControllerBase
         if (!role)
             return BadRequest("Invalid role.");
 
-       var currentUserRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+        var currentUserRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
         if (model.Role == Roles.Admin && currentUserRole != nameof(Roles.Admin))
             return Unauthorized("Only admins can register admin users.");
 
@@ -186,7 +186,7 @@ public class AuthController : ControllerBase
 
         return Ok(new { message = "Logged out successfully." });
     }
-   
+
 
 
     private string GenerateJwtToken(Employee user)
@@ -221,7 +221,7 @@ public class AuthController : ControllerBase
         return new RefreshToken
         {
             Token = Guid.NewGuid().ToString(),
-            Expires = DateTime.UtcNow.AddDays(_configuration.GetValue<int>("Jwt:RefreshExpireDays")),
+            Expires = DateTime.UtcNow.AddHours(_configuration.GetValue<int>("Jwt:RefreshExpireHours")),
             EmployeeId = userId
         };
     }
