@@ -1,3 +1,4 @@
+import * as React from 'react';
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -18,6 +19,10 @@ import axios from "axios";
 import { parseJwt } from "./JWTParser";
 import { useState, useEffect } from "react";
 import { createTheme } from "@mui/material/styles";
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 const darkTheme = createTheme({
   palette: {
@@ -32,6 +37,7 @@ function RegistrationCard() {
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
+  const [role, setRole] = React.useState('');
 
   useEffect(() => {
     const validateAndFetchData = async () => {
@@ -317,10 +323,11 @@ function RegistrationCard() {
             autoComplete="new-password"
             margin="dense"
           />
-          <TextField
+          <FormControl
             sx={{
               width: "70%",
-              height: "Auto",
+              marginBottom: 2,
+              marginTop: 1,
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
                   borderColor: "#d5d6d6",
@@ -340,16 +347,41 @@ function RegistrationCard() {
               },
               "& .MuiInputBase-input": {
                 color: "#d5d6d6",
-                caretColor: "#d5d6d6",
               },
-              marginBottom: 2,
+              "& .MuiSelect-icon": {
+                color: "#d5d6d6",
+              },
+              "& .Mui-focused .MuiSelect-icon": {
+                color: "#BFA181",
+              },
             }}
-            required
-            id="outlined-role"
-            label="Role"
-            type="text"
-            margin="dense"
-          />
+          >
+            <InputLabel id="role-select-label">Role</InputLabel>
+            <Select
+              labelId="role-select-label"
+              id="role-select"
+              value={role}
+              label="Role"
+              onChange={(event: SelectChangeEvent) => setRole(event.target.value)}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    backgroundColor: "#202938",
+                    "& .MuiMenuItem-root": {
+                      color: "#d5d6d6",
+                      "&:hover": {
+                        backgroundColor: "#37404f",
+                      },
+                    },
+                  },
+                },
+              }}
+            >
+              <MenuItem value="Admin">Admin</MenuItem>
+              <MenuItem value="TicketAssistant">Ticket Assistant</MenuItem>
+              <MenuItem value="RestaurantAssistant">Restaurant Assistant</MenuItem>
+            </Select>
+          </FormControl>
           <Button
             sx={{
               width: "70%",
