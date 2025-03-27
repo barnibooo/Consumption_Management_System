@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Dtos;
 using CMS.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Controllers
 {
@@ -22,7 +23,7 @@ namespace CMS.Controllers
         }
 
         // GET: api/Orders
-       /* [HttpGet]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Object>>> GetOrders()
         {
             return await _context.Orders.Select(order => new
@@ -37,7 +38,7 @@ namespace CMS.Controllers
                     mio.Quantity
                 }).ToList()
             }).ToListAsync();
-        }*/
+        }
 
 
 
@@ -70,6 +71,7 @@ namespace CMS.Controllers
         // POST: api/Orders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Policy = "AdminOrRestaurantOnly")]
         public async Task<IActionResult> CreateOrder([FromBody] OrderPostDto orderPostDto)
         {
             if (!ModelState.IsValid)

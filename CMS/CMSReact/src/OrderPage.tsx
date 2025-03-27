@@ -44,8 +44,8 @@ import AppsIcon from "@mui/icons-material/Apps";
 import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
 import { createTheme } from "@mui/material/styles";
-import { checkToken } from "./AuthService"; 
-import { refreshToken } from "./RefreshService"; 
+import { checkToken } from "./AuthService";
+import { refreshToken } from "./RefreshService";
 import { parseJwt } from "./JWTParser";
 
 const darkTheme = createTheme({
@@ -160,18 +160,18 @@ const Dashboard: React.FC = () => {
           window.location.href = "/login";
           return;
         }
-        setTokenValidated(true);
+        if (isValidToken) {
+          if (!tokenRefreshed) {
+            await refreshToken();
+            setTokenRefreshed(true);
+          }
+        }
       }
-
-      if (!tokenRefreshed && tokenValidated) {
-        await refreshToken();
-        setTokenRefreshed(true);
-      }
-
-      setDataFetched(true);
     };
 
     validateAndFetchData();
+    setLoading(false);
+    setDataFetched(true);
   }, []);
 
   useEffect(() => {
@@ -280,53 +280,63 @@ const Dashboard: React.FC = () => {
     ? menuItems.filter((item) => item.category === selectedCategory)
     : menuItems;
 
-    const handleSubmitOrder = () => {
-      if (!cardId || orders.length === 0) {
-        console.error("Kártyaazonosító szükséges és legalább egy tétel a listában!");
-        return;
-      }
-    
-      axios
-        .get("https://localhost:5000/api/Cards/GetCustomerIdByCardId/" + cardId)
-        .then((response) => {
-          console.log("Customer ID Response:", response.data);
-    
-          if (!isNaN(response.data)) {
-            const orderData = {
-              customerId: response.data,
-              employeeId: parseJwt(localStorage.getItem("token") || "")?.employeeId,
-              menuItems: orders.map((orderItem) => ({
-                menuItemId: orderItem.itemId,
-                quantity: orderItem.quantity,
-              })),
-            };
-    
-            // Log the JSON payload to the console
-            console.log("POST JSON Payload:", JSON.stringify(orderData, null, 2));
-    
-            axios
-              .post("https://localhost:5000/api/Orders", orderData)
-              .then((response) => {
-                console.log("Order submitted successfully:", response.data);
-                setOrderId(response.data.orderId);
-                setDialogOpen(true);
-              })
-              .catch((error) => {
-                console.error("Error submitting order:", error);
-              });
-          } else {
-            console.error("Nincs ilyen felhasználó", response.data);
-          }
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Hiba történt:", error);
-          setError(error.message);
-          setLoading(false);
-        });
-    };
-  
+  const handleSubmitOrder = () => {
+    if (!cardId || orders.length === 0) {
+      console.error(
+        "Kártyaazonosító szükséges és legalább egy tétel a listában!"
+      );
+      return;
+    }
 
+    axios
+      .get("https://localhost:5000/api/Cards/GetCustomerIdByCardId/" + cardId, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        console.log("Customer ID Response:", response.data);
+
+        if (!isNaN(response.data)) {
+          const token = localStorage.getItem("token");
+          let decodedToken: { EmployeeId: number } | null = null;
+          if (token) {
+            decodedToken = parseJwt(token);
+          }
+          const orderData = {
+            customerId: response.data,
+            employeeId: decodedToken?.EmployeeId || "",
+            menuItems: orders.map((orderItem) => ({
+              menuItemId: orderItem.itemId,
+              quantity: orderItem.quantity,
+            })),
+          };
+
+          axios
+            .post("https://localhost:5000/api/Orders", orderData, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            })
+            .then((response) => {
+              console.log("Order submitted successfully:", response.data);
+              setOrderId(response.data.orderId);
+              setDialogOpen(true);
+            })
+            .catch((error) => {
+              console.error("Error submitting order:", error);
+            });
+        } else {
+          console.error("Nincs ilyen felhasználó", response.data);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Hiba történt:", error);
+        setError(error.message);
+        setLoading(false);
+      });
+  };
 
   const handleClose = () => {
     setDialogOpen(false);

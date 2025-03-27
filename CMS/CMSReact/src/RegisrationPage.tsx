@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -13,16 +13,16 @@ import {
   useTheme,
 } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import { checkToken } from "./AuthService"; // Import the checkToken function
-import { refreshToken } from "./RefreshService"; // Import the refreshToken function
+import { checkToken } from "./AuthService";
+import { refreshToken } from "./RefreshService";
 import axios from "axios";
 import { parseJwt } from "./JWTParser";
 import { useState, useEffect } from "react";
 import { createTheme } from "@mui/material/styles";
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 const darkTheme = createTheme({
   palette: {
@@ -37,7 +37,8 @@ function RegistrationCard() {
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
-  const [role, setRole] = React.useState('');
+  const [roles, setRoles] = useState<string[]>([]);
+  const [role, setRole] = useState<string>("");
 
   useEffect(() => {
     const validateAndFetchData = async () => {
@@ -45,21 +46,23 @@ function RegistrationCard() {
       if (!token) {
         console.error("No token found. Redirecting to login...");
         setIsUnauthorized(true);
+        window.location.href = "/login"; // Redirect to /login
         return;
       }
 
       const decodedToken = parseJwt(token);
       if (!decodedToken || decodedToken.role !== "Admin") {
+        console.error("Access denied. Redirecting to login...");
         setIsUnauthorized(true);
         return;
       }
 
-      // Proceed with token validation and data fetching if the role is Admin
       try {
         const isValidToken = await checkToken();
         if (!isValidToken) {
           console.error("Invalid token. Redirecting to login...");
           setIsUnauthorized(true);
+          window.location.href = "/login"; // Redirect to /login
           return;
         }
 
@@ -67,6 +70,17 @@ function RegistrationCard() {
         await refreshToken();
         setTokenRefreshed(true);
         setDataFetched(true);
+
+        // Fetch roles from API
+        const response = await axios.get(
+          "https://localhost:5000/api/Employees/roles",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setRoles(response.data);
       } catch (error) {
         console.error("Error during token validation or data fetching:", error);
         setIsUnauthorized(true);
@@ -75,8 +89,6 @@ function RegistrationCard() {
 
     validateAndFetchData();
   }, []);
-
-  // ...existing code...
 
   if (isUnauthorized)
     return (
@@ -362,7 +374,9 @@ function RegistrationCard() {
               id="role-select"
               value={role}
               label="Role"
-              onChange={(event: SelectChangeEvent) => setRole(event.target.value)}
+              onChange={(event: SelectChangeEvent) =>
+                setRole(event.target.value)
+              }
               MenuProps={{
                 PaperProps: {
                   sx: {
@@ -377,9 +391,11 @@ function RegistrationCard() {
                 },
               }}
             >
-              <MenuItem value="Admin">Admin</MenuItem>
-              <MenuItem value="TicketAssistant">Ticket Assistant</MenuItem>
-              <MenuItem value="RestaurantAssistant">Restaurant Assistant</MenuItem>
+              {roles.map((role) => (
+                <MenuItem key={role} value={role}>
+                  {role}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
           <Button

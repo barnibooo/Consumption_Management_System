@@ -4,7 +4,7 @@ import "./index.css";
 import Login from "./LoginPage.tsx";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+  <>
     <Login />
-  </StrictMode>
+  </>
 );

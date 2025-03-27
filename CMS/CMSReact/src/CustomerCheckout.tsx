@@ -95,9 +95,12 @@ function App() {
   const fetchCustomerData = () => {
     setLoading(true);
     axios
-      .get(`https://localhost:5000/api/Customers/${customerId}`)
+      .get(`https://localhost:5000/api/Customers/${customerId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((response) => {
-        console.log(response.data);
         setCustomer(response.data);
         setLoading(false);
       })
@@ -119,10 +122,23 @@ function App() {
   const fetchCheckoutData = () => {
     setLoading(true);
     axios
-      .get(`https://localhost:5000/api/Checkout/${customerId}`)
+      .get(`https://localhost:5000/api/Checkout/${customerId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((response) => {
         console.log(response.data);
-        setCheckoutData(response.data);
+        if (response.data.message) {
+          // Ha nincs fogyasztás
+          setCheckoutData({
+            consumption: [],
+            totalAmount: response.data.totalAmount,
+          });
+        } else {
+          // Ha van fogyasztás
+          setCheckoutData(response.data);
+        }
         setLoading(false);
       })
       .catch((error) => {
@@ -143,10 +159,17 @@ function App() {
   const finalizeCustomer = () => {
     if (customer) {
       axios
-        .put(`https://localhost:5000/api/Customers/${customerId}`, {
-          ...customer,
-          isActive: false,
-        })
+        .put(
+          `https://localhost:5000/api/Customers/resetcardid/${customerId}`,
+          {
+            isActive: false,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        )
         .then((response) => {
           setCustomer({ ...response.data, isActive: false });
           alert("Customer finalized successfully!");
@@ -263,7 +286,7 @@ function App() {
                 lg: "50%",
                 xl: "40%",
               },
-              marginTop: 2, // Add margin to the top
+              marginTop: 2,
               padding: 2,
               fontFamily: "Courier New, monospace",
             }}
@@ -298,70 +321,73 @@ function App() {
                   textAlign: "left",
                 }}
               >
-                {checkoutData
-                  ? `Összes fogyasztás: ${checkoutData.totalAmount} Ft`
-                  : ""}
+                {checkoutData.totalAmount === 0
+                  ? "Nem történt fogyasztás"
+                  : `Összes fogyasztás: ${checkoutData.totalAmount} Ft`}
               </Typography>
-              <Box
-                sx={{
-                  maxHeight: "300px", // Set a fixed height for the scrollable area
-                  overflowY: "auto", // Enable vertical scrolling
-                  borderTop: "1px dashed #d5d6d6",
-                  borderBottom: "1px dashed #d5d6d6",
-                  paddingTop: "10px",
-                  paddingBottom: "10px",
-                }}
-              >
-                {checkoutData.consumption.map((item, index) => (
-                  <Box key={index} sx={{ marginBottom: "10px" }}>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        color: "#d5d6d6",
-                        fontFamily: "Courier New, monospace",
-                      }}
-                    >
-                      {item.productName}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "#d5d6d6",
-                        fontFamily: "Courier New, monospace",
-                      }}
-                    >
-                      {item.description}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "#d5d6d6",
-                        fontFamily: "Courier New, monospace",
-                      }}
-                    >
-                      Mennyiség: {item.quantity}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "#d5d6d6",
-                        fontFamily: "Courier New, monospace",
-                      }}
-                    >
-                      Ár: {item.price} Ft
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "#d5d6d6",
-                        fontFamily: "Courier New, monospace",
-                      }}
-                    >
-                      Rendelés ideje: {formatDateTime(item.orderDate)}
-                    </Typography>
+              {checkoutData.consumption &&
+                checkoutData.consumption.length > 0 && (
+                  <Box
+                    sx={{
+                      maxHeight: "300px",
+                      overflowY: "auto",
+                      borderTop: "1px dashed #d5d6d6",
+                      borderBottom: "1px dashed #d5d6d6",
+                      paddingTop: "10px",
+                      paddingBottom: "10px",
+                    }}
+                  >
+                    {checkoutData.consumption.map((item, index) => (
+                      <Box key={index} sx={{ marginBottom: "10px" }}>
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            color: "#d5d6d6",
+                            fontFamily: "Courier New, monospace",
+                          }}
+                        >
+                          {item.productName}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "#d5d6d6",
+                            fontFamily: "Courier New, monospace",
+                          }}
+                        >
+                          {item.description}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "#d5d6d6",
+                            fontFamily: "Courier New, monospace",
+                          }}
+                        >
+                          Mennyiség: {item.quantity}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "#d5d6d6",
+                            fontFamily: "Courier New, monospace",
+                          }}
+                        >
+                          Ár: {item.price} Ft
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "#d5d6d6",
+                            fontFamily: "Courier New, monospace",
+                          }}
+                        >
+                          Rendelés ideje: {formatDateTime(item.orderDate)}
+                        </Typography>
+                      </Box>
+                    ))}
                   </Box>
-                ))}
-              </Box>
+                )}
             </CardContent>
             <CardActions>
               <Button

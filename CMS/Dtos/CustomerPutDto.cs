@@ -1,5 +1,5 @@
 public class CustomerIsActiveDto
 {
-    public bool IsActive { get; set; }
+    public bool isActive { get; set; }
 }
 

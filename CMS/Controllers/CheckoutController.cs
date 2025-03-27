@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Models;
 using CMS.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Controllers
 {
@@ -21,7 +22,8 @@ namespace CMS.Controllers
             _context = context;
         }
         [HttpGet("{customerCardId}")]
-        public async Task<ActionResult<IEnumerable<ConsumptionGetIdDto>>> GetCustomerConsumption(string customerCardId)
+        [Authorize(Policy = "AdminOrTicketOnly")]
+        public async Task<ActionResult> GetCustomerConsumption(string customerCardId)
         {
             var customer = await _context.Customers
                 .FirstOrDefaultAsync(c => c.CardId == customerCardId);
@@ -36,20 +38,24 @@ namespace CMS.Controllers
                 .SelectMany(o => o.MenuItemOrders)
                 .Select(mio => new ConsumptionGetIdDto
                 {
-                    ProductName = mio.MenuItems.Name, 
-                    Description = mio.MenuItems.Description, 
-                    OrderDate = mio.Orders.CreatedAt, 
+                    ProductName = mio.MenuItems.Name,
+                    Description = mio.MenuItems.Description,
+                    OrderDate = mio.Orders.CreatedAt,
                     Quantity = mio.Quantity,
-                    Price = mio.MenuItems.Price 
+                    Price = mio.MenuItems.Price
                 })
                 .ToListAsync();
 
+            var totalAmount = consumptionData.Sum(cd => cd.Price * cd.Quantity);
+
             if (!consumptionData.Any())
             {
-                return NotFound(new { message = "No consumption data found for the customer" });
+                return Ok(new
+                {
+                    TotalAmount = 0,
+                    Message = "Nem történt fogyasztás"
+                });
             }
-
-            var totalAmount = consumptionData.Sum(cd => cd.Price * cd.Quantity);
 
             return Ok(new
             {
@@ -57,6 +63,8 @@ namespace CMS.Controllers
                 TotalAmount = totalAmount
             });
         }
+
+
 
     }
 }

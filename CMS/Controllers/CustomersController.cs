@@ -103,6 +103,7 @@ namespace CMS.Controllers
 
 
         [HttpPut("resetcardid/{cardid}")]
+        [Authorize(Policy = "AdminOrTicketOnly")]
         public async Task<IActionResult> PutCustomer(string cardid, [FromBody] CustomerIsActiveDto customerIsActiveDto)
         {
             // Check if there is an active customer with the same cardId
@@ -114,8 +115,8 @@ namespace CMS.Controllers
                 return NotFound(new { message = "Active customer with the given cardId not found." });
             }
 
-            // Update the IsActive field of the existing customer
-            existingCustomer.IsActive = customerIsActiveDto.IsActive;
+            // Update the IsActive field of the existing customer to false
+            existingCustomer.IsActive = false;
             _context.Entry(existingCustomer).State = EntityState.Modified;
 
             try
@@ -136,6 +137,7 @@ namespace CMS.Controllers
 
             return NoContent();
         }
+
 
 
 

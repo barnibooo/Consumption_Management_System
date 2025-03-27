@@ -49,7 +49,7 @@ function MediaCard() {
           setError("");
           setTimeout(() => {
             window.location.href = "/";
-          }, 2000);
+          }, 0);
         } else {
           setError("Hiba történt: Érvénytelen válasz a szervertől.");
           setIsLoading(false);

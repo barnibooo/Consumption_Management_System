@@ -368,10 +368,16 @@ const Dashboard: React.FC = () => {
   };
 
   const handleSubmitOrder = () => {
+    const token = localStorage.getItem("token");
+    let decodedToken: { EmployeeId: number } | null = null;
+    if (token) {
+      decodedToken = parseJwt(token);
+    }
     const customerData = {
       cardId: cardId,
       name: fullName,
-      createdBy: parseJwt(localStorage.getItem("token") || "")?.employeeId,
+      createdBy: decodedToken?.EmployeeId || "",
+      isActive: true,
       ticketsIds: orders.map((ticketItem) => ({
         ticketId: ticketItem.ticketId,
       })),
@@ -381,7 +387,11 @@ const Dashboard: React.FC = () => {
     };
 
     axios
-      .post("https://localhost:5000/api/Customers", customerData)
+      .post("https://localhost:5000/api/Customers", customerData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((response) => {
         setOrderId(response.data.orderId);
         setDialogOpen(true);

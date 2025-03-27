@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Controllers
 {
@@ -22,6 +23,7 @@ namespace CMS.Controllers
 
 
         [HttpGet("GetCustomerIdByCardId/{cardId}")]
+        [Authorize(Policy = "AdminOrRestaurantOnly")]
 
         public async Task<ActionResult<int>> GetCustomerIdByCardId(string cardId)
         {

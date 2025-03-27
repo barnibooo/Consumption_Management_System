@@ -27,40 +27,53 @@ namespace CMS.Controllers
         {
             return await _context.Employees.ToListAsync();
         }
+        [HttpGet("roles")]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<ActionResult<IEnumerable<string>>> GetRoles()
+        {
+            var roles = await _context.Employees
+                .Select(e => e.Role)
+                .Distinct()
+                .ToListAsync();
 
-        
+            return Ok(roles);
+        }
+
+
+
+
 
 
         // PUT: api/Employees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-     /*   [HttpPut("{id}")]
-        public async Task<ActionResult<Employee>> UpdateEmployee(int id, [FromBody] EmployeePutDto EmployeePutDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState); // Ha a DTO validációs hibát dob, itt visszaküldjük
-            }
+        /*   [HttpPut("{id}")]
+           public async Task<ActionResult<Employee>> UpdateEmployee(int id, [FromBody] EmployeePutDto EmployeePutDto)
+           {
+               if (!ModelState.IsValid)
+               {
+                   return BadRequest(ModelState); // Ha a DTO validációs hibát dob, itt visszaküldjük
+               }
 
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
-            {
-                return NotFound(new { message = "Employee not found." });
-            }
+               var employee = await _context.Employees.FindAsync(id);
+               if (employee == null)
+               {
+                   return NotFound(new { message = "Employee not found." });
+               }
 
-            // DTO alapján frissítés
-            employee.FirstName = EmployeePutDto.FirstName;
-            employee.LastName = EmployeePutDto.LastName;
+               // DTO alapján frissítés
+               employee.FirstName = EmployeePutDto.FirstName;
+               employee.LastName = EmployeePutDto.LastName;
 
-            _context.Employees.Update(employee);
-            await _context.SaveChangesAsync();
+               _context.Employees.Update(employee);
+               await _context.SaveChangesAsync();
 
-            return Ok(new {message ="Employee was sucessfully updated."}); // 200 - sikeres frissítés, de nincs visszatérő adat
-        }*/
+               return Ok(new {message ="Employee was sucessfully updated."}); // 200 - sikeres frissítés, de nincs visszatérő adat
+           }*/
 
 
         // POST: api/Employees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-       
+
 
 
 
