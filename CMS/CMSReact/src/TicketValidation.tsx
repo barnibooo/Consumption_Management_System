@@ -60,6 +60,7 @@ function App() {
   const [customerId, setCustomerId] = useState<string>("");
   const [tokenValidated, setTokenValidated] = useState(false);
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
+  
   useEffect(() => {
     const validateAndFetchData = async () => {
       if (!tokenValidated) {

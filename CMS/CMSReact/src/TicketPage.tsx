@@ -671,7 +671,7 @@ const Dashboard: React.FC = () => {
                   },
                 }}
                 onClick={handleSubmitOrder}
-                disabled={!hasBelepoInOrder}
+                disabled={!hasBelepoInOrder || !cardId || !fullName}
               >
                 Jegyfoglalás
               </Button>
