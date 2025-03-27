@@ -99,6 +99,7 @@ const Dashboard: React.FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [isUnauthorized, setIsUnauthorized] = useState(false);
+  const [cardId, setCardId] = useState<string | null>(null);
 
   const handleCategoryClick = (category: string | null) => {
     setSelectedCategory(category);
@@ -278,57 +279,53 @@ const Dashboard: React.FC = () => {
     ? menuItems.filter((item) => item.category === selectedCategory)
     : menuItems;
 
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-
-  const handleSubmitOrder = (cId: string) => {
-    setGuestId(cId);
-
-    const orderList = orders.map((orderItem) => ({
-      itemId: orderItem.itemId,
-      quantity: orderItem.quantity,
-    }));
-
-    setFinalizedOrders(orderList);
-
-    axios
-      .get("https://localhost:5000/api/Cards/GetCustomerIdByCardId/" + cId)
-      .then((response) => {
-        console.log(response.data);
-        if (!isNaN(response.data)) {
-          axios
-            .post("https://localhost:5000/api/Orders", {
-              customerId: response.data,
-              employeeId: 1,
+    const handleSubmitOrder = () => {
+      if (!cardId || orders.length === 0) {
+        console.error("Kártyaazonosító szükséges és legalább egy tétel a listában!");
+        return;
+      }
+    
+      axios
+        .get("https://localhost:5000/api/Cards/GetCustomerIdByCardId/" + cardId)
+        .then((response) => {
+          console.log("Customer ID Response:", response.data);
+    
+          if (!isNaN(response.data)) {
+            const orderData = {
+              customerId: response.data, // Customer ID from the API response
+              employeeId: 1, // Replace with the actual employee ID if available
               menuItems: orders.map((orderItem) => ({
                 menuItemId: orderItem.itemId,
                 quantity: orderItem.quantity,
               })),
-            })
-            .then((response) => {
-              console.log("Order submitted successfully:", response.data);
-              setOrderId(response.data.orderId);
-              setDialogOpen(true);
-            })
-            .catch((error) => {
-              console.error("Error submitting order:", error);
-            });
-        } else {
-          console.error("Nincs ilyen felhasználó", response.data);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Hiba történt:", error);
-        setError(error.message);
-        setLoading(false);
-      });
-  };
+            };
+    
+            // Log the JSON payload to the console
+            console.log("POST JSON Payload:", JSON.stringify(orderData, null, 2));
+    
+            axios
+              .post("https://localhost:5000/api/Orders", orderData)
+              .then((response) => {
+                console.log("Order submitted successfully:", response.data);
+                setOrderId(response.data.orderId);
+                setDialogOpen(true);
+              })
+              .catch((error) => {
+                console.error("Error submitting order:", error);
+              });
+          } else {
+            console.error("Nincs ilyen felhasználó", response.data);
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Hiba történt:", error);
+          setError(error.message);
+          setLoading(false);
+        });
+    };
+  
+
 
   const handleClose = () => {
     setDialogOpen(false);
@@ -421,7 +418,54 @@ const Dashboard: React.FC = () => {
           >
             <CardHeader
               title="Rendelés"
-              subheader={`Összesen: ${calculateTotalPrice()} Ft`}
+              subheader={
+                <>
+                  {`Összesen: ${calculateTotalPrice()} Ft`}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: 2,
+                    }}
+                  >
+                    <TextField
+                      required
+                      id="card-id-input"
+                      label="Kártyazonosító"
+                      variant="standard"
+                      value={cardId || ""}
+                      onChange={(e) => setCardId(e.target.value)}
+                      sx={{
+                        width: "80%",
+                        "& .MuiInputBase-root": {
+                          color: "#d5d6d6",
+                        },
+                        "& .MuiInputLabel-root": {
+                          color: "#d5d6d6",
+                        },
+                        "& .MuiInput-underline:before": {
+                          borderBottomColor: "#d5d6d6",
+                        },
+                        "& .MuiInput-underline:hover:before": {
+                          borderBottomColor: "#d5d6d6",
+                        },
+                        "& .MuiInput-underline:after": {
+                          borderBottomColor: "#d5d6d6",
+                        },
+                        "& .Mui-focused .MuiInputLabel-root": {
+                          color: "#d5d6d6 !important",
+                        },
+                        "& .Mui-focused .MuiInput-underline:before": {
+                          borderBottomColor: "#d5d6d6 !important",
+                        },
+                        "& .Mui-focused .MuiInput-underline:after": {
+                          borderBottomColor: "#d5d6d6 !important",
+                        },
+                      }}
+                    />
+                  </Box>
+                </>
+              }
               sx={{
                 "& .MuiCardHeader-subheader": {
                   color: "#d5d6d6",
@@ -485,8 +529,13 @@ const Dashboard: React.FC = () => {
                   m: 2,
                   backgroundColor: "#BFA181",
                   width: "80%",
+                  "&.Mui-disabled": {
+                    backgroundColor: "#9e9386",
+                    color: "#d5d6d6",
+                  },
                 }}
-                onClick={handleOpenDialog}
+                onClick={handleSubmitOrder}
+                disabled={!cardId || orders.length === 0}
               >
                 Rendelés leadása
               </Button>
@@ -603,75 +652,6 @@ const Dashboard: React.FC = () => {
           </Box>
         </Box>
       </Box>
-      <ThemeProvider theme={darkTheme}>
-        <Dialog
-          open={openDialog}
-          onClose={handleCloseDialog}
-          slotProps={{
-            paper: {
-              component: "form",
-              onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-                event.preventDefault();
-                const formData = new FormData(event.currentTarget);
-                const formJson = Object.fromEntries(
-                  (formData as any).entries()
-                );
-                const id = formJson.id as string;
-                handleSubmitOrder(id);
-                handleCloseDialog();
-              },
-            },
-          }}
-        >
-          <DialogTitle>Rendelés leadása</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Kérjük adja meg a vendég azonosítóját!
-            </DialogContentText>
-            <TextField
-              required
-              margin="dense"
-              id="name"
-              name="id"
-              label="Azonosító"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Mégse</Button>
-            <Button type="submit">Leadás</Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog
-          open={dialogOpen}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"Sikeres rendelés leadás"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              <Typography>A rendelés leadva!</Typography>
-              <Typography>Rendelési szám: {orderId}</Typography>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => {
-                handleClose();
-                window.location.reload();
-              }}
-              autoFocus
-            >
-              Rendben
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </ThemeProvider>
     </>
   );
 };
