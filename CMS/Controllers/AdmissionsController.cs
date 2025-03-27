@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = "AdminOrTicketOnly")]
     public class AdmissionsController : ControllerBase
     {
         private readonly CMSContext _context;

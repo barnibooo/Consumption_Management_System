@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import { checkToken } from "./AuthService";
 import { parseJwt } from "./JWTParser";
+import { refreshToken } from "./RefreshService";
 
 const darkTheme = createTheme({
   palette: {
@@ -73,6 +74,13 @@ function App() {
         window.location.href = "/login";
         return;
       }
+      const isrefreshed = await refreshToken();
+  
+        if (!isrefreshed) {
+          window.location.href = "/login";
+          return;
+        }
+
 
       const token = localStorage.getItem("token");
       if (token) {

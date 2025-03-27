@@ -92,17 +92,23 @@ function App() {
 
   const fetchCustomerData = () => {
     setLoading(true);
+    const token = localStorage.getItem("token");
+  
     axios
-      .get(`https://localhost:5000/api/Customers/${customerId}`)
+      .get(`https://localhost:5000/api/Customers/${customerId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         console.log(response.data);
         setCustomer(response.data);
         setLoading(false);
       })
       .catch((error) => {
-        if (error.response && error.status === 404) {
+        if (error.response && error.response.status === 404) {
           setError("A megadott kártyaazonosító nem található!");
-        } else if (error.response && error.status === 401) {
+        } else if (error.response && error.response.status === 401) {
           setError("Az oldal használatához magasabb jogosultság szükséges!");
         } else {
           setError(error.message);

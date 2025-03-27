@@ -44,8 +44,9 @@ import AppsIcon from "@mui/icons-material/Apps";
 import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
 import { createTheme } from "@mui/material/styles";
-import { checkToken } from "./AuthService"; // Import the checkToken function
-import { refreshToken } from "./RefreshService"; // Import the refreshToken function
+import { checkToken } from "./AuthService"; 
+import { refreshToken } from "./RefreshService"; 
+import { parseJwt } from "./JWTParser";
 
 const darkTheme = createTheme({
   palette: {
@@ -292,8 +293,8 @@ const Dashboard: React.FC = () => {
     
           if (!isNaN(response.data)) {
             const orderData = {
-              customerId: response.data, // Customer ID from the API response
-              employeeId: 1, // Replace with the actual employee ID if available
+              customerId: response.data,
+              employeeId: parseJwt(localStorage.getItem("token") || "")?.employeeId,
               menuItems: orders.map((orderItem) => ({
                 menuItemId: orderItem.itemId,
                 quantity: orderItem.quantity,

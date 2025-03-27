@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Models;
 using CMS.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Controllers
 {
@@ -61,6 +62,7 @@ namespace CMS.Controllers
 
         // GET: api/Customers/5
         [HttpGet("{cardid}")]
+        [Authorize]
         public async Task<ActionResult<CustomerGetIdDto>> GetCustomer(string cardid)
         {
             var customer = await _context.Customers
@@ -141,6 +143,7 @@ namespace CMS.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "AdminOrTicketOnly")]
         public async Task<IActionResult> CreateOrder([FromBody] CustomerPostDto customerpostdto)
         {
             if (!ModelState.IsValid)

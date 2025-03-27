@@ -72,6 +72,7 @@ public class AuthController : ControllerBase
         });
     }
     [HttpPost("refreshToken")]
+    //Védett, de nem az [Authorize]-zal.
     public async Task<IActionResult> RefreshToken()
     {
         var authHeader = Request.Headers["Authorization"].ToString();
@@ -166,6 +167,7 @@ public class AuthController : ControllerBase
 
 
     [HttpPost("logout")]
+    [Authorize]
     public async Task<IActionResult> Logout()
     {
         var authHeader = Request.Headers["Authorization"].ToString();

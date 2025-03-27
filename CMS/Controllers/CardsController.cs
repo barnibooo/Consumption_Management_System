@@ -22,6 +22,7 @@ namespace CMS.Controllers
 
 
         [HttpGet("GetCustomerIdByCardId/{cardId}")]
+
         public async Task<ActionResult<int>> GetCustomerIdByCardId(string cardId)
         {
             // Search for the customer with the given CardId

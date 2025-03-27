@@ -35,6 +35,7 @@ import { createTheme } from "@mui/material/styles";
 import { Category } from "@mui/icons-material";
 import { checkToken } from "./AuthService"; // Import the checkToken function
 import { refreshToken } from "./RefreshService"; // Import the refreshToken function
+import { parseJwt } from "./JWTParser";
 
 const darkTheme = createTheme({
   palette: {
@@ -370,7 +371,7 @@ const Dashboard: React.FC = () => {
     const customerData = {
       cardId: cardId,
       name: fullName,
-      createdBy: 1,
+      createdBy: parseJwt(localStorage.getItem("token") || "")?.employeeId,
       ticketsIds: orders.map((ticketItem) => ({
         ticketId: ticketItem.ticketId,
       })),
