@@ -24,6 +24,8 @@ import {
   DialogContentText,
   TextField,
   DialogActions,
+  SnackbarCloseReason,
+  Snackbar,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
@@ -101,6 +103,7 @@ const Dashboard: React.FC = () => {
   const [orderId, setOrderId] = useState("");
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [cardId, setCardId] = useState<string | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // Add state for Snackbar
 
   const handleCategoryClick = (category: string | null) => {
     setSelectedCategory(category);
@@ -228,30 +231,64 @@ const Dashboard: React.FC = () => {
         alignItems="center"
         height="100vh"
       >
-        <ThemeProvider theme={darkTheme}>
-          <Alert severity="warning">
+        <Snackbar
+          open={isUnauthorized}
+          autoHideDuration={6000}
+          onClose={() => setIsUnauthorized(false)}
+        >
+          <Alert
+            onClose={() => setIsUnauthorized(false)}
+            severity="warning"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
             Az oldal használatához magasabb jogosultság szükséges!
           </Alert>
-        </ThemeProvider>
+        </Snackbar>
+      </Box>
+    );
+  if (loading)
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <CircularProgress size={120} sx={{ color: "#bfa181" }} />
       </Box>
     );
   if (error)
     return (
-      <ThemeProvider theme={darkTheme}>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="100vh"
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <Snackbar
+          open={Boolean(error)}
+          autoHideDuration={6000}
+          onClose={async () => {
+            setError(null);
+            await new Promise((resolve) => setTimeout(resolve, 1));
+            if (error) setError(error); // Reopen if the error persists
+          }}
         >
-          <Box width="40%">
-            <Alert severity="error">
-              <AlertTitle>Hiba</AlertTitle>
-              Hiba történt az adatok betöltése közben!
-            </Alert>
-          </Box>
-        </Box>
-      </ThemeProvider>
+          <Alert
+            onClose={async () => {
+              setError(null);
+              await new Promise((resolve) => setTimeout(resolve, 1));
+              if (error) setError(error); // Reopen if the error persists
+            }}
+            severity="error"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            Hiba történt az adatok betöltése közben!
+          </Alert>
+        </Snackbar>
+      </Box>
     );
 
   var l = menuItems.length;
@@ -321,7 +358,7 @@ const Dashboard: React.FC = () => {
             .then((response) => {
               console.log("Order submitted successfully:", response.data);
               setOrderId(response.data.orderId);
-              setDialogOpen(true);
+              setSnackbarOpen(true); // Open Snackbar on success
             })
             .catch((error) => {
               console.error("Error submitting order:", error);
@@ -338,8 +375,14 @@ const Dashboard: React.FC = () => {
       });
   };
 
-  const handleClose = () => {
-    setDialogOpen(false);
+  const handleSnackbarClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   return (
@@ -550,6 +593,20 @@ const Dashboard: React.FC = () => {
               >
                 Rendelés leadása
               </Button>
+              <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+              >
+                <Alert
+                  onClose={handleSnackbarClose}
+                  severity="success"
+                  variant="filled"
+                  sx={{ width: "100%" }}
+                >
+                  Sikeres rendelésleadás!
+                </Alert>
+              </Snackbar>
             </CardActions>
           </Card>
         </Box>
