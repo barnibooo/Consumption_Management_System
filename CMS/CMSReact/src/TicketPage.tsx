@@ -23,6 +23,8 @@ import {
   DialogContentText,
   TextField,
   DialogActions,
+  Snackbar,
+  SnackbarCloseReason,
 } from "@mui/material";
 import ExtensionOutlinedIcon from "@mui/icons-material/ExtensionOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
@@ -98,6 +100,8 @@ const Dashboard: React.FC = () => {
   const [tokenValidated, setTokenValidated] = useState(false);
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
+  const [open, setOpen] = React.useState(false);
+
   useEffect(() => {
     const validateAndFetchData = async () => {
       if (!tokenValidated) {
@@ -272,11 +276,20 @@ const Dashboard: React.FC = () => {
         alignItems="center"
         height="100vh"
       >
-        <ThemeProvider theme={darkTheme}>
-          <Alert severity="warning">
+        <Snackbar
+          open={isUnauthorized}
+          autoHideDuration={6000}
+          onClose={() => setIsUnauthorized(false)}
+        >
+          <Alert
+            onClose={() => setIsUnauthorized(false)}
+            severity="warning"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
             Az oldal használatához magasabb jogosultság szükséges!
           </Alert>
-        </ThemeProvider>
+        </Snackbar>
       </Box>
     );
   if (loading)
@@ -292,21 +305,35 @@ const Dashboard: React.FC = () => {
     );
   if (error)
     return (
-      <ThemeProvider theme={darkTheme}>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="100vh"
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <Snackbar
+          open={Boolean(error)}
+          autoHideDuration={6000}
+          onClose={async () => {
+            setError(null);
+            await new Promise((resolve) => setTimeout(resolve, 1));
+            if (error) setError(error); // Reopen if the error persists
+          }}
         >
-          <Box width="40%">
-            <Alert severity="error">
-              <AlertTitle>Hiba</AlertTitle>
-              Hiba történt az adatok betöltése közben!
-            </Alert>
-          </Box>
-        </Box>
-      </ThemeProvider>
+          <Alert
+            onClose={async () => {
+              setError(null);
+              await new Promise((resolve) => setTimeout(resolve, 1));
+              if (error) setError(error); // Reopen if the error persists
+            }}
+            severity="error"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            Hiba történt az adatok betöltése közben!
+          </Alert>
+        </Snackbar>
+      </Box>
     );
 
   var l = admissionItems.length;
@@ -347,18 +374,6 @@ const Dashboard: React.FC = () => {
     ? admissionItems.filter((item) => item.category === selectedCategory)
     : admissionItems;
 
-  const handleOpenDialog = () => {
-    setOpenDialogs(new Array(orders.length).fill(true));
-  };
-
-  const handleCloseDialog = (index: number) => {
-    setOpenDialogs((prev) => {
-      const newDialogs = [...prev];
-      newDialogs[index] = false;
-      return newDialogs;
-    });
-  };
-
   const handleIdChange = (index: number, value: string) => {
     setIds((prev) => {
       const newIds = [...prev];
@@ -394,7 +409,7 @@ const Dashboard: React.FC = () => {
       })
       .then((response) => {
         setOrderId(response.data.orderId);
-        setDialogOpen(true);
+        handleClick();
       })
       .catch((error) => {
         console.error("Error creating customer:", error);
@@ -403,6 +418,21 @@ const Dashboard: React.FC = () => {
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
   };
 
   const hasBelepoInOrder = orders.some((item) => item.category === "Belépő");
@@ -686,6 +716,20 @@ const Dashboard: React.FC = () => {
               >
                 Jegyfoglalás
               </Button>
+              <Snackbar
+                open={open && !error && !isUnauthorized}
+                autoHideDuration={6000}
+                onClose={handleClose}
+              >
+                <Alert
+                  onClose={handleClose}
+                  severity="success"
+                  variant="filled"
+                  sx={{ width: "100%" }}
+                >
+                  Sikeres jegyvásárlás!
+                </Alert>
+              </Snackbar>
             </CardActions>
           </Card>
         </Box>

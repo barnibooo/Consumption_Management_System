@@ -23,12 +23,13 @@ namespace CMS.Controllers
         }
 
         // GET: api/Tickets
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets()
         {
             return await _context.Tickets.ToListAsync();
         }
-
+        
         // GET: api/Tickets/5
       /*  [HttpGet("{id}")]
         public async Task<ActionResult<Ticket>> GetTicket(int id)
