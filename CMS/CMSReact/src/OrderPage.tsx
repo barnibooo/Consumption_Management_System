@@ -359,6 +359,8 @@ const Dashboard: React.FC = () => {
               console.log("Order submitted successfully:", response.data);
               setOrderId(response.data.orderId);
               setSnackbarOpen(true); // Open Snackbar on success
+              setOrders([]); // Clear the order list
+              setCardId(null); // Reset the TextField
             })
             .catch((error) => {
               console.error("Error submitting order:", error);
