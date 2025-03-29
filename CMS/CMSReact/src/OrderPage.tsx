@@ -102,8 +102,9 @@ const Dashboard: React.FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [isUnauthorized, setIsUnauthorized] = useState(false);
+  const [dataLoadError, setDataLoadError] = useState<string | null>(null); // State for data loading errors
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for success Snackbar
   const [cardId, setCardId] = useState<string | null>(null);
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // Add state for Snackbar
 
   const handleCategoryClick = (category: string | null) => {
     setSelectedCategory(category);
@@ -178,38 +179,87 @@ const Dashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (dataFetched) {
-      const token = localStorage.getItem("token");
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "https://localhost:5000/api/MenuItems",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      axios
-        .get("https://localhost:5000/api/MenuItems", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          if (Array.isArray(response.data)) {
-            setMenuItems(response.data);
-          } else {
-            console.error("Hibás API válasz: nem tömb", response.data);
-          }
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Hiba történt:", error);
-          if (
-            error.response &&
-            error.response.status === 403 &&
-            !isUnauthorized
-          ) {
-            setIsUnauthorized(true);
-          } else {
-            setError(error.message);
-          }
-          setLoading(false);
-        });
+        if (Array.isArray(response.data)) {
+          setMenuItems(response.data);
+        } else {
+          throw new Error("Hibás API válasz: nem tömb");
+        }
+      } catch (err: any) {
+        if (err.response && err.response.status === 403) {
+          setIsUnauthorized(true); // Trigger the unauthorized Snackbar
+        } else {
+          setDataLoadError("Hiba történt az adatok betöltése közben!");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleSubmitOrder = () => {
+    if (!cardId || orders.length === 0) {
+      setError("Kártyaazonosító szükséges és legalább egy tétel a listában!");
+      return;
     }
-  }, [dataFetched]);
+
+    axios
+      .get("https://localhost:5000/api/Cards/GetCustomerIdByCardId/" + cardId, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        if (!isNaN(response.data)) {
+          const token = localStorage.getItem("token");
+          let decodedToken: { EmployeeId: number } | null = null;
+          if (token) {
+            decodedToken = parseJwt(token);
+          }
+          const orderData = {
+            customerId: response.data,
+            employeeId: decodedToken?.EmployeeId || "",
+            menuItems: orders.map((orderItem) => ({
+              menuItemId: orderItem.itemId,
+              quantity: orderItem.quantity,
+            })),
+          };
+
+          axios
+            .post("https://localhost:5000/api/Orders", orderData, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            })
+            .then(() => {
+              setSnackbarOpen(true); // Open success Snackbar
+              setOrders([]); // Clear the order list
+              setCardId(null); // Reset the TextField
+            })
+            .catch(() => {
+              setError("Hiba történt a rendelés leadása közben!");
+            });
+        } else {
+          setError("Nincs ilyen felhasználó!"); // Set error for invalid user
+        }
+      })
+      .catch(() => {
+        setError("Hiba történt az adatok betöltése közben!");
+      });
+  };
 
   if (loading)
     return (
@@ -223,6 +273,38 @@ const Dashboard: React.FC = () => {
       </Box>
     );
 
+  if (dataLoadError)
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <Snackbar
+          open={Boolean(dataLoadError)}
+          autoHideDuration={6000} // Auto-hide after 6 seconds
+          onClose={async () => {
+            setDataLoadError(null); // Temporarily close the Snackbar
+            await new Promise((resolve) => setTimeout(resolve, 1)); // Small delay
+            if (dataLoadError) setDataLoadError(dataLoadError); // Reopen if the error persists
+          }}
+        >
+          <Alert
+            onClose={async () => {
+              setDataLoadError(null); // Temporarily close the Snackbar
+              await new Promise((resolve) => setTimeout(resolve, 1)); // Small delay
+              if (dataLoadError) setDataLoadError(dataLoadError); // Reopen if the error persists
+            }}
+            severity="error"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            Hiba történt az adatok betöltése közben!
+          </Alert>
+        </Snackbar>
+      </Box>
+    );
   if (isUnauthorized)
     return (
       <Box
@@ -233,59 +315,24 @@ const Dashboard: React.FC = () => {
       >
         <Snackbar
           open={isUnauthorized}
-          autoHideDuration={6000}
-          onClose={() => setIsUnauthorized(false)}
+          autoHideDuration={6000} // Auto-hide after 6 seconds
+          onClose={async () => {
+            setIsUnauthorized(false); // Temporarily close the Snackbar
+            await new Promise((resolve) => setTimeout(resolve, 1)); // Small delay
+            if (isUnauthorized) setIsUnauthorized(true); // Reopen if the unauthorized state persists
+          }}
         >
           <Alert
-            onClose={() => setIsUnauthorized(false)}
+            onClose={async () => {
+              setIsUnauthorized(false); // Temporarily close the Snackbar
+              await new Promise((resolve) => setTimeout(resolve, 1)); // Small delay
+              if (isUnauthorized) setIsUnauthorized(true); // Reopen if the unauthorized state persists
+            }}
             severity="warning"
             variant="filled"
             sx={{ width: "100%" }}
           >
             Az oldal használatához magasabb jogosultság szükséges!
-          </Alert>
-        </Snackbar>
-      </Box>
-    );
-  if (loading)
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
-        <CircularProgress size={120} sx={{ color: "#bfa181" }} />
-      </Box>
-    );
-  if (error)
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
-        <Snackbar
-          open={Boolean(error)}
-          autoHideDuration={6000}
-          onClose={async () => {
-            setError(null);
-            await new Promise((resolve) => setTimeout(resolve, 1));
-            if (error) setError(error); // Reopen if the error persists
-          }}
-        >
-          <Alert
-            onClose={async () => {
-              setError(null);
-              await new Promise((resolve) => setTimeout(resolve, 1));
-              if (error) setError(error); // Reopen if the error persists
-            }}
-            severity="error"
-            variant="filled"
-            sx={{ width: "100%" }}
-          >
-            Hiba történt az adatok betöltése közben!
           </Alert>
         </Snackbar>
       </Box>
@@ -316,66 +363,6 @@ const Dashboard: React.FC = () => {
   const filteredMenuItems = selectedCategory
     ? menuItems.filter((item) => item.category === selectedCategory)
     : menuItems;
-
-  const handleSubmitOrder = () => {
-    if (!cardId || orders.length === 0) {
-      console.error(
-        "Kártyaazonosító szükséges és legalább egy tétel a listában!"
-      );
-      return;
-    }
-
-    axios
-      .get("https://localhost:5000/api/Cards/GetCustomerIdByCardId/" + cardId, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((response) => {
-        console.log("Customer ID Response:", response.data);
-
-        if (!isNaN(response.data)) {
-          const token = localStorage.getItem("token");
-          let decodedToken: { EmployeeId: number } | null = null;
-          if (token) {
-            decodedToken = parseJwt(token);
-          }
-          const orderData = {
-            customerId: response.data,
-            employeeId: decodedToken?.EmployeeId || "",
-            menuItems: orders.map((orderItem) => ({
-              menuItemId: orderItem.itemId,
-              quantity: orderItem.quantity,
-            })),
-          };
-
-          axios
-            .post("https://localhost:5000/api/Orders", orderData, {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            })
-            .then((response) => {
-              console.log("Order submitted successfully:", response.data);
-              setOrderId(response.data.orderId);
-              setSnackbarOpen(true); // Open Snackbar on success
-              setOrders([]); // Clear the order list
-              setCardId(null); // Reset the TextField
-            })
-            .catch((error) => {
-              console.error("Error submitting order:", error);
-            });
-        } else {
-          console.error("Nincs ilyen felhasználó", response.data);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Hiba történt:", error);
-        setError(error.message);
-        setLoading(false);
-      });
-  };
 
   const handleSnackbarClose = (
     event?: React.SyntheticEvent | Event,
@@ -595,6 +582,7 @@ const Dashboard: React.FC = () => {
               >
                 Rendelés leadása
               </Button>
+              {/* Success Snackbar */}
               <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={6000}
@@ -609,6 +597,24 @@ const Dashboard: React.FC = () => {
                   Sikeres rendelésleadás!
                 </Alert>
               </Snackbar>
+
+              {/* Error Snackbar */}
+              {error && (
+                <Snackbar
+                  open={Boolean(error)}
+                  autoHideDuration={6000} // Auto-hide after 6 seconds
+                  onClose={() => setError(null)} // Allow manual closing
+                >
+                  <Alert
+                    onClose={() => setError(null)}
+                    severity="error"
+                    variant="filled"
+                    sx={{ width: "100%" }}
+                  >
+                    {error}
+                  </Alert>
+                </Snackbar>
+              )}
             </CardActions>
           </Card>
         </Box>

@@ -24,12 +24,14 @@ namespace CMS.Controllers
         }
 
         // GET: api/MenuItems
+        
         [HttpGet]
+        
         public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenuItems()
         {
             return await _context.MenuItems.ToListAsync();
         }
-
+        
         // PUT: api/MenuItems/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
        /* [HttpPut("{id}")]
