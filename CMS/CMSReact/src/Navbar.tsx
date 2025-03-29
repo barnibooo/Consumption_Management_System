@@ -10,14 +10,13 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Button,
   Tooltip,
   Avatar,
 } from "@mui/material";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import MenuIcon from "@mui/icons-material/Menu";
 import { createTheme } from "@mui/material/styles";
-import { parseJwt } from "./JWTParser"; // Import the parseJwt function
+import { parseJwt } from "./JWTParser";
 
 interface NavbarProps {
   role: string | null;
@@ -42,12 +41,12 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
     setAnchorElNav(event.currentTarget);
   };
 
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
+  };
+
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
   };
 
   const handleCloseUserMenu = async (setting: string) => {
@@ -81,6 +80,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
   };
 
   const handlePageNavigation = (page: string) => {
+    handleCloseNavMenu();
     if (page === "Főoldal") {
       window.location.href = "/";
     } else if (page === "Jegyértékesítés") {
@@ -93,8 +93,6 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
       window.location.href = "/customercheckout";
     } else if (page === "Regisztráció") {
       window.location.href = "/registration";
-    } else {
-      handleCloseNavMenu();
     }
   };
 
@@ -105,6 +103,9 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
         default: "#0f1827",
         paper: "#0f1827",
       },
+    },
+    typography: {
+      fontFamily: "Roboto, Arial, sans-serif", // Set Roboto as the default font
     },
   });
 
@@ -122,70 +123,47 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
     { name: "Regisztráció", roles: ["Admin"] },
     { name: "Vendég munkamenet zárása", roles: ["Admin", "TicketAssistant"] },
   ];
+
   const settings = ["Profil", "Kijelentkezés"];
+
+  const menuStyles = {
+    "& .MuiMenuItem-root": {
+      color: "#d5d6d6",
+      "&:hover": {
+        backgroundColor: "#37404f",
+      },
+    },
+  };
 
   return (
     <ThemeProvider theme={darkTheme}>
+      {/* Ensures the font and background are applied globally */}
       <AppBar position="static">
         <Container maxWidth={false}>
           <Toolbar
             disableGutters
             sx={{
-              justifyContent: {
-                xs: "center",
-                sm: "center",
-                xl: "space-between",
-              },
+              justifyContent: "space-between",
               padding: { xs: "0 16px", xl: "0 24px" },
             }}
           >
-            <BarChartIcon
-              sx={{
-                display: { xs: "none", md: "flex" },
-                mr: 1,
-                fontSize: 35,
-                color: "#d5d6d6",
-              }}
-            />
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              href="/"
-              sx={{
-                mr: 2,
-                display: { xs: "none", md: "flex" },
-                fontWeight: 700,
-                color: "#d5d6d6",
-                textDecoration: "none",
-              }}
-            >
-              Consumption Management System
-            </Typography>
-
-            {/* Mobile Menu Icon */}
-            <Box
-              sx={{
-                flexGrow: 1,
-                display: { xs: "flex", md: "none" },
-              }}
-            >
+            {/* BarChart Icon for Navigation */}
+            <Box sx={{ display: "flex", alignItems: "center" }}>
               <IconButton
                 size="large"
-                aria-label="account of current user"
+                aria-label="menu"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 onClick={handleOpenNavMenu}
                 color="inherit"
+                sx={{
+                  marginRight: { xs: 0, md: 2 },
+                  "&:hover": {
+                    color: "#BFA181",
+                  },
+                }}
               >
-                <MenuIcon
-                  sx={{
-                    fontSize: 35,
-                    "&:hover": {
-                      color: "#BFA181",
-                    },
-                  }}
-                />
+                <MenuIcon sx={{ fontSize: 35 }} />
               </IconButton>
               <Menu
                 id="menu-appbar"
@@ -201,9 +179,6 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
                 }}
                 open={Boolean(anchorElNav)}
                 onClose={handleCloseNavMenu}
-                sx={{
-                  display: { xs: "block", md: "none" },
-                }}
               >
                 {pages
                   .filter((page) => page.roles.includes(role || ""))
@@ -218,7 +193,11 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
                       }}
                     >
                       <Typography
-                        sx={{ textAlign: "center", color: "#d5d6d6" }}
+                        sx={{
+                          textAlign: "center",
+                          color: "#d5d6d6",
+                          fontSize: "1.2rem",
+                        }}
                       >
                         {page.name}
                       </Typography>
@@ -227,52 +206,41 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
               </Menu>
             </Box>
 
-            {/* Logo for Larger Screens */}
-            <BarChartIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              href="/"
+            {/* Title and BarChartIcon in the Center */}
+            <Box
               sx={{
-                mr: 2,
-                display: { xs: "flex", md: "none" },
-                fontWeight: 700,
-                textDecoration: "none",
-                color: "#d5d6d6",
-                textAlign: "center",
+                display: "flex",
+                alignItems: "center",
                 flexGrow: 1,
+                justifyContent: "center",
               }}
             >
-              CMS
-            </Typography>
-
-            {/* Desktop Menu */}
-            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              {pages
-                .filter((page) => page.roles.includes(role || ""))
-                .map((page) => (
-                  <Button
-                    key={page.name}
-                    onClick={() => handlePageNavigation(page.name)}
-                    sx={{
-                      color: "#d5d6d6",
-                      display: "block",
-                      textTransform: "none",
-                      fontSize: 20,
-                      "&:hover": {
-                        color: "#BFA181",
-                      },
-                    }}
-                  >
-                    <Typography variant="h2" sx={{ fontSize: "inherit" }}>
-                      {page.name}
-                    </Typography>
-                  </Button>
-                ))}
+              <BarChartIcon
+                sx={{
+                  marginRight: 1,
+                  color: "#d5d6d6",
+                  fontSize: { xs: 24, md: 30 },
+                }}
+              />
+              <Typography
+                variant="h6"
+                noWrap
+                component="a"
+                href="/"
+                sx={{
+                  fontWeight: 700,
+                  color: "#d5d6d6",
+                  textDecoration: "none",
+                  fontSize: { xs: "1.2rem", md: "1.5rem" },
+                }}
+              >
+                {window.innerWidth >= 1200
+                  ? "Content Management System"
+                  : "CMS"}
+              </Typography>
             </Box>
 
-            {/* User Avatar and Menu */}
+            {/* User Avatar on the Edge */}
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Menü megnyitása">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -290,6 +258,12 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
               <Menu
                 sx={{
                   mt: "45px",
+                  "& .MuiMenuItem-root": {
+                    color: "#d5d6d6", // Text color
+                    "&:hover": {
+                      backgroundColor: "#37404f", // Hover background color
+                    },
+                  },
                 }}
                 id="menu-appbar"
                 anchorEl={anchorElUser}
@@ -303,20 +277,16 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
                   horizontal: "right",
                 }}
                 open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
+                onClose={() => setAnchorElUser(null)}
               >
                 {settings.map((setting) => (
                   <MenuItem
                     key={setting}
                     onClick={() => handleCloseUserMenu(setting)}
-                    sx={{
-                      color: "#d5d6d6",
-                      "&:hover": {
-                        backgroundColor: "#37404f",
-                      },
-                    }}
                   >
-                    <Typography sx={{ textAlign: "center" }}>
+                    <Typography
+                      sx={{ textAlign: "center", fontSize: "1.2rem" }}
+                    >
                       {setting}
                     </Typography>
                   </MenuItem>
