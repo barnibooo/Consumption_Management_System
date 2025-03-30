@@ -52,7 +52,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
   const handleCloseUserMenu = async (setting: string) => {
     setAnchorElUser(null);
     if (setting === "Profil") {
-      window.location.href = "/profileEmployee.html";
+      window.location.href = "/profileEmployee";
     }
     if (setting === "Kijelentkezés") {
       const token = localStorage.getItem("token");
@@ -89,7 +89,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
       window.location.href = "/ticketvalidation";
     } else if (page === "Éttermi rendelés") {
       window.location.href = "/restaurant";
-    } else if (page === "Vendég munkamenet zárása") {
+    } else if (page === "Véglegesítés") {
       window.location.href = "/customercheckout";
     } else if (page === "Regisztráció") {
       window.location.href = "/registration";
@@ -121,7 +121,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
     },
     { name: "Éttermi rendelés", roles: ["Admin", "RestaurantAssistant"] },
     { name: "Regisztráció", roles: ["Admin"] },
-    { name: "Vendég munkamenet zárása", roles: ["Admin", "TicketAssistant"] },
+    { name: "Véglegesítés", roles: ["Admin", "TicketAssistant"] },
   ];
 
   const settings = ["Profil", "Kijelentkezés"];
@@ -235,7 +235,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
                 }}
               >
                 {window.innerWidth >= 1200
-                  ? "Content Management System"
+                  ? "Consumption Management System"
                   : "CMS"}
               </Typography>
             </Box>

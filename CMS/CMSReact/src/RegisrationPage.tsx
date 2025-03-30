@@ -213,9 +213,7 @@ function RegistrationCard() {
               marginBottom: 2,
               fontSize: { xs: 20, sm: 20, md: 20, lg: 22, xl: 30 },
             }}
-          >
-            Consumption Management System
-          </Typography>
+          ></Typography>
           <Typography
             gutterBottom
             variant="h4"
@@ -229,7 +227,7 @@ function RegistrationCard() {
               marginBottom: 2,
             }}
           >
-            Register
+            Új munkaválláló regisztrációja
           </Typography>
           <Typography
             gutterBottom
@@ -243,9 +241,7 @@ function RegistrationCard() {
               textDecoration: "none",
               marginBottom: 2,
             }}
-          >
-            Create your account
-          </Typography>
+          ></Typography>
           <TextField
             sx={{
               width: "70%",
@@ -275,7 +271,7 @@ function RegistrationCard() {
             }}
             required
             id="outlined-username"
-            label="Username"
+            label="Felhasználónév"
             type="text"
             margin="dense"
             value={username || ""}
@@ -310,7 +306,7 @@ function RegistrationCard() {
             }}
             required
             id="outlined-firstname"
-            label="First Name"
+            label="Keresztnév"
             type="text"
             margin="dense"
             value={firstName || ""}
@@ -345,7 +341,7 @@ function RegistrationCard() {
             }}
             required
             id="outlined-lastname"
-            label="Last Name"
+            label="Vezetéknév"
             type="text"
             margin="dense"
             value={lastName || ""}
@@ -380,7 +376,7 @@ function RegistrationCard() {
             }}
             required
             id="outlined-password"
-            label="Password"
+            label="Jelszó"
             type="password"
             autoComplete="new-password"
             margin="dense"
@@ -420,12 +416,13 @@ function RegistrationCard() {
               },
             }}
           >
-            <InputLabel id="role-select-label">Role</InputLabel>
+            <InputLabel id="role-select-label">Munkakör</InputLabel>
             <Select
+              required
               labelId="role-select-label"
               id="role-select"
               value={role}
-              label="Role"
+              label="Munkakör"
               onChange={(event: SelectChangeEvent) =>
                 setRole(event.target.value)
               }
