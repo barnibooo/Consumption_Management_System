@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import {
   Alert,
   Button,
+  Snackbar,
   TextField,
   ThemeProvider,
   useMediaQuery,
@@ -43,14 +44,15 @@ function RegistrationCard() {
   const [firstName, setFirstName] = useState<string | null>(null);
   const [lastName, setLastName] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
+  const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const validateAndFetchData = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
         console.error("No token found. Redirecting to login...");
-        setIsUnauthorized(true);
-        window.location.href = "/login"; // Redirect to /login
+        setIsUnauthorized(true); // Itt jelenik meg a hiba
         return;
       }
 
@@ -58,13 +60,12 @@ function RegistrationCard() {
         const isValidToken = await checkToken();
         if (!isValidToken) {
           console.error("Invalid token. Redirecting to login...");
-          setIsUnauthorized(true);
-          window.location.href = "/login"; // Redirect to /login
+          setIsUnauthorized(true); // Ha a token érvénytelen, folyamatosan újra megjelenítjük a hibát
           return;
         }
 
         setTokenValidated(true);
-        await refreshToken();
+        await refreshToken(); // A token frissítése
         setTokenRefreshed(true);
         setDataFetched(true);
 
@@ -78,16 +79,18 @@ function RegistrationCard() {
           }
         );
         setRoles(response.data);
+
+        setIsUnauthorized(false);
       } catch (error) {
         console.error("Error during token validation or data fetching:", error);
-        setIsUnauthorized(true);
+        setIsUnauthorized(true); // Ha hiba történt, folyamatosan újra megjelenik a hiba
       }
     };
 
     validateAndFetchData();
   }, []);
 
-  if (isUnauthorized)
+  if (isUnauthorized) {
     return (
       <Box
         display="flex"
@@ -95,13 +98,19 @@ function RegistrationCard() {
         alignItems="center"
         height="100vh"
       >
-        <ThemeProvider theme={darkTheme}>
-          <Alert severity="warning">
+        <Snackbar open={isUnauthorized} autoHideDuration={6000}>
+          <Alert
+            onClose={() => setIsUnauthorized(true)}
+            severity="warning"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
             Az oldal használatához magasabb jogosultság szükséges!
           </Alert>
-        </ThemeProvider>
+        </Snackbar>
       </Box>
     );
+  }
 
   const handleRegister = async () => {
     try {
@@ -122,11 +131,23 @@ function RegistrationCard() {
         }
       );
 
-      alert("Registration successful!");
-    } catch (error) {
+      setOpenSuccessSnackbar(true);
+      setError(null);
+    } catch (error: any) {
       console.error("Registration failed:", error);
-      alert("Registration failed. Please try again.");
+      setError("Registration failed. Please try again.");
+      setOpenSuccessSnackbar(false);
     }
+  };
+
+  const isFormValid = () => {
+    return (
+      username?.trim() !== "" &&
+      firstName?.trim() !== "" &&
+      lastName?.trim() !== "" &&
+      password?.trim() !== "" &&
+      role.trim() !== ""
+    );
   };
 
   return (
@@ -431,17 +452,50 @@ function RegistrationCard() {
           </FormControl>
           <Button
             sx={{
-              width: "70%",
-              height: "Auto",
+              m: 2,
               backgroundColor: "#BFA181",
-              marginBottom: 2,
+              width: "80%",
+              "&.Mui-disabled": {
+                backgroundColor: "#9e9386",
+                color: "#d5d6d6",
+              },
             }}
             variant="contained"
             endIcon={<PersonAddIcon />}
             onClick={handleRegister}
+            disabled={!isFormValid()}
           >
-            Register
+            Regisztráció
           </Button>
+          <Snackbar
+            open={openSuccessSnackbar && !error && !isUnauthorized}
+            autoHideDuration={6000}
+            onClose={() => setOpenSuccessSnackbar(false)}
+          >
+            <Alert
+              onClose={() => setOpenSuccessSnackbar(false)}
+              severity="success"
+              variant="filled"
+              sx={{ width: "100%" }}
+            >
+              Sikeres regisztráció!
+            </Alert>
+          </Snackbar>
+
+          <Snackbar
+            open={Boolean(error)}
+            autoHideDuration={6000}
+            onClose={() => setError(null)}
+          >
+            <Alert
+              onClose={() => setError(null)}
+              severity="error"
+              variant="filled"
+              sx={{ width: "100%" }}
+            >
+              Sikertelen regisztráció!
+            </Alert>
+          </Snackbar>
         </CardContent>
       </Card>
     </Box>
