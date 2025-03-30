@@ -39,6 +39,10 @@ function RegistrationCard() {
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [roles, setRoles] = useState<string[]>([]);
   const [role, setRole] = useState<string>("");
+  const [username, setUsername] = useState<string | null>(null);
+  const [firstName, setFirstName] = useState<string | null>(null);
+  const [lastName, setLastName] = useState<string | null>(null);
+  const [password, setPassword] = useState<string | null>(null);
 
   useEffect(() => {
     const validateAndFetchData = async () => {
@@ -47,13 +51,6 @@ function RegistrationCard() {
         console.error("No token found. Redirecting to login...");
         setIsUnauthorized(true);
         window.location.href = "/login"; // Redirect to /login
-        return;
-      }
-
-      const decodedToken = parseJwt(token);
-      if (!decodedToken || decodedToken.role !== "Admin") {
-        console.error("Access denied. Redirecting to login...");
-        setIsUnauthorized(true);
         return;
       }
 
@@ -105,6 +102,32 @@ function RegistrationCard() {
         </ThemeProvider>
       </Box>
     );
+
+  const handleRegister = async () => {
+    try {
+      const employeeData = {
+        username,
+        firstName,
+        lastName,
+        password,
+      };
+
+      await axios.post(
+        "https://localhost:5000/api/Auth/register",
+        employeeData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      alert("Registration successful!");
+    } catch (error) {
+      console.error("Registration failed:", error);
+      alert("Registration failed. Please try again.");
+    }
+  };
 
   return (
     <Box
@@ -234,6 +257,8 @@ function RegistrationCard() {
             label="Username"
             type="text"
             margin="dense"
+            value={username || ""}
+            onChange={(e) => setUsername(e.target.value)}
           />
           <TextField
             sx={{
@@ -267,6 +292,8 @@ function RegistrationCard() {
             label="First Name"
             type="text"
             margin="dense"
+            value={firstName || ""}
+            onChange={(e) => setFirstName(e.target.value)}
           />
           <TextField
             sx={{
@@ -300,6 +327,8 @@ function RegistrationCard() {
             label="Last Name"
             type="text"
             margin="dense"
+            value={lastName || ""}
+            onChange={(e) => setLastName(e.target.value)}
           />
           <TextField
             sx={{
@@ -334,6 +363,8 @@ function RegistrationCard() {
             type="password"
             autoComplete="new-password"
             margin="dense"
+            value={password || ""}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <FormControl
             sx={{
@@ -407,6 +438,7 @@ function RegistrationCard() {
             }}
             variant="contained"
             endIcon={<PersonAddIcon />}
+            onClick={handleRegister}
           >
             Register
           </Button>
