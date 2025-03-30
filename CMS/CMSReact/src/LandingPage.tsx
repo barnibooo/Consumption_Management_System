@@ -18,6 +18,9 @@ const darkTheme = createTheme({
   palette: {
     mode: "dark",
   },
+  typography: {
+    fontFamily: "Roboto, sans-serif",
+  },
 });
 
 const cardContent = (image: string, text: string, link: string) => (
@@ -37,7 +40,7 @@ const cardContent = (image: string, text: string, link: string) => (
       <Typography
         variant="h2"
         component="div"
-        fontFamily={"Roboto"}
+        fontFamily="Roboto, sans-serif"
         sx={{
           position: "absolute",
           top: 0,
@@ -75,12 +78,11 @@ function App() {
         return;
       }
       const isrefreshed = await refreshToken();
-  
-        if (!isrefreshed) {
-          window.location.href = "/login";
-          return;
-        }
 
+      if (!isrefreshed) {
+        window.location.href = "/login";
+        return;
+      }
 
       const token = localStorage.getItem("token");
       if (token) {
@@ -113,15 +115,20 @@ function App() {
               sx={{
                 width: {
                   xs: "100%",
-                  sm: "50%",
-                  md: "50%",
-                  lg: "35%",
+                  sm: "80%",
+                  md: "60%",
+                  lg: "45%",
                   xl: "35%",
                 },
                 p: 1,
               }}
             >
-              <Card sx={{ maxWidth: "100%", height: "auto" }}>
+              <Card
+                sx={{
+                  maxWidth: "100%",
+                  height: "auto",
+                }}
+              >
                 {cardContent(
                   "/img/landing/ticket_temp.png",
                   "Jegyértékesítés",
@@ -137,9 +144,9 @@ function App() {
               sx={{
                 width: {
                   xs: "100%",
-                  sm: "50%",
-                  md: "50%",
-                  lg: "35%",
+                  sm: "80%",
+                  md: "60%",
+                  lg: "45%",
                   xl: "35%",
                 },
                 p: 1,
@@ -159,9 +166,9 @@ function App() {
               sx={{
                 width: {
                   xs: "100%",
-                  sm: "50%",
-                  md: "50%",
-                  lg: "35%",
+                  sm: "80%",
+                  md: "60%",
+                  lg: "45%",
                   xl: "35%",
                 },
                 p: 1,
@@ -181,9 +188,9 @@ function App() {
               sx={{
                 width: {
                   xs: "100%",
-                  sm: "50%",
-                  md: "50%",
-                  lg: "35%",
+                  sm: "80%",
+                  md: "60%",
+                  lg: "45%",
                   xl: "35%",
                 },
                 p: 1,
@@ -203,9 +210,9 @@ function App() {
               sx={{
                 width: {
                   xs: "100%",
-                  sm: "50%",
-                  md: "50%",
-                  lg: "35%",
+                  sm: "80%",
+                  md: "60%",
+                  lg: "45%",
                   xl: "35%",
                 },
                 p: 1,
@@ -214,7 +221,7 @@ function App() {
               <Card sx={{ maxWidth: "100%", height: "auto" }}>
                 {cardContent(
                   "/img/landing/checkout_temp.png",
-                  "Vendég munkamenet zárása",
+                  "Véglegesítés",
                   "customercheckout"
                 )}
               </Card>
