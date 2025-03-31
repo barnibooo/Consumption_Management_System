@@ -22,18 +22,17 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    //[Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> Register([FromBody] RegisterDto model)
     {
         if (await _context.Employees.AnyAsync(u => u.Username == model.Username))
             return BadRequest("User already exists.");
 
-        var role = Enum.IsDefined(typeof(Roles), model.Role);
-        if (!role)
+        if (!Enum.TryParse(typeof(Roles), model.Role, true, out var role))
             return BadRequest("Invalid role.");
 
         var currentUserRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-        if (model.Role == Roles.Admin && currentUserRole != nameof(Roles.Admin))
+        if ((Roles)role == Roles.Admin && currentUserRole != nameof(Roles.Admin))
             return Unauthorized("Only admins can register admin users.");
 
         var user = new Employee
@@ -42,7 +41,7 @@ public class AuthController : ControllerBase
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
             FirstName = model.FirstName,
             LastName = model.LastName,
-            Role = model.Role.ToString(),
+            Role = role.ToString(),
         };
 
         _context.Employees.Add(user);
@@ -50,6 +49,7 @@ public class AuthController : ControllerBase
 
         return Ok(new { message = "User registered successfully." });
     }
+
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto model)

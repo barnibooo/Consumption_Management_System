@@ -119,6 +119,7 @@ function RegistrationCard() {
         firstName,
         lastName,
         password,
+        role,
       };
 
       await axios.post(
