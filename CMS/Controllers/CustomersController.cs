@@ -117,6 +117,7 @@ namespace CMS.Controllers
 
             // Update the IsActive field of the existing customer to false
             existingCustomer.IsActive = false;
+            existingCustomer.CardId = "";
             _context.Entry(existingCustomer).State = EntityState.Modified;
 
             try
