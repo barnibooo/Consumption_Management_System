@@ -12,6 +12,7 @@ import {
   TextField,
   Alert,
   Button,
+  Snackbar,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -19,6 +20,8 @@ import SendIcon from "@mui/icons-material/Send";
 import { format } from "date-fns";
 import { checkToken } from "./AuthService";
 import { refreshToken } from "./RefreshService";
+import { parseJwt } from "./JWTParser";
+import UnauthorizedMessage from "./UnauthorizedMessage";
 
 const darkTheme = createTheme({
   palette: {
@@ -57,7 +60,6 @@ function App() {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [monogram, setMonogram] = useState<string | null>(null);
   const [customerId, setCustomerId] = useState<string>("");
   const [checkoutData, setCheckoutData] = useState<CheckoutResponse | null>(
     null
@@ -65,33 +67,45 @@ function App() {
   const [tokenValidated, setTokenValidated] = useState(false);
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
 
   useEffect(() => {
     const validateAndFetchData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found. Redirecting to login...");
+        window.location.href = "/login";
+        return;
+      }
+
+      const decodedToken = parseJwt(token);
+      if (!decodedToken || decodedToken.role !== "Admin") {
+        setIsUnauthorized(true);
+        return;
+      }
+
       if (!tokenValidated) {
         const isValidToken = await checkToken();
 
         if (!isValidToken) {
+          console.error("Invalid token. Redirecting to login...");
           window.location.href = "/login";
           return;
         }
-        if (isValidToken) {
-          if (!tokenRefreshed) {
-            await refreshToken();
-            setTokenRefreshed(true);
-          }
+
+        if (!tokenRefreshed) {
+          await refreshToken();
+          setTokenRefreshed(true);
         }
+
+        setTokenValidated(true);
       }
     };
 
     validateAndFetchData();
   }, []);
 
-  useEffect(() => {
-    const storedMonogram = localStorage.getItem("monogram");
-    setMonogram(storedMonogram);
-  }, []);
-
+  if (isUnauthorized) return <UnauthorizedMessage isUnauthorized={true} />;
   const fetchCustomerData = () => {
     setLoading(true);
     axios
