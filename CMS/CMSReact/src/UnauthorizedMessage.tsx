@@ -15,7 +15,7 @@ const UnauthorizedMessage: React.FC<UnauthorizedMessageProps> = ({
       // Megjelenítjük a Snackbar-t
       setShowSnackbar(true);
 
-      // Átirányítás a gyökér oldalra
+      isUnauthorized = false; // Reseteljük a prop értékét, hogy ne jelenjen meg újra
     }
   }, [isUnauthorized]);
 

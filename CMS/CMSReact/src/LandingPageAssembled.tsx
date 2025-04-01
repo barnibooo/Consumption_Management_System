@@ -1,14 +1,24 @@
-import { createRoot } from "react-dom/client";
-import LandingPage from "./LandingPage";
-import Navbar from "./Navbar";
-import "./OrderPage.css";
-import { parseJwt } from "./JWTParser";
+import React, { useState } from "react";
+import UnauthorizedMessage from "./UnauthorizedMessage";
 
-const userRole = parseJwt(localStorage.getItem("token")!).role;
+const App = () => {
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
 
-createRoot(document.getElementById("root")!).render(
-  <>
-    <Navbar role={userRole} />
-    <LandingPage />
-  </>
-);
+  const triggerUnauthorizedMessage = () => {
+    setIsUnauthorized(true);
+  };
+
+  return (
+    <div>
+      <button onClick={triggerUnauthorizedMessage}>
+        Trigger Unauthorized Alert
+      </button>
+      <UnauthorizedMessage
+        isUnauthorized={isUnauthorized}
+        setIsUnauthorized={setIsUnauthorized}
+      />
+    </div>
+  );
+};
+
+export default App;

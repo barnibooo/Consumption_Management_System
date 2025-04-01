@@ -105,7 +105,10 @@ function App() {
     validateAndFetchData();
   }, []);
 
-  if (isUnauthorized) return <UnauthorizedMessage isUnauthorized={true} />;
+  if (isUnauthorized)
+    return setTimeout(() => {
+      window.location.href = "/"; // Simulates navigation to the root page
+    }, 0);
   const fetchCustomerData = () => {
     setLoading(true);
     axios
