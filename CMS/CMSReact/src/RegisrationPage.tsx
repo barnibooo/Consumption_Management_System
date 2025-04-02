@@ -91,25 +91,10 @@ function RegistrationCard() {
   }, []);
 
   if (isUnauthorized) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
-        <Snackbar open={isUnauthorized} autoHideDuration={6000}>
-          <Alert
-            onClose={() => setIsUnauthorized(true)}
-            severity="warning"
-            variant="filled"
-            sx={{ width: "100%" }}
-          >
-            Az oldal használatához magasabb jogosultság szükséges!
-          </Alert>
-        </Snackbar>
-      </Box>
-    );
+    localStorage.setItem("isUnauthorizedRedirect", "true");
+    return setTimeout(() => {
+      window.location.href = "/";
+    }, 0);
   }
 
   const handleRegister = async () => {

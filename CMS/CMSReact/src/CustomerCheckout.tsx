@@ -79,7 +79,12 @@ function App() {
       }
 
       const decodedToken = parseJwt(token);
-      if (!decodedToken || decodedToken.role !== "Admin") {
+      console.log("Decoded token:", decodedToken.role);
+      if (
+        !decodedToken ||
+        (decodedToken.role !== "Admin" &&
+          decodedToken.role !== "TicketAssistant")
+      ) {
         setIsUnauthorized(true);
         return;
       }
@@ -106,9 +111,9 @@ function App() {
   }, []);
 
   if (isUnauthorized) {
-    localStorage.setItem("isUnauthorizedRedirect", "true"); // Flag beállítása
+    localStorage.setItem("isUnauthorizedRedirect", "true");
     return setTimeout(() => {
-      window.location.href = "/"; // Simulates navigation to the root page
+      window.location.href = "/";
     }, 0);
   }
   const fetchCustomerData = () => {

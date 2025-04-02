@@ -309,7 +309,7 @@ const Dashboard: React.FC = () => {
     localStorage.setItem("isUnauthorizedRedirect", "true"); // Flag beállítása
     return setTimeout(() => {
       window.location.href = "/"; // Simulates navigation to the root page
-    }, 0);
+    }, 10);
   }
 
   var l = menuItems.length;

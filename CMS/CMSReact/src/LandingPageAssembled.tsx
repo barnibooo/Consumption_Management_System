@@ -11,10 +11,6 @@ const token = localStorage.getItem("token");
 const decodedToken = token ? parseJwt(token) : null;
 
 const App = () => {
-  const [isUnauthorized, setIsUnauthorized] = useState(
-    !decodedToken || decodedToken.role !== "Admin"
-  );
-
   const [snackbarVisible, setSnackbarVisible] = useState<boolean>(() => {
     const isUnauthorizedRedirect = localStorage.getItem(
       "isUnauthorizedRedirect"
@@ -24,9 +20,6 @@ const App = () => {
       return true;
     }
     return false;
-  });
-  useEffect(() => {
-    console.log(snackbarVisible);
   });
 
   return (

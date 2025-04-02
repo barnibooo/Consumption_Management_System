@@ -268,30 +268,12 @@ const Dashboard: React.FC = () => {
       </Box>
     );
 
-  if (isUnauthorized)
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
-        <Snackbar
-          open={isUnauthorized}
-          autoHideDuration={6000}
-          onClose={() => setIsUnauthorized(false)}
-        >
-          <Alert
-            onClose={() => setIsUnauthorized(false)}
-            severity="warning"
-            variant="filled"
-            sx={{ width: "100%" }}
-          >
-            Az oldal használatához magasabb jogosultság szükséges!
-          </Alert>
-        </Snackbar>
-      </Box>
-    );
+  if (isUnauthorized) {
+    localStorage.setItem("isUnauthorizedRedirect", "true");
+    return setTimeout(() => {
+      window.location.href = "/";
+    }, 0);
+  }
   if (loading)
     return (
       <Box
