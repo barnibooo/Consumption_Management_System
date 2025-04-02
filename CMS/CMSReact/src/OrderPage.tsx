@@ -305,38 +305,12 @@ const Dashboard: React.FC = () => {
         </Snackbar>
       </Box>
     );
-  if (isUnauthorized)
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
-        <Snackbar
-          open={isUnauthorized}
-          autoHideDuration={6000} // Auto-hide after 6 seconds
-          onClose={async () => {
-            setIsUnauthorized(false); // Temporarily close the Snackbar
-            await new Promise((resolve) => setTimeout(resolve, 1)); // Small delay
-            if (isUnauthorized) setIsUnauthorized(true); // Reopen if the unauthorized state persists
-          }}
-        >
-          <Alert
-            onClose={async () => {
-              setIsUnauthorized(false); // Temporarily close the Snackbar
-              await new Promise((resolve) => setTimeout(resolve, 1)); // Small delay
-              if (isUnauthorized) setIsUnauthorized(true); // Reopen if the unauthorized state persists
-            }}
-            severity="warning"
-            variant="filled"
-            sx={{ width: "100%" }}
-          >
-            Az oldal használatához magasabb jogosultság szükséges!
-          </Alert>
-        </Snackbar>
-      </Box>
-    );
+  if (isUnauthorized) {
+    localStorage.setItem("isUnauthorizedRedirect", "true"); // Flag beállítása
+    return setTimeout(() => {
+      window.location.href = "/"; // Simulates navigation to the root page
+    }, 0);
+  }
 
   var l = menuItems.length;
 
