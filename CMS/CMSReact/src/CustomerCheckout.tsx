@@ -105,12 +105,12 @@ function App() {
     validateAndFetchData();
   }, []);
 
-if (isUnauthorized) {
-  localStorage.setItem("isUnauthorizedRedirect", "true"); // Flag beállítása
-  return setTimeout(() => {
-    window.location.href = "/"; // Simulates navigation to the root page
-  }, 0);
-}
+  if (isUnauthorized) {
+    localStorage.setItem("isUnauthorizedRedirect", "true"); // Flag beállítása
+    return setTimeout(() => {
+      window.location.href = "/"; // Simulates navigation to the root page
+    }, 0);
+  }
   const fetchCustomerData = () => {
     setLoading(true);
     axios

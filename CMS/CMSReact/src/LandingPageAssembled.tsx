@@ -14,49 +14,37 @@ const App = () => {
   const [isUnauthorized, setIsUnauthorized] = useState(
     !decodedToken || decodedToken.role !== "Admin"
   );
-const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
 
-  useEffect(() => {
-    console.log(showSnackbar);
-    // Ellenőrizzük a flag-et a localStorage-ban
-    const isUnauthorizedRedirect = localStorage.getItem("isUnauthorizedRedirect");
+  const [snackbarVisible, setSnackbarVisible] = useState<boolean>(() => {
+    const isUnauthorizedRedirect = localStorage.getItem(
+      "isUnauthorizedRedirect"
+    );
     if (isUnauthorizedRedirect === "true") {
-      setShowSnackbar(true);
-      console.log("Show snackbar");
-      console.log(showSnackbar);
-      setShowSnackbar(false);
-      console.log(showSnackbar);
-      localStorage.removeItem("isUnauthorizedRedirect"); // Töröljük a flag-et
+      localStorage.removeItem("isUnauthorizedRedirect"); // Törli az értéket a localStorage-ból
+      return true;
     }
-  }, []); // Csak egyszer fusson le az oldal betöltésekor
+    return false;
+  });
   useEffect(() => {
-  console.log("Snackbar állapota megváltozott:", showSnackbar);
-  }, [showSnackbar]);
-  const handleResetUnauthorized = () => {
-    setIsUnauthorized(false); // Visszaállítjuk az isUnauthorized értékét false-ra
-  };
-
-  const handleCloseSnackbar = () => {
-    setShowSnackbar(false); // Bezárjuk a Snackbar-t
-  };
+    console.log(snackbarVisible);
+  });
 
   return (
     <>
       <Navbar role={decodedToken?.role || "Guest"} />
       <LandingPage />
-      <UnauthorizedMessage
-        isUnauthorized={isUnauthorized}
-        onResetUnauthorized={handleResetUnauthorized}
-      />
-      <Snackbar
-        open={showSnackbar}
-        autoHideDuration={4000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert severity="warning" variant="filled" sx={{ width: "100%" }}>
-          Az oldal használatához magasabb jogosultság szükséges!
-        </Alert>
-      </Snackbar>
+
+      {snackbarVisible && ( // Feltételes renderelés
+        <Snackbar
+          open={snackbarVisible}
+          autoHideDuration={5000}
+          onClose={() => setSnackbarVisible(false)} // Állapot frissítése
+        >
+          <Alert severity="warning" variant="filled" sx={{ width: "100%" }}>
+            Az oldal használatához magasabb jogosultság szükséges!
+          </Alert>
+        </Snackbar>
+      )}
     </>
   );
 };

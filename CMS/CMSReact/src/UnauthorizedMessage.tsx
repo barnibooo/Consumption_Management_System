@@ -3,7 +3,7 @@ import { Snackbar, Alert } from "@mui/material";
 
 interface UnauthorizedMessageProps {
   isUnauthorized: boolean;
-  onResetUnauthorized: () => void; // Callback függvény az isUnauthorized visszaállítására
+  onResetUnauthorized: () => void;
 }
 
 const UnauthorizedMessage: React.FC<UnauthorizedMessageProps> = ({
@@ -20,15 +20,11 @@ const UnauthorizedMessage: React.FC<UnauthorizedMessageProps> = ({
 
   const handleClose = () => {
     setShowSnackbar(false);
-    onResetUnauthorized(); // Visszaállítjuk az isUnauthorized értékét false-ra
+    onResetUnauthorized();
   };
 
   return (
-    <Snackbar
-      open={showSnackbar}
-      autoHideDuration={4000}
-      onClose={handleClose}
-    >
+    <Snackbar open={showSnackbar} autoHideDuration={4000} onClose={handleClose}>
       <Alert severity="warning" variant="filled" sx={{ width: "100%" }}>
         Az oldal használatához magasabb jogosultság szükséges!
       </Alert>
