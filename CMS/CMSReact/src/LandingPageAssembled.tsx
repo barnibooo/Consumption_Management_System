@@ -76,7 +76,7 @@ const App = () => {
       {snackbarVisible && (
         <Snackbar
           open={snackbarVisible}
-          autoHideDuration={5000}
+          autoHideDuration={3000}
           onClose={() => setSnackbarVisible(false)}
         >
           <Alert severity="warning" variant="filled" sx={{ width: "100%" }}>

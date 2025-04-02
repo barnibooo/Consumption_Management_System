@@ -101,7 +101,7 @@ const Dashboard: React.FC = () => {
   >([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
-  const [isUnauthorized, setIsUnauthorized] = useState(false);
+  const [isUnauthed, setIsUnauthed] = useState(false);
   const [dataLoadError, setDataLoadError] = useState<string | null>(null); // State for data loading errors
   const [snackbarOpen, setSnackbarOpen] = useState(false); // State for success Snackbar
   const [cardId, setCardId] = useState<string | null>(null);
@@ -154,7 +154,27 @@ const Dashboard: React.FC = () => {
   const [tokenValidated, setTokenValidated] = useState(false);
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
+  useEffect(() => {
+    const checkUnauthorizedAccess = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        await axios.get("https://localhost:5000/api/MenuItems", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } catch (err: any) {
+        if (err.response && err.response.status === 403) {
+          localStorage.setItem("isUnauthorizedRedirect", "true");
+          return setTimeout(() => {
+            window.location.href = "/";
+          }, 0);
+        }
+      }
+    };
 
+    checkUnauthorizedAccess();
+  }, []);
   useEffect(() => {
     const validateAndFetchData = async () => {
       if (!tokenValidated) {
@@ -175,6 +195,7 @@ const Dashboard: React.FC = () => {
 
     validateAndFetchData();
     setLoading(false);
+
     setDataFetched(true);
   }, []);
 
@@ -198,7 +219,7 @@ const Dashboard: React.FC = () => {
         }
       } catch (err: any) {
         if (err.response && err.response.status === 403) {
-          setIsUnauthorized(true);
+          setIsUnauthed(true);
         } else {
           setDataLoadError("Hiba történt az adatok betöltése közben!");
         }
@@ -210,6 +231,12 @@ const Dashboard: React.FC = () => {
     fetchData();
   }, []);
 
+  if (isUnauthed) {
+    localStorage.setItem("isUnauthorizedRedirect", "true");
+    return setTimeout(() => {
+      window.location.href = "/";
+    }, 0);
+  }
   const handleSubmitOrder = () => {
     if (!cardId || orders.length === 0) {
       setError("Kártyaazonosító szükséges és legalább egy tétel a listában!");
@@ -305,12 +332,6 @@ const Dashboard: React.FC = () => {
         </Snackbar>
       </Box>
     );
-  if (isUnauthorized) {
-    localStorage.setItem("isUnauthorizedRedirect", "true");
-    return setTimeout(() => {
-      window.location.href = "/";
-    }, 0);
-  }
 
   var l = menuItems.length;
 
