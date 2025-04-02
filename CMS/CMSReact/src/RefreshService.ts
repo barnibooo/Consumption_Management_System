@@ -26,9 +26,9 @@ export const refreshToken = async () => {
     console.log("Token refreshed successfully");
     return true;
   } catch (error) {
+    console.log(error);
     localStorage.clear();
-    window.location.href = "/login";
-    console.error("Failed to refresh token", error);
+    //window.location.href = "/login";
     return false; // Break and do not run multiple times if the response is not OK
   }
 };

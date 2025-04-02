@@ -198,7 +198,7 @@ const Dashboard: React.FC = () => {
         }
       } catch (err: any) {
         if (err.response && err.response.status === 403) {
-          setIsUnauthorized(true); // Trigger the unauthorized Snackbar
+          setIsUnauthorized(true);
         } else {
           setDataLoadError("Hiba történt az adatok betöltése közben!");
         }
@@ -283,18 +283,18 @@ const Dashboard: React.FC = () => {
       >
         <Snackbar
           open={Boolean(dataLoadError)}
-          autoHideDuration={6000} // Auto-hide after 6 seconds
+          autoHideDuration={6000}
           onClose={async () => {
-            setDataLoadError(null); // Temporarily close the Snackbar
-            await new Promise((resolve) => setTimeout(resolve, 1)); // Small delay
-            if (dataLoadError) setDataLoadError(dataLoadError); // Reopen if the error persists
+            setDataLoadError(null);
+            await new Promise((resolve) => setTimeout(resolve, 1));
+            if (dataLoadError) setDataLoadError(dataLoadError);
           }}
         >
           <Alert
             onClose={async () => {
-              setDataLoadError(null); // Temporarily close the Snackbar
-              await new Promise((resolve) => setTimeout(resolve, 1)); // Small delay
-              if (dataLoadError) setDataLoadError(dataLoadError); // Reopen if the error persists
+              setDataLoadError(null);
+              await new Promise((resolve) => setTimeout(resolve, 1));
+              if (dataLoadError) setDataLoadError(dataLoadError);
             }}
             severity="error"
             variant="filled"
@@ -306,10 +306,10 @@ const Dashboard: React.FC = () => {
       </Box>
     );
   if (isUnauthorized) {
-    localStorage.setItem("isUnauthorizedRedirect", "true"); // Flag beállítása
+    localStorage.setItem("isUnauthorizedRedirect", "true");
     return setTimeout(() => {
-      window.location.href = "/"; // Simulates navigation to the root page
-    }, 10);
+      window.location.href = "/";
+    }, 0);
   }
 
   var l = menuItems.length;

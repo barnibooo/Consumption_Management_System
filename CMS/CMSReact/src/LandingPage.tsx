@@ -70,31 +70,16 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const handleAuth = async () => {
-      const isValid = await checkToken();
-
-      if (!isValid) {
-        window.location.href = "/login";
-        return;
-      }
-      const isrefreshed = await refreshToken();
-
-      if (!isrefreshed) {
-        window.location.href = "/login";
-        return;
-      }
-
+    const handleRole = async () => {
       const token = localStorage.getItem("token");
       if (token) {
         const parsedToken = parseJwt(token);
         setRole(parsedToken.role);
         setIsLoading(false);
-      } else {
-        window.location.href = "/login";
       }
     };
 
-    handleAuth();
+    handleRole();
   }, []);
 
   if (isLoading) {
