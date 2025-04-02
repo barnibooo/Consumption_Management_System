@@ -12,13 +12,11 @@ import {
   IconButton,
   TextField,
   Alert,
+  Snackbar,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { format } from "date-fns";
-import { checkToken } from "./AuthService";
-import { refreshToken } from "./RefreshService";
 import { parseJwt } from "./JWTParser";
 
 const darkTheme = createTheme({
@@ -57,43 +55,23 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
-  const [monogram, setMonogram] = useState<string | null>(null);
   const [customerId, setCustomerId] = useState<string>("");
-  const [tokenValidated, setTokenValidated] = useState(false);
-  const [tokenRefreshed, setTokenRefreshed] = useState(false);
 
   useEffect(() => {
     const validateAndFetchData = async () => {
-      if (!tokenValidated) {
-        const isValidToken = await checkToken();
-
-        if (!isValidToken) {
-          window.location.href = "/login";
-          return;
-        }
-        if (isValidToken) {
-          if (!tokenRefreshed) {
-            await refreshToken();
-            setTokenRefreshed(true);
-          }
-        }
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken = parseJwt(token);
       }
-
     };
 
-    //validateAndFetchData();
-
-    const token = localStorage.getItem("token");
-    if (token) {
-      const decodedToken = parseJwt(token);
-      console.log(decodedToken);
-    }
+    validateAndFetchData();
   }, []);
 
   const fetchCustomerData = () => {
     setLoading(true);
     const token = localStorage.getItem("token");
-  
+
     axios
       .get(`https://localhost:5000/api/Customers/${customerId}`, {
         headers: {
@@ -101,7 +79,6 @@ function App() {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setCustomer(response.data);
         setLoading(false);
       })
@@ -116,6 +93,11 @@ function App() {
         setLoading(false);
       });
   };
+
+  const handleCloseSnackbar = () => {
+    setError(null);
+  };
+
   if (isUnauthorized)
     return (
       <Box
@@ -131,23 +113,9 @@ function App() {
         </ThemeProvider>
       </Box>
     );
+
   if (loading) {
     return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
-        <ThemeProvider theme={darkTheme}>
-          <Alert severity="warning">{error}</Alert>
-        </ThemeProvider>
-      </Box>
-    );
   }
 
   return (
@@ -201,7 +169,10 @@ function App() {
           type="search"
           margin="dense"
           value={customerId}
-          onChange={(e) => setCustomerId(e.target.value)}
+          onChange={(e) => {
+            setCustomerId(e.target.value);
+            setCustomer(null); // A Card eltüntetése minden keresésnél
+          }}
         />
         <IconButton
           sx={{
@@ -220,6 +191,19 @@ function App() {
           <SearchOutlinedIcon fontSize="inherit" />
         </IconButton>
       </Box>
+
+      {error && (
+        <Snackbar
+          open={!!error}
+          autoHideDuration={4000}
+          onClose={handleCloseSnackbar}
+        >
+          <Alert severity="warning" variant="filled" sx={{ width: "100%" }}>
+            {error}
+          </Alert>
+        </Snackbar>
+      )}
+
       {customer && (
         <ThemeProvider theme={darkTheme}>
           <Card
@@ -233,7 +217,7 @@ function App() {
                 lg: "50%",
                 xl: "40%",
               },
-              marginTop: 2, // Add margin to the top
+              marginTop: 2,
             }}
           >
             <CardHeader
