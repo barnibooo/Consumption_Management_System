@@ -1,40 +1,46 @@
-import "./OrderPage.css";
+import React, { useState, useEffect } from "react";
 import {
-  ThemeProvider,
-  createTheme,
-  Typography,
   Box,
+  Typography,
   FormControl,
   InputLabel,
-  MenuItem,
   Select,
+  MenuItem,
   Button,
-  SelectChangeEvent,
+  createTheme,
+  ThemeProvider,
 } from "@mui/material";
-
-import { useEffect, useState } from "react";
-import React from "react";
 import axios from "axios";
-// import { checkToken } from "./AuthService";
-// import { refreshToken } from "./RefreshService";
 
+// Dark theme definiálása
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
-  },
-  typography: {
-    fontFamily: "Roboto, sans-serif",
+    primary: {
+      main: "#90caf9",
+    },
+    secondary: {
+      main: "#f48fb1",
+    },
+    background: {
+      default: "#121212",
+      paper: "#1e1e1e",
+    },
+    text: {
+      primary: "#ffffff",
+      secondary: "#b0bec5",
+    },
   },
 });
 
 function App() {
-  // const [isUnauthorized, setIsUnauthorized] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [tokenValidated, setTokenValidated] = useState(false);
-  const [tokenRefreshed, setTokenRefreshed] = useState(false);
-  const [dataFetched, setDataFetched] = useState(false);
-  const [roles, setRoles] = useState<string[]>([]);
   const [levesOptions, setLevesOptions] = useState<string[]>([]);
+  const [foetelOptions, setFoetelOptions] = useState<string[]>([]);
+  const [hamburgerOptions, setHamburgerOptions] = useState<string[]>([]);
+  const [pizzaOptions, setPizzaOptions] = useState<string[]>([]);
+  const [desszertOptions, setDesszertOptions] = useState<string[]>([]);
+  const [italOptions, setItalOptions] = useState<string[]>([]);
+  const [kaveOptions, setKaveOptions] = useState<string[]>([]);
   const [foodSelections, setFoodSelections] = useState<string[]>([
     "",
     "",
@@ -44,79 +50,90 @@ function App() {
     "",
     "",
   ]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      // Token validation logic is commented out to allow anyone access
-      // const token = localStorage.getItem("token");
-      // if (!token) {
-      //   console.error("No token found. Redirecting to login...");
-      //   setIsUnauthorized(true);
-      //   return;
-      // }
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found. Redirecting to login...");
+        window.location.href = "/login";
+        return;
+      }
 
       try {
-        // const isValidToken = await checkToken(); // Implement your checkToken function
-        // if (!isValidToken) {
-        //   console.error("Invalid token. Redirecting to login...");
-        //   setIsUnauthorized(true);
-        //   return;
-        // }
-
-        setTokenValidated(true);
-        // await refreshToken(); // Implement your refreshToken function
-        setTokenRefreshed(true);
-
-        // Fetch roles from API
         const response = await axios.get(
-          "https://localhost:5000/api/Employees/roles"
+          "https://localhost:5000/api/MenuItems",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-        setRoles(response.data);
 
-        // Fetch "Leves" options
-        const menuResponse = await axios.get(
-          "https://localhost:5000/api/MenuItems"
-        );
-        const levesItems = menuResponse.data.filter(
-          (item: { category: string }) => item.category === "leves"
+        const levesItems = response.data.filter(
+          (item: { category: string }) => item.category === "Leves"
         );
         setLevesOptions(levesItems.map((item: { name: string }) => item.name));
 
-        setDataFetched(true);
-        // setIsUnauthorized(false);
+        const foetelItems = response.data.filter(
+          (item: { category: string }) => item.category === "Főétel"
+        );
+        setFoetelOptions(
+          foetelItems.map((item: { name: string }) => item.name)
+        );
+
+        const hamburgerItems = response.data.filter(
+          (item: { category: string }) => item.category === "Hamburger"
+        );
+        setHamburgerOptions(
+          hamburgerItems.map((item: { name: string }) => item.name)
+        );
+
+        const pizzaItems = response.data.filter(
+          (item: { category: string }) => item.category === "Pizza"
+        );
+        setPizzaOptions(pizzaItems.map((item: { name: string }) => item.name));
+
+        const desszertItems = response.data.filter(
+          (item: { category: string }) => item.category === "Desszert"
+        );
+        setDesszertOptions(
+          desszertItems.map((item: { name: string }) => item.name)
+        );
+
+        const italItems = response.data.filter(
+          (item: { category: string }) => item.category === "Ital"
+        );
+        setItalOptions(italItems.map((item: { name: string }) => item.name));
+
+        const kaveItems = response.data.filter(
+          (item: { category: string }) => item.category === "Kávé"
+        );
+        setKaveOptions(kaveItems.map((item: { name: string }) => item.name));
       } catch (error) {
         console.error("Error during data fetching:", error);
-        // setIsUnauthorized(true);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  // Validation removed to allow public access
-  // if (isUnauthorized) {
-  //   localStorage.setItem("isUnauthorizedRedirect", "true");
-  //   setTimeout(() => {
-  //     window.location.href = "/";
-  //   }, 0);
-  //   return null;
-  // }
-
-  // Handle Select Changes
-  const handleFoodChange = (index: number) => (event: SelectChangeEvent) => {
+  const handleFoodChange = (index: number) => (event: any) => {
     const newSelections = [...foodSelections];
     newSelections[index] = event.target.value as string;
     setFoodSelections(newSelections);
   };
 
   if (isLoading) {
-    return <Typography>Loading...</Typography>; // Display loading indicator
+    return <Typography>Loading...</Typography>;
   }
 
   return (
     <ThemeProvider theme={darkTheme}>
       <Box sx={{ padding: 4 }}>
-        {/* Title */}
         <Typography variant="h4" textAlign="center" sx={{ marginBottom: 4 }}>
           Napi Menü
         </Typography>
@@ -154,8 +171,11 @@ function App() {
               label="Főétel választása"
               onChange={handleFoodChange(1)}
             >
-              <MenuItem value="Főétel1">Főétel1</MenuItem>
-              <MenuItem value="Főétel2">Főétel2</MenuItem>
+              {foetelOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>
@@ -174,8 +194,11 @@ function App() {
               label="Hamburger választása"
               onChange={handleFoodChange(2)}
             >
-              <MenuItem value="Hamburger1">Hamburger1</MenuItem>
-              <MenuItem value="Hamburger2">Hamburger2</MenuItem>
+              {hamburgerOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>
@@ -192,8 +215,11 @@ function App() {
               label="Pizza választása"
               onChange={handleFoodChange(3)}
             >
-              <MenuItem value="Pizza1">Pizza1</MenuItem>
-              <MenuItem value="Pizza2">Pizza2</MenuItem>
+              {pizzaOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>
@@ -212,8 +238,11 @@ function App() {
               label="Desszert választása"
               onChange={handleFoodChange(4)}
             >
-              <MenuItem value="Desszert1">Desszert1</MenuItem>
-              <MenuItem value="Desszert2">Desszert2</MenuItem>
+              {desszertOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>
@@ -230,8 +259,11 @@ function App() {
               label="Ital választása"
               onChange={handleFoodChange(5)}
             >
-              <MenuItem value="Ital1">Ital1</MenuItem>
-              <MenuItem value="Ital2">Ital2</MenuItem>
+              {italOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>
@@ -248,8 +280,11 @@ function App() {
               label="Kávé választása"
               onChange={handleFoodChange(6)}
             >
-              <MenuItem value="Kávé1">Kávé1</MenuItem>
-              <MenuItem value="Kávé2">Kávé2</MenuItem>
+              {kaveOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>
