@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Models;
+using CMS.Dtos;
 
 namespace CMS.Controllers
 {
@@ -27,11 +28,37 @@ namespace CMS.Controllers
             return await _context.DailySpecials.ToListAsync();
         }
 
+        // GET: api/DailySpecials/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<DailySpecial>> GetDailySpecial(int id)
+        {
+            var dailySpecial = await _context.DailySpecials.FindAsync(id);
+
+            if (dailySpecial == null)
+            {
+                return NotFound();
+            }
+
+            return dailySpecial;
+        }
+
         // POST: api/DailySpecials
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<DailySpecial>> PostDailySpecial(DailySpecial dailySpecial)
+        public async Task<ActionResult<DailySpecial>> PostDailySpecial(DailySpecialPostDto dailySpecialPostDto)
         {
+            var dailySpecial = new DailySpecial
+            {
+                SoupId = dailySpecialPostDto.SoupId,
+                AppetizerId = dailySpecialPostDto.AppetizerId,
+                MainCourseId = dailySpecialPostDto.MainCourseId,
+                HamburgerId = dailySpecialPostDto.HamburgerId,
+                PizzaId = dailySpecialPostDto.PizzaId,
+                DessertId = dailySpecialPostDto.DessertId,
+                DrinkId = dailySpecialPostDto.DrinkId,
+                CoffeeId = dailySpecialPostDto.CoffeeId
+            };
+
             _context.DailySpecials.Add(dailySpecial);
             await _context.SaveChangesAsync();
 
