@@ -154,6 +154,8 @@ const Dashboard: React.FC = () => {
   const [tokenValidated, setTokenValidated] = useState(false);
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
+  const [isUnauthorized, setIsUnauthorized] = useState(false); // Új állapot
+
   useEffect(() => {
     const checkUnauthorizedAccess = async () => {
       try {
@@ -166,16 +168,23 @@ const Dashboard: React.FC = () => {
       } catch (err: any) {
         if (err.response && err.response.status === 403) {
           localStorage.setItem("isUnauthorizedRedirect", "true");
+          setIsUnauthorized(true); // Jogosulatlan hozzáférés jelzése
           return setTimeout(() => {
             window.location.href = "/";
-          }, 0);
+          }, 3000);
         }
       }
     };
 
     checkUnauthorizedAccess();
   }, []);
+
   useEffect(() => {
+    if (isUnauthorized) {
+      // Ha jogosulatlan, ne futtassuk le a második useEffect-et
+      return;
+    }
+
     const validateAndFetchData = async () => {
       if (!tokenValidated) {
         const isValidToken = await checkToken();
@@ -195,9 +204,8 @@ const Dashboard: React.FC = () => {
 
     validateAndFetchData();
     setLoading(false);
-
     setDataFetched(true);
-  }, []);
+  }, [isUnauthorized]); // A második useEffect figyeli az isUnauthorized állapotot
 
   useEffect(() => {
     const fetchData = async () => {
