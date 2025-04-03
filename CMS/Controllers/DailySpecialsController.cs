@@ -27,51 +27,6 @@ namespace CMS.Controllers
             return await _context.DailySpecials.ToListAsync();
         }
 
-        // GET: api/DailySpecials/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<DailySpecial>> GetDailySpecial(int id)
-        {
-            var dailySpecial = await _context.DailySpecials.FindAsync(id);
-
-            if (dailySpecial == null)
-            {
-                return NotFound();
-            }
-
-            return dailySpecial;
-        }
-
-        // PUT: api/DailySpecials/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutDailySpecial(int id, DailySpecial dailySpecial)
-        {
-            if (id != dailySpecial.SpecialId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(dailySpecial).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!DailySpecialExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
         // POST: api/DailySpecials
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
