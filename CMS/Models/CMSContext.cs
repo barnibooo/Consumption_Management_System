@@ -25,6 +25,7 @@ namespace CMS.Models
         public DbSet<RefreshToken> RefreshTokens { get; set; } =null!;
         public DbSet<Ticket> Tickets { get; set; } =null!;
         public DbSet<CustomerTicket> CustomerTickets { get; set; } =null!;
+        public DbSet<DailySpecial> DailySpecials { get; set; } = null!;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

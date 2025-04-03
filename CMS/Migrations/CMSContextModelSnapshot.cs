@@ -117,6 +117,41 @@ namespace CMS.Migrations
                     b.ToTable("CustomerTickets");
                 });
 
+            modelBuilder.Entity("CMS.Models.DailySpecial", b =>
+                {
+                    b.Property<int>("SpecialId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AppetizerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CoffeeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DessertId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DrinkId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HamburgerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MainCourseId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PizzaId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SoupId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("SpecialId");
+
+                    b.ToTable("DailySpecials");
+                });
+
             modelBuilder.Entity("CMS.Models.Employee", b =>
                 {
                     b.Property<int>("EmployeeId")

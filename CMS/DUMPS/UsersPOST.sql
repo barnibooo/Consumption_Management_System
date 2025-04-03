@@ -3,19 +3,19 @@
   "firstName": "Próba",
   "lastName": "Admin",
   "password": "jelszo123",
-  "role": 0
+  "role": "Admin"
 }
 {
   "username": "jegykezelo",
   "firstName": "Jegykezelő",
   "lastName": "Dolgozó",
   "password": "jelszo123",
-  "role": 1
+  "role": "TicketAssistant"
 }
 {
   "username": "demo",
   "firstName": "Éttermes",
   "lastName": "Dolgozó",
   "password": "jelszo123",
-  "role": 2
+  "role": "RestaurantAssistant"
 }

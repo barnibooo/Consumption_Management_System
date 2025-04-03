@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CMS.Migrations
 {
     [DbContext(typeof(CMSContext))]
-    [Migration("20250326191720_0326sqlite_v.2")]
-    partial class _0326sqlite_v2
+    [Migration("20250403090330_0403sqlite")]
+    partial class _0403sqlite
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -118,6 +118,41 @@ namespace CMS.Migrations
                     b.HasIndex("TicketId");
 
                     b.ToTable("CustomerTickets");
+                });
+
+            modelBuilder.Entity("CMS.Models.DailySpecial", b =>
+                {
+                    b.Property<int>("SpecialId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AppetizerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CoffeeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DessertId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DrinkId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HamburgerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MainCourseId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PizzaId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SoupId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("SpecialId");
+
+                    b.ToTable("DailySpecials");
                 });
 
             modelBuilder.Entity("CMS.Models.Employee", b =>

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CMS.Migrations
 {
     /// <inheritdoc />
-    public partial class sqlite0322 : Migration
+    public partial class _0403sqlite : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,7 +21,6 @@ namespace CMS.Migrations
                     Category = table.Column<string>(type: "TEXT", nullable: false),
                     Price = table.Column<int>(type: "INTEGER", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "INTEGER", nullable: false),
                     ImagePath = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -44,6 +43,26 @@ namespace CMS.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Customers", x => x.CustomerId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DailySpecials",
+                columns: table => new
+                {
+                    SpecialId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    SoupId = table.Column<int>(type: "INTEGER", nullable: false),
+                    AppetizerId = table.Column<int>(type: "INTEGER", nullable: false),
+                    MainCourseId = table.Column<int>(type: "INTEGER", nullable: false),
+                    HamburgerId = table.Column<int>(type: "INTEGER", nullable: false),
+                    PizzaId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DessertId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DrinkId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CoffeeId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DailySpecials", x => x.SpecialId);
                 });
 
             migrationBuilder.CreateTable(
@@ -91,7 +110,6 @@ namespace CMS.Migrations
                     Category = table.Column<string>(type: "TEXT", nullable: false),
                     Price = table.Column<int>(type: "INTEGER", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "INTEGER", nullable: false),
                     ImagePath = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -286,6 +304,9 @@ namespace CMS.Migrations
 
             migrationBuilder.DropTable(
                 name: "CustomerTickets");
+
+            migrationBuilder.DropTable(
+                name: "DailySpecials");
 
             migrationBuilder.DropTable(
                 name: "MenuItemOrders");
