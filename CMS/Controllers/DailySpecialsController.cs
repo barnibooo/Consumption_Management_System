@@ -47,16 +47,30 @@ namespace CMS.Controllers
         [HttpPost]
         public async Task<ActionResult<DailySpecial>> PostDailySpecial(DailySpecialPostDto dailySpecialPostDto)
         {
+            var soup = await _context.MenuItems.SingleOrDefaultAsync(mi => mi.Name == dailySpecialPostDto.SoupName);
+            var appetizer = await _context.MenuItems.SingleOrDefaultAsync(mi => mi.Name == dailySpecialPostDto.AppetizerName);
+            var mainCourse = await _context.MenuItems.SingleOrDefaultAsync(mi => mi.Name == dailySpecialPostDto.MainCourseName);
+            var hamburger = await _context.MenuItems.SingleOrDefaultAsync(mi => mi.Name == dailySpecialPostDto.HamburgerName);
+            var pizza = await _context.MenuItems.SingleOrDefaultAsync(mi => mi.Name == dailySpecialPostDto.PizzaName);
+            var dessert = await _context.MenuItems.SingleOrDefaultAsync(mi => mi.Name == dailySpecialPostDto.DessertName);
+            var drink = await _context.MenuItems.SingleOrDefaultAsync(mi => mi.Name == dailySpecialPostDto.DrinkName);
+            var coffee = await _context.MenuItems.SingleOrDefaultAsync(mi => mi.Name == dailySpecialPostDto.CoffeeName);
+
+            if (soup == null || appetizer == null || mainCourse == null || hamburger == null || pizza == null || dessert == null || drink == null || coffee == null)
+            {
+                return BadRequest("One or more menu items not found.");
+            }
+
             var dailySpecial = new DailySpecial
             {
-                SoupId = dailySpecialPostDto.SoupId,
-                AppetizerId = dailySpecialPostDto.AppetizerId,
-                MainCourseId = dailySpecialPostDto.MainCourseId,
-                HamburgerId = dailySpecialPostDto.HamburgerId,
-                PizzaId = dailySpecialPostDto.PizzaId,
-                DessertId = dailySpecialPostDto.DessertId,
-                DrinkId = dailySpecialPostDto.DrinkId,
-                CoffeeId = dailySpecialPostDto.CoffeeId
+                SoupId = soup.ItemId,
+                AppetizerId = appetizer.ItemId,
+                MainCourseId = mainCourse.ItemId,
+                HamburgerId = hamburger.ItemId,
+                PizzaId = pizza.ItemId,
+                DessertId = dessert.ItemId,
+                DrinkId = drink.ItemId,
+                CoffeeId = coffee.ItemId
             };
 
             _context.DailySpecials.Add(dailySpecial);
@@ -64,6 +78,7 @@ namespace CMS.Controllers
 
             return CreatedAtAction("GetDailySpecial", new { id = dailySpecial.SpecialId }, dailySpecial);
         }
+
 
         // DELETE: api/DailySpecials/5
         [HttpDelete("{id}")]

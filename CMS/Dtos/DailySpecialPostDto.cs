@@ -5,13 +5,13 @@ namespace CMS.Dtos
     public class DailySpecialPostDto
     {
 
-        public int SoupId { get; set; }
-        public int AppetizerId { get; set; }
-        public int MainCourseId { get; set; }
-        public int HamburgerId { get; set; }
-        public int PizzaId { get; set; }
-        public int DessertId { get; set; }
-        public int DrinkId { get; set; }
-        public int CoffeeId { get; set; }
+        public string SoupName { get; set; }
+        public string AppetizerName { get; set; }
+        public string MainCourseName { get; set; }
+        public string HamburgerName { get; set; }
+        public string PizzaName { get; set; }
+        public string DessertName { get; set; }
+        public string DrinkName { get; set; }
+        public string CoffeeName { get; set; }
     }
 }

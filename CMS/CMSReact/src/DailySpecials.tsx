@@ -291,12 +291,14 @@ function App() {
 
         {/* Buttons */}
         <Box sx={{ marginTop: 4, textAlign: "center" }}>
-          <Button variant="contained" color="primary" sx={{ marginRight: 2 }}>
-            Új menü
-          </Button>
-          <Button variant="contained" color="secondary">
-            Kész
-          </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => console.log("Selected items:", foodSelections)}
+          disabled={foodSelections.some((selection) => selection === "")} // Disable if any selection is empty
+        >
+          Kész
+        </Button>
         </Box>
       </Box>
     </ThemeProvider>
