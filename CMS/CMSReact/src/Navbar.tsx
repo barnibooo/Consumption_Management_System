@@ -121,6 +121,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
     },
     { name: "Éttermi rendelés", roles: ["Admin", "RestaurantAssistant"] },
     { name: "Regisztráció", roles: ["Admin"] },
+    { name: "Napi ajánlat kezelő", roles: ["Admin"] },
     { name: "Véglegesítés", roles: ["Admin", "TicketAssistant"] },
   ];
 

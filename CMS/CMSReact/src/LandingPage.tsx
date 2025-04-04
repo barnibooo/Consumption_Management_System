@@ -168,6 +168,28 @@ function App() {
               </Card>
             </Box>
           ) : null}
+          {role === "Admin" ? (
+            <Box
+              sx={{
+                width: {
+                  xs: "100%",
+                  sm: "80%",
+                  md: "60%",
+                  lg: "45%",
+                  xl: "35%",
+                },
+                p: 1,
+              }}
+            >
+              <Card sx={{ maxWidth: "100%", height: "auto" }}>
+                {cardContent(
+                  "/img/landing/egyeb_temp.png",
+                  "Napi ajánlat kezelő",
+                  "dailyspecials"
+                )}
+              </Card>
+            </Box>
+          ) : null}
           {role === "Admin" || role === "RestaurantAssistant" ? (
             <Box
               sx={{
