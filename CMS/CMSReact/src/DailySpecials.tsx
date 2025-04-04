@@ -335,7 +335,18 @@ function App() {
                 coffeeName: foodSelections[7],
               };
               console.log("Payload:", payload);
+
               try {
+                // Perform DELETE request
+                console.log("Performing DELETE request...");
+                await axios.delete("https://localhost:5000/api/DailySpecials", {
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                });
+                console.log("DELETE successful");
+
+                // Perform POST request
                 const response = await axios.post(
                   "https://localhost:5000/api/DailySpecials",
                   payload,
@@ -347,7 +358,7 @@ function App() {
                 );
                 console.log("POST successful:", response.data);
               } catch (error) {
-                console.error("Error during POST request:", error);
+                console.error("Error during DELETE or POST request:", error);
               }
             }}
             disabled={foodSelections.some((selection) => selection === "")} // Disable if any selection is empty
