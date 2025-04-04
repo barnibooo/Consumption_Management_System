@@ -35,6 +35,7 @@ const darkTheme = createTheme({
 
 function App() {
   const [levesOptions, setLevesOptions] = useState<string[]>([]);
+  const [EloetelOptions, setEloetelOptions] = useState<string[]>([]);
   const [foetelOptions, setFoetelOptions] = useState<string[]>([]);
   const [hamburgerOptions, setHamburgerOptions] = useState<string[]>([]);
   const [pizzaOptions, setPizzaOptions] = useState<string[]>([]);
@@ -75,6 +76,13 @@ function App() {
           (item: { category: string }) => item.category === "Leves"
         );
         setLevesOptions(levesItems.map((item: { name: string }) => item.name));
+
+        const EloetelItems = response.data.filter(
+          (item: { category: string }) => item.category === "Előétel"
+        );
+        setEloetelOptions(
+          EloetelItems.map((item: { name: string }) => item.name)
+        );
 
         const foetelItems = response.data.filter(
           (item: { category: string }) => item.category === "Főétel"
@@ -146,7 +154,7 @@ function App() {
             <Select
               labelId="food-select-label-0"
               id="food-select-0"
-              value={foodSelections[0]}
+              value={foodSelections[0] || ""}
               label="Leves választása"
               onChange={handleFoodChange(0)}
             >
@@ -159,17 +167,38 @@ function App() {
           </FormControl>
         </Box>
 
+        {/* Előétel */}
+        <Box sx={{ marginBottom: 2 }}>
+          <Typography variant="h6">Előétel</Typography>
+          <FormControl fullWidth>
+            <InputLabel id="food-select-label-1">Előétel választása</InputLabel>
+            <Select
+              labelId="food-select-label-1"
+              id="food-select-1"
+              value={foodSelections[1] || ""}
+              label="Előétel választása"
+              onChange={handleFoodChange(1)}
+            >
+              {EloetelOptions.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+
         {/* Főétel */}
         <Box sx={{ marginBottom: 2 }}>
           <Typography variant="h6">Főétel</Typography>
           <FormControl fullWidth>
-            <InputLabel id="food-select-label-1">Főétel választása</InputLabel>
+            <InputLabel id="food-select-label-2">Főétel választása</InputLabel>
             <Select
-              labelId="food-select-label-1"
-              id="food-select-1"
-              value={foodSelections[1]}
+              labelId="food-select-label-2"
+              id="food-select-2"
+              value={foodSelections[2] || ""}
               label="Főétel választása"
-              onChange={handleFoodChange(1)}
+              onChange={handleFoodChange(2)}
             >
               {foetelOptions.map((option, index) => (
                 <MenuItem key={index} value={option}>
@@ -184,15 +213,15 @@ function App() {
         <Box sx={{ marginBottom: 2 }}>
           <Typography variant="h6">Hamburger</Typography>
           <FormControl fullWidth>
-            <InputLabel id="food-select-label-2">
+            <InputLabel id="food-select-label-3">
               Hamburger választása
             </InputLabel>
             <Select
-              labelId="food-select-label-2"
-              id="food-select-2"
-              value={foodSelections[2]}
+              labelId="food-select-label-3"
+              id="food-select-3"
+              value={foodSelections[3] || ""}
               label="Hamburger választása"
-              onChange={handleFoodChange(2)}
+              onChange={handleFoodChange(3)}
             >
               {hamburgerOptions.map((option, index) => (
                 <MenuItem key={index} value={option}>
@@ -207,13 +236,13 @@ function App() {
         <Box sx={{ marginBottom: 2 }}>
           <Typography variant="h6">Pizza</Typography>
           <FormControl fullWidth>
-            <InputLabel id="food-select-label-3">Pizza választása</InputLabel>
+            <InputLabel id="food-select-label-4">Pizza választása</InputLabel>
             <Select
-              labelId="food-select-label-3"
-              id="food-select-3"
-              value={foodSelections[3]}
+              labelId="food-select-label-4"
+              id="food-select-4"
+              value={foodSelections[4] || ""}
               label="Pizza választása"
-              onChange={handleFoodChange(3)}
+              onChange={handleFoodChange(4)}
             >
               {pizzaOptions.map((option, index) => (
                 <MenuItem key={index} value={option}>
@@ -228,15 +257,15 @@ function App() {
         <Box sx={{ marginBottom: 2 }}>
           <Typography variant="h6">Desszert</Typography>
           <FormControl fullWidth>
-            <InputLabel id="food-select-label-4">
+            <InputLabel id="food-select-label-5">
               Desszert választása
             </InputLabel>
             <Select
-              labelId="food-select-label-4"
-              id="food-select-4"
-              value={foodSelections[4]}
+              labelId="food-select-label-5"
+              id="food-select-5"
+              value={foodSelections[5] || ""}
               label="Desszert választása"
-              onChange={handleFoodChange(4)}
+              onChange={handleFoodChange(5)}
             >
               {desszertOptions.map((option, index) => (
                 <MenuItem key={index} value={option}>
@@ -251,13 +280,13 @@ function App() {
         <Box sx={{ marginBottom: 2 }}>
           <Typography variant="h6">Ital</Typography>
           <FormControl fullWidth>
-            <InputLabel id="food-select-label-5">Ital választása</InputLabel>
+            <InputLabel id="food-select-label-6">Ital választása</InputLabel>
             <Select
-              labelId="food-select-label-5"
-              id="food-select-5"
-              value={foodSelections[5]}
+              labelId="food-select-label-6"
+              id="food-select-6"
+              value={foodSelections[6] || ""}
               label="Ital választása"
-              onChange={handleFoodChange(5)}
+              onChange={handleFoodChange(6)}
             >
               {italOptions.map((option, index) => (
                 <MenuItem key={index} value={option}>
@@ -272,13 +301,13 @@ function App() {
         <Box sx={{ marginBottom: 2 }}>
           <Typography variant="h6">Kávé</Typography>
           <FormControl fullWidth>
-            <InputLabel id="food-select-label-6">Kávé választása</InputLabel>
+            <InputLabel id="food-select-label-7">Kávé választása</InputLabel>
             <Select
-              labelId="food-select-label-6"
-              id="food-select-6"
-              value={foodSelections[6]}
+              labelId="food-select-label-7"
+              id="food-select-7"
+              value={foodSelections[7] || ""}
               label="Kávé választása"
-              onChange={handleFoodChange(6)}
+              onChange={handleFoodChange(7)}
             >
               {kaveOptions.map((option, index) => (
                 <MenuItem key={index} value={option}>
@@ -291,14 +320,40 @@ function App() {
 
         {/* Buttons */}
         <Box sx={{ marginTop: 4, textAlign: "center" }}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => console.log("Selected items:", foodSelections)}
-          disabled={foodSelections.some((selection) => selection === "")} // Disable if any selection is empty
-        >
-          Kész
-        </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={async () => {
+              const payload = {
+                soupName: foodSelections[0],
+                appetizerName: foodSelections[1],
+                mainCourseName: foodSelections[2],
+                hamburgerName: foodSelections[3],
+                pizzaName: foodSelections[4],
+                dessertName: foodSelections[5],
+                drinkName: foodSelections[6],
+                coffeeName: foodSelections[7],
+              };
+              console.log("Payload:", payload);
+              try {
+                const response = await axios.post(
+                  "https://localhost:5000/api/DailySpecials",
+                  payload,
+                  {
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+                console.log("POST successful:", response.data);
+              } catch (error) {
+                console.error("Error during POST request:", error);
+              }
+            }}
+            disabled={foodSelections.some((selection) => selection === "")} // Disable if any selection is empty
+          >
+            Kész
+          </Button>
         </Box>
       </Box>
     </ThemeProvider>

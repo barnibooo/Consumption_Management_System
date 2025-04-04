@@ -94,17 +94,17 @@ namespace CMS.Controllers
             return CreatedAtAction(nameof(GetDailySpecials), new { id = dailySpecial.SpecialId }, dailySpecial);
         }
 
-        // DELETE: api/DailySpecials/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDailySpecial(int id)
+        // DELETE: api/DailySpecials
+        [HttpDelete]
+        public async Task<IActionResult> DeleteDailySpecials()
         {
-            var dailySpecial = await _context.DailySpecials.FindAsync(id);
-            if (dailySpecial == null)
+            var dailySpecials = await _context.DailySpecials.ToListAsync();
+            if (!dailySpecials.Any())
             {
                 return NotFound();
             }
 
-            _context.DailySpecials.Remove(dailySpecial);
+            _context.DailySpecials.RemoveRange(dailySpecials);
             await _context.SaveChangesAsync();
 
             return NoContent();
