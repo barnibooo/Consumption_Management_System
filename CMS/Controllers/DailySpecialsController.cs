@@ -23,23 +23,38 @@ namespace CMS.Controllers
 
         // GET: api/DailySpecials
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DailySpecial>>> GetDailySpecials()
+        public async Task<ActionResult<IEnumerable<DailySpecialGetDto>>> GetDailySpecials()
         {
-            return await _context.DailySpecials.ToListAsync();
-        }
+            var dailySpecials = await _context.DailySpecials.ToListAsync();
+            var dailySpecialGetDtos = new List<DailySpecialGetDto>();
 
-        // GET: api/DailySpecials/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<DailySpecial>> GetDailySpecial(int id)
-        {
-            var dailySpecial = await _context.DailySpecials.FindAsync(id);
-
-            if (dailySpecial == null)
+            foreach (var dailySpecial in dailySpecials)
             {
-                return NotFound();
+                var soup = await _context.MenuItems.FindAsync(dailySpecial.SoupId);
+                var appetizer = await _context.MenuItems.FindAsync(dailySpecial.AppetizerId);
+                var mainCourse = await _context.MenuItems.FindAsync(dailySpecial.MainCourseId);
+                var hamburger = await _context.MenuItems.FindAsync(dailySpecial.HamburgerId);
+                var pizza = await _context.MenuItems.FindAsync(dailySpecial.PizzaId);
+                var dessert = await _context.MenuItems.FindAsync(dailySpecial.DessertId);
+                var drink = await _context.MenuItems.FindAsync(dailySpecial.DrinkId);
+                var coffee = await _context.MenuItems.FindAsync(dailySpecial.CoffeeId);
+
+                var dailySpecialGetDto = new DailySpecialGetDto
+                {
+                    SoupName = soup?.Name,
+                    AppetizerName = appetizer?.Name,
+                    MainCourseName = mainCourse?.Name,
+                    HamburgerName = hamburger?.Name,
+                    PizzaName = pizza?.Name,
+                    DessertName = dessert?.Name,
+                    DrinkName = drink?.Name,
+                    CoffeeName = coffee?.Name
+                };
+
+                dailySpecialGetDtos.Add(dailySpecialGetDto);
             }
 
-            return dailySpecial;
+            return dailySpecialGetDtos;
         }
 
         // POST: api/DailySpecials
@@ -76,9 +91,8 @@ namespace CMS.Controllers
             _context.DailySpecials.Add(dailySpecial);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDailySpecial", new { id = dailySpecial.SpecialId }, dailySpecial);
+            return CreatedAtAction(nameof(GetDailySpecials), new { id = dailySpecial.SpecialId }, dailySpecial);
         }
-
 
         // DELETE: api/DailySpecials/5
         [HttpDelete("{id}")]
