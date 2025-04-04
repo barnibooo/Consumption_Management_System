@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
+  Alert,
+  Snackbar,
   Box,
   Typography,
   FormControl,
@@ -43,15 +45,17 @@ function App() {
   const [italOptions, setItalOptions] = useState<string[]>([]);
   const [kaveOptions, setKaveOptions] = useState<string[]>([]);
   const [foodSelections, setFoodSelections] = useState<string[]>([
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
+    "", // Leves
+    "", // Előétel
+    "", // Főétel
+    "", // Hamburger
+    "", // Pizza
+    "", // Desszert
+    "", // Ital
+    "", // Kávé
   ]);
   const [isLoading, setIsLoading] = useState(true);
+  const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -334,20 +338,17 @@ function App() {
                 drinkName: foodSelections[6],
                 coffeeName: foodSelections[7],
               };
-              console.log("Payload:", payload);
 
               try {
                 // Perform DELETE request
-                console.log("Performing DELETE request...");
                 await axios.delete("https://localhost:5000/api/DailySpecials", {
                   headers: {
                     "Content-Type": "application/json",
                   },
                 });
-                console.log("DELETE successful");
 
                 // Perform POST request
-                const response = await axios.post(
+                await axios.post(
                   "https://localhost:5000/api/DailySpecials",
                   payload,
                   {
@@ -356,7 +357,12 @@ function App() {
                     },
                   }
                 );
-                console.log("POST successful:", response.data);
+
+                // Clear all selections
+                setFoodSelections(["", "", "", "", "", "", "", ""]);
+
+                // Show success message
+                setSuccessSnackbarOpen(true);
               } catch (error) {
                 console.error("Error during DELETE or POST request:", error);
               }
@@ -367,6 +373,20 @@ function App() {
           </Button>
         </Box>
       </Box>
+      <Snackbar
+        open={successSnackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setSuccessSnackbarOpen(false)}
+      >
+        <Alert
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+          onClose={() => setSuccessSnackbarOpen(false)}
+        >
+          A napi menü sikeresen frissítve!
+        </Alert>
+      </Snackbar>
     </ThemeProvider>
   );
 }
