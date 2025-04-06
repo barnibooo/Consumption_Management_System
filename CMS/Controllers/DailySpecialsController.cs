@@ -99,11 +99,6 @@ namespace CMS.Controllers
         public async Task<IActionResult> DeleteDailySpecials()
         {
             var dailySpecials = await _context.DailySpecials.ToListAsync();
-            if (!dailySpecials.Any())
-            {
-                return NotFound();
-            }
-
             _context.DailySpecials.RemoveRange(dailySpecials);
             await _context.SaveChangesAsync();
 

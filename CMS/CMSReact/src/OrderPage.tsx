@@ -87,6 +87,7 @@ const categoryIcons: { [key: string]: React.ReactElement } = {
   Ital: <LocalBarOutlined sx={iconStyle} />,
   Kávé: <EmojiFoodBeverageOutlinedIcon sx={iconStyle} />,
   Egyéb: <MoreHorizIcon sx={iconStyle} />,
+  "Napi ajánlat": <CalendarTodayOutlinedIcon sx={iconStyle} />, // Új ikon hozzáadása
 };
 
 const Dashboard: React.FC = () => {
@@ -106,9 +107,37 @@ const Dashboard: React.FC = () => {
   const [dataLoadError, setDataLoadError] = useState<string | null>(null); // State for data loading errors
   const [snackbarOpen, setSnackbarOpen] = useState(false); // State for success Snackbar
   const [cardId, setCardId] = useState<string | null>(null);
+  const [dailySpecials, setDailySpecials] = useState<any | null>(null);
 
   const handleCategoryClick = (category: string | null) => {
     setSelectedCategory(category);
+    if (category === "Napi ajánlat") {
+      axios
+        .get("https://localhost:5000/api/DailySpecials")
+        .then((response) => {
+          const specials = response.data;
+          const filteredSpecials = menuItems.filter((item) =>
+            [
+              specials[0].soupName,
+              specials[0].appetizerName,
+              specials[0].mainCourseName,
+              specials[0].hamburgerName,
+              specials[0].pizzaName,
+              specials[0].dessertName,
+              specials[0].drinkName,
+              specials[0].coffeeName,
+            ].includes(item.name)
+          );
+          setDailySpecials(filteredSpecials);
+        })
+        .catch((error) => {
+          console.error(
+            "Hiba történt a napi ajánlatok betöltése közben:",
+            error
+          );
+          setDailySpecials([]);
+        });
+    }
   };
 
   const handleAddToOrder = (item: MenuItem) => {
@@ -362,6 +391,8 @@ const Dashboard: React.FC = () => {
     (category) => category !== "Egyéb"
   );
 
+  filteredCategories.unshift("Napi ajánlat"); // A "Napi ajánlat" kategória hozzáadása az elejére
+
   const hasEgyebItems = menuItems.some((item) => item.category === "Egyéb");
 
   const filteredMenuItems = selectedCategory
@@ -385,6 +416,7 @@ const Dashboard: React.FC = () => {
         height="calc(100vh - 64px)"
         flexDirection={{ xs: "column", md: "row" }}
       >
+        {/* Oldalsáv */}
         <Box
           sx={{
             display: { xs: "none", sm: "none", md: "none", lg: "flex" },
@@ -443,7 +475,7 @@ const Dashboard: React.FC = () => {
           </Stack>
         </Box>
 
-        {/* Orders Section */}
+        {/* Rendelés szekció */}
         <Box
           mb={{ xs: 2, md: 3 }}
           width={{ xs: "90%", md: "70%", lg: "40%", xl: "30%" }}
@@ -586,44 +618,11 @@ const Dashboard: React.FC = () => {
               >
                 Rendelés leadása
               </Button>
-              {/* Success Snackbar */}
-              <Snackbar
-                open={snackbarOpen}
-                autoHideDuration={6000}
-                onClose={handleSnackbarClose}
-              >
-                <Alert
-                  onClose={handleSnackbarClose}
-                  severity="success"
-                  variant="filled"
-                  sx={{ width: "100%" }}
-                >
-                  Sikeres rendelésleadás!
-                </Alert>
-              </Snackbar>
-
-              {/* Error Snackbar */}
-              {error && (
-                <Snackbar
-                  open={Boolean(error)}
-                  autoHideDuration={6000} // Auto-hide after 6 seconds
-                  onClose={() => setError(null)} // Allow manual closing
-                >
-                  <Alert
-                    onClose={() => setError(null)}
-                    severity="error"
-                    variant="filled"
-                    sx={{ width: "100%" }}
-                  >
-                    {error}
-                  </Alert>
-                </Snackbar>
-              )}
             </CardActions>
           </Card>
         </Box>
 
-        {/* Main Content */}
+        {/* Fő tartalom */}
         <Box
           display="flex"
           flexDirection="column"
@@ -631,105 +630,223 @@ const Dashboard: React.FC = () => {
           ml={{ md: 3 }}
           width="100%"
         >
-          {/* Content Cards */}
-          <Box sx={{ height: "100%", overflowY: "scroll" }}>
-            <Stack
-              direction="row"
-              flexWrap="wrap"
-              gap={2}
-              justifyContent={{ xs: "center", sm: "flex-start" }}
-              margin={2}
-            >
-              {filteredMenuItems.map((item) => (
-                <Card
-                  sx={{
-                    width: {
-                      xs: "100%",
-                      sm: "45%",
-                      md: "90%",
-                      lg: "45%",
-                      xl: "30%",
-                    },
-                    background: "#202938",
-                    color: "#d5d6d6",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                  key={item.itemId}
+          {selectedCategory === "Napi ajánlat" ? (
+            dailySpecials && dailySpecials.length > 0 ? (
+              <Box sx={{ height: "100%", overflowY: "scroll" }}>
+                <Stack
+                  direction="row"
+                  flexWrap="wrap"
+                  gap={2}
+                  justifyContent={{ xs: "center", sm: "flex-start" }}
+                  margin={2}
                 >
-                  <CardHeader
-                    title={item.name}
-                    subheader={item.category}
+                  {dailySpecials.map((item: MenuItem) => (
+                    <Card
+                      sx={{
+                        width: {
+                          xs: "100%",
+                          sm: "45%",
+                          md: "90%",
+                          lg: "45%",
+                          xl: "30%",
+                        },
+                        background: "#202938",
+                        color: "#d5d6d6",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                      key={item.itemId}
+                    >
+                      <CardHeader
+                        title={item.name}
+                        subheader={item.category}
+                        sx={{
+                          "& .MuiCardHeader-subheader": { color: "#d5d6d6" },
+                        }}
+                      />
+                      <CardMedia
+                        component="img"
+                        height="200"
+                        image={item.imagePath}
+                        alt="Kép"
+                      />
+                      <CardContent
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          flexGrow: 1,
+                        }}
+                      >
+                        <Typography mb={2}>{item.description}</Typography>
+                        <Box sx={{ mt: "auto" }}>
+                          <Typography fontWeight="bold">
+                            {item.isAvailable ? "Elérhető" : "Nem elérhető"}
+                          </Typography>
+                          <Typography fontWeight="bold">
+                            {item.price} Ft
+                          </Typography>
+                        </Box>
+                      </CardContent>
+                      <CardActions
+                        disableSpacing
+                        sx={{ mt: "auto", justifyContent: "flex-start" }}
+                      >
+                        <IconButton
+                          onClick={() => handleAddToOrder(item)}
+                          disabled={item.isAvailable === false}
+                        >
+                          <AddCircleOutlineIcon
+                            sx={{
+                              fontSize: 35,
+                              color:
+                                item.isAvailable === false
+                                  ? "#6d737d"
+                                  : "#d5d6d6",
+                              "&:hover": {
+                                color:
+                                  item.isAvailable === false
+                                    ? "#6d737d"
+                                    : "#BFA181",
+                              },
+                            }}
+                          />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => handleRemoveFromOrder(item)}
+                          disabled={item.isAvailable === false}
+                        >
+                          <RemoveCircleOutlineIcon
+                            sx={{
+                              fontSize: 35,
+                              color:
+                                item.isAvailable === false
+                                  ? "#6d737d"
+                                  : "#d5d6d6",
+                              "&:hover": {
+                                color:
+                                  item.isAvailable === false
+                                    ? "#6d737d"
+                                    : "#BFA181",
+                              },
+                            }}
+                          />
+                        </IconButton>
+                      </CardActions>
+                    </Card>
+                  ))}
+                </Stack>
+              </Box>
+            ) : (
+              <Typography variant="h6" color="#d5d6d6" textAlign="center">
+                Nincs elérhető napi ajánlat.
+              </Typography>
+            )
+          ) : (
+            <Box sx={{ height: "100%", overflowY: "scroll" }}>
+              <Stack
+                direction="row"
+                flexWrap="wrap"
+                gap={2}
+                justifyContent={{ xs: "center", sm: "flex-start" }}
+                margin={2}
+              >
+                {filteredMenuItems.map((item) => (
+                  <Card
                     sx={{
-                      "& .MuiCardHeader-subheader": { color: "#d5d6d6" },
-                    }}
-                  />
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={item.imagePath}
-                    alt="Kép"
-                  />
-                  <CardContent
-                    sx={{
+                      width: {
+                        xs: "100%",
+                        sm: "45%",
+                        md: "90%",
+                        lg: "45%",
+                        xl: "30%",
+                      },
+                      background: "#202938",
+                      color: "#d5d6d6",
                       display: "flex",
                       flexDirection: "column",
-                      flexGrow: 1,
                     }}
+                    key={item.itemId}
                   >
-                    <Typography mb={2}>{item.description}</Typography>
-                    <Box sx={{ mt: "auto" }}>
-                      <Typography fontWeight="bold">
-                        {item.isAvailable ? "Elérhető" : "Nem elérhető"}
-                      </Typography>
-                      <Typography fontWeight="bold">{item.price} Ft</Typography>
-                    </Box>
-                  </CardContent>
-                  <CardActions
-                    disableSpacing
-                    sx={{ mt: "auto", justifyContent: "flex-start" }}
-                  >
-                    <IconButton
-                      onClick={() => handleAddToOrder(item)}
-                      disabled={item.isAvailable === false}
+                    <CardHeader
+                      title={item.name}
+                      subheader={item.category}
+                      sx={{
+                        "& .MuiCardHeader-subheader": { color: "#d5d6d6" },
+                      }}
+                    />
+                    <CardMedia
+                      component="img"
+                      height="200"
+                      image={item.imagePath}
+                      alt="Kép"
+                    />
+                    <CardContent
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        flexGrow: 1,
+                      }}
                     >
-                      <AddCircleOutlineIcon
-                        sx={{
-                          fontSize: 35,
-                          color:
-                            item.isAvailable === false ? "#6d737d" : "#d5d6d6",
-                          "&:hover": {
+                      <Typography mb={2}>{item.description}</Typography>
+                      <Box sx={{ mt: "auto" }}>
+                        <Typography fontWeight="bold">
+                          {item.isAvailable ? "Elérhető" : "Nem elérhető"}
+                        </Typography>
+                        <Typography fontWeight="bold">
+                          {item.price} Ft
+                        </Typography>
+                      </Box>
+                    </CardContent>
+                    <CardActions
+                      disableSpacing
+                      sx={{ mt: "auto", justifyContent: "flex-start" }}
+                    >
+                      <IconButton
+                        onClick={() => handleAddToOrder(item)}
+                        disabled={item.isAvailable === false}
+                      >
+                        <AddCircleOutlineIcon
+                          sx={{
+                            fontSize: 35,
                             color:
                               item.isAvailable === false
                                 ? "#6d737d"
-                                : "#BFA181",
-                          },
-                        }}
-                      />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => handleRemoveFromOrder(item)}
-                      disabled={item.isAvailable === false}
-                    >
-                      <RemoveCircleOutlineIcon
-                        sx={{
-                          fontSize: 35,
-                          color:
-                            item.isAvailable === false ? "#6d737d" : "#d5d6d6",
-                          "&:hover": {
+                                : "#d5d6d6",
+                            "&:hover": {
+                              color:
+                                item.isAvailable === false
+                                  ? "#6d737d"
+                                  : "#BFA181",
+                            },
+                          }}
+                        />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleRemoveFromOrder(item)}
+                        disabled={item.isAvailable === false}
+                      >
+                        <RemoveCircleOutlineIcon
+                          sx={{
+                            fontSize: 35,
                             color:
                               item.isAvailable === false
                                 ? "#6d737d"
-                                : "#BFA181",
-                          },
-                        }}
-                      />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              ))}
-            </Stack>
-          </Box>
+                                : "#d5d6d6",
+                            "&:hover": {
+                              color:
+                                item.isAvailable === false
+                                  ? "#6d737d"
+                                  : "#BFA181",
+                            },
+                          }}
+                        />
+                      </IconButton>
+                    </CardActions>
+                  </Card>
+                ))}
+              </Stack>
+            </Box>
+          )}
         </Box>
       </Box>
     </>
