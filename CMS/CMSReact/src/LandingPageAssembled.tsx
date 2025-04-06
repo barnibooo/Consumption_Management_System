@@ -7,6 +7,7 @@ import { parseJwt } from "./JWTParser";
 import { checkToken } from "./AuthService";
 import { refreshToken } from "./RefreshService";
 import { Snackbar, Alert } from "@mui/material";
+import Footer from "./Footer";
 
 const App = () => {
   const [role, setRole] = useState<string | null>(null);
@@ -72,6 +73,7 @@ const App = () => {
     <>
       <Navbar role={role || "Guest"} />
       <LandingPage />
+      <Footer />
 
       {snackbarVisible && (
         <Snackbar

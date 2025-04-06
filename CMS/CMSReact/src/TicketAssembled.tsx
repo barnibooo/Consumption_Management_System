@@ -4,14 +4,16 @@ import TicketPage from "./TicketPage.tsx";
 import Navbar from "./Navbar.tsx";
 import "./OrderPage.css";
 import { parseJwt } from "./JWTParser";
+import Footer from "./Footer.tsx";
 
 const userRole = parseJwt(localStorage.getItem("token")!).role;
 
 createRoot(document.getElementById("root")!).render(
- // <StrictMode>
- <>
+  // <StrictMode>
+  <>
     <Navbar role={userRole} />
     <TicketPage />
-    </>
- // </StrictMode>
+    <Footer />
+  </>
+  // </StrictMode>
 );

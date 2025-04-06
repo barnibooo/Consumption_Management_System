@@ -93,6 +93,8 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
       window.location.href = "/customercheckout";
     } else if (page === "Regisztráció") {
       window.location.href = "/registration";
+    } else if (page === "Napi ajánlat kezelő") {
+      window.location.href = "/dailyspecials";
     }
   };
 

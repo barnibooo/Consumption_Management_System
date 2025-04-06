@@ -4,6 +4,7 @@ import "./OrderPage.css";
 import ProfilePage from "./ProfilePage.tsx";
 import Navbar from "./Navbar.tsx";
 import { parseJwt } from "./JWTParser";
+import Footer from "./Footer.tsx";
 
 const userRole = parseJwt(localStorage.getItem("token")!).role;
 
@@ -11,5 +12,6 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Navbar role={userRole} />
     <ProfilePage />
+    <Footer />
   </StrictMode>
 );
