@@ -183,7 +183,7 @@ function App() {
             >
               <Card sx={{ maxWidth: "100%", height: "auto" }}>
                 {cardContent(
-                  "/img/landing/egyeb_temp.png",
+                  "/img/landing/daily_temp.png",
                   "Napi ajánlat kezelő",
                   "dailyspecials"
                 )}
