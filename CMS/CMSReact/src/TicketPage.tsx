@@ -38,6 +38,7 @@ import { Category } from "@mui/icons-material";
 import { checkToken } from "./AuthService"; // Import the checkToken function
 import { refreshToken } from "./RefreshService"; // Import the refreshToken function
 import { parseJwt } from "./JWTParser";
+import { AxiosResponse } from "axios";
 
 const darkTheme = createTheme({
   palette: {
@@ -61,6 +62,13 @@ interface admissionItem {
   price: number;
   description: string;
   imagePath: string;
+}
+interface TicketResponse {
+  data: ticketItem[];
+}
+
+interface AdmissionResponse {
+  data: admissionItem[];
 }
 
 const iconStyle = {
@@ -101,27 +109,6 @@ const Dashboard: React.FC = () => {
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
   const [open, setOpen] = React.useState(false);
-
-  useEffect(() => {
-    const validateAndFetchData = async () => {
-      if (!tokenValidated) {
-        const isValidToken = await checkToken();
-
-        if (!isValidToken) {
-          window.location.href = "/login";
-          return;
-        }
-        if (isValidToken) {
-          if (!tokenRefreshed) {
-            await refreshToken();
-            setTokenRefreshed(true);
-          }
-        }
-      }
-    };
-
-    validateAndFetchData();
-  }, []);
 
   const handleCategoryClick = (category: string | null) => {
     setSelectedCategory(category);
@@ -182,6 +169,95 @@ const Dashboard: React.FC = () => {
     );
     return ticketTotal + admissionTotal;
   };
+  useEffect(() => {
+    const validateAndFetchData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found. Redirecting to login...");
+        setIsUnauthorized(true);
+        return;
+      }
+
+      try {
+        // Check for Admin or TicketAssistant role
+        const decodedToken = parseJwt(token);
+        if (
+          !decodedToken ||
+          (decodedToken.role !== "Admin" &&
+            decodedToken.role !== "TicketAssistant")
+        ) {
+          console.error(
+            "Unauthorized access: Admin or TicketAssistant role required"
+          );
+          setIsUnauthorized(true);
+          return;
+        }
+
+        const isValidToken = await checkToken();
+        if (!isValidToken) {
+          console.error("Invalid token. Redirecting to login...");
+          setIsUnauthorized(true);
+          return;
+        }
+
+        setTokenValidated(true);
+        await refreshToken();
+        setTokenRefreshed(true);
+
+        // Fetch tickets data
+        const fetchTickets = axios.get("https://localhost:5000/api/Tickets", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const fetchAdmissions = axios.get(
+          "https://localhost:5000/api/Admissions",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        Promise.all([fetchTickets, fetchAdmissions]).then(
+          ([ticketsResponse, admissionsResponse]: [
+            AxiosResponse<TicketResponse>,
+            AxiosResponse<AdmissionResponse>
+          ]) => {
+            if (Array.isArray(ticketsResponse.data)) {
+              setticketItems(ticketsResponse.data);
+            } else {
+              console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
+            }
+
+            if (Array.isArray(admissionsResponse.data)) {
+              setAdmissionItems(admissionsResponse.data);
+            } else {
+              console.error(
+                "Hibás API válasz: nem tömb",
+                admissionsResponse.data
+              );
+            }
+            setIsUnauthorized(false);
+            setLoading(false);
+          }
+        );
+      } catch (error) {
+        console.error("Error during token validation or data fetching:", error);
+        setIsUnauthorized(true);
+        setLoading(false);
+      }
+    };
+
+    validateAndFetchData();
+  }, []);
+  // Handle unauthorized access
+  if (isUnauthorized) {
+    localStorage.setItem("isUnauthorizedRedirect", "true");
+    window.location.href = "/";
+    return null;
+  }
 
   useEffect(() => {
     const token = localStorage.getItem("token");

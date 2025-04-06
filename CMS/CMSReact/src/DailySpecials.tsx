@@ -14,6 +14,9 @@ import {
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import axios from "axios";
+import { checkToken } from "./AuthService";
+import { parseJwt } from "./JWTParser";
+import { refreshToken } from "./RefreshService";
 
 // Dark theme definiálása
 const darkTheme = createTheme({
@@ -45,6 +48,10 @@ function App() {
   const [desszertOptions, setDesszertOptions] = useState<string[]>([]);
   const [italOptions, setItalOptions] = useState<string[]>([]);
   const [kaveOptions, setKaveOptions] = useState<string[]>([]);
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
+  const [tokenValidated, setTokenValidated] = useState(false);
+  const [tokenRefreshed, setTokenRefreshed] = useState(false);
+  const [dataFetched, setDataFetched] = useState(false);
   const [foodSelections, setFoodSelections] = useState<string[]>([
     "", // Leves
     "", // Előétel
@@ -55,8 +62,55 @@ function App() {
     "", // Ital
     "", // Kávé
   ]);
+
   const [isLoading, setIsLoading] = useState(true);
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
+  useEffect(() => {
+    const validateAndFetchData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found. Redirecting to login...");
+        setIsUnauthorized(true);
+        return;
+      }
+
+      try {
+        // Add admin role check
+        const decodedToken = parseJwt(token);
+        if (!decodedToken || decodedToken.role !== "Admin") {
+          console.error("Unauthorized access: Admin role required");
+          setIsUnauthorized(true);
+          return;
+        }
+
+        const isValidToken = await checkToken();
+        if (!isValidToken) {
+          console.error("Invalid token. Redirecting to login...");
+          setIsUnauthorized(true);
+          return;
+        }
+
+        setTokenValidated(true);
+        await refreshToken();
+        setTokenRefreshed(true);
+
+        // ...existing fetch logic...
+      } catch (error) {
+        console.error("Error during token validation or data fetching:", error);
+        setIsUnauthorized(true);
+        setIsLoading(false);
+      }
+    };
+
+    validateAndFetchData();
+  }, []);
+
+  // Add unauthorized redirect
+  if (isUnauthorized) {
+    localStorage.setItem("isUnauthorizedRedirect", "true");
+    window.location.href = "/";
+    return null;
+  }
 
   useEffect(() => {
     const fetchData = async () => {

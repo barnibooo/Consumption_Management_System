@@ -187,94 +187,94 @@ const Dashboard: React.FC = () => {
   const [isUnauthorized, setIsUnauthorized] = useState(false); // Új állapot
 
   useEffect(() => {
-    const checkUnauthorizedAccess = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        await axios.get("https://localhost:5000/api/MenuItems", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-      } catch (err: any) {
-        if (err.response && err.response.status === 403) {
-          localStorage.setItem("isUnauthorizedRedirect", "true");
-          setIsUnauthorized(true); // Jogosulatlan hozzáférés jelzése
-          return setTimeout(() => {
-            window.location.href = "/";
-          }, 3000);
-        }
-      }
-    };
-
-    checkUnauthorizedAccess();
-  }, []);
-
-  useEffect(() => {
-    if (isUnauthorized) {
-      // Ha jogosulatlan, ne futtassuk le a második useEffect-et
-      return;
-    }
-
     const validateAndFetchData = async () => {
-      if (!tokenValidated) {
-        const isValidToken = await checkToken();
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found. Redirecting to login...");
+        setIsUnauthorized(true);
+        return;
+      }
 
-        if (!isValidToken) {
-          window.location.href = "/login";
+      try {
+        // Check for Admin or RestaurantAssistant role
+        const decodedToken = parseJwt(token);
+        if (
+          !decodedToken ||
+          (decodedToken.role !== "Admin" &&
+            decodedToken.role !== "RestaurantAssistant")
+        ) {
+          console.error(
+            "Unauthorized access: Admin or RestaurantAssistant role required"
+          );
+          setIsUnauthorized(true);
           return;
         }
-        if (isValidToken) {
-          if (!tokenRefreshed) {
-            await refreshToken();
-            setTokenRefreshed(true);
-          }
+
+        const isValidToken = await checkToken();
+        if (!isValidToken) {
+          console.error("Invalid token. Redirecting to login...");
+          setIsUnauthorized(true);
+          return;
         }
-      }
-    };
 
-    validateAndFetchData();
-    setLoading(false);
-    setDataFetched(true);
-  }, [isUnauthorized]); // A második useEffect figyeli az isUnauthorized állapotot
+        setTokenValidated(true);
+        await refreshToken();
+        setTokenRefreshed(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
+        // Get the new token after refresh
+        const newToken = localStorage.getItem("token");
+        if (!newToken) {
+          throw new Error("Token refresh failed");
+        }
+
+        // Fetch menu items with new token
+        const menuResponse = await axios.get(
           "https://localhost:5000/api/MenuItems",
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${newToken}`,
             },
           }
         );
 
-        if (Array.isArray(response.data)) {
-          setMenuItems(response.data);
-        } else {
-          throw new Error("Hibás API válasz: nem tömb");
+        if (Array.isArray(menuResponse.data)) {
+          setMenuItems(menuResponse.data);
         }
-      } catch (err: any) {
-        if (err.response && err.response.status === 403) {
-          setIsUnauthed(true);
-        } else {
-          setDataLoadError("Hiba történt az adatok betöltése közben!");
+
+        // Fetch daily specials with new token
+        const dailySpecialsResponse = await axios.get(
+          "https://localhost:5000/api/DailySpecials",
+          {
+            headers: {
+              Authorization: `Bearer ${newToken}`,
+            },
+          }
+        );
+
+        if (dailySpecialsResponse.data) {
+          setDailySpecials(dailySpecialsResponse.data);
         }
-      } finally {
+
+        setIsUnauthorized(false);
+        setLoading(false);
+        setDataFetched(true);
+      } catch (error) {
+        console.error("Error during token validation or data fetching:", error);
+        setIsUnauthorized(true);
         setLoading(false);
       }
     };
 
-    fetchData();
+    validateAndFetchData();
   }, []);
 
-  if (isUnauthed) {
+  // Handle unauthorized access
+  if (isUnauthorized) {
     localStorage.setItem("isUnauthorizedRedirect", "true");
-    return setTimeout(() => {
-      window.location.href = "/";
-    }, 0);
+    window.location.href = "/";
+    return null;
   }
+
   const handleSubmitOrder = () => {
     if (!cardId || orders.length === 0) {
       setError("Kártyaazonosító szükséges és legalább egy tétel a listában!");
