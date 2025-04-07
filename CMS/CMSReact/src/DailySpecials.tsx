@@ -858,6 +858,7 @@ function App() {
                 await axios.delete("https://localhost:5000/api/DailySpecials", {
                   headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
                   },
                 });
 
@@ -868,6 +869,7 @@ function App() {
                   {
                     headers: {
                       "Content-Type": "application/json",
+                      Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },
                   }
                 );

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Models;
 using CMS.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Controllers
 {
@@ -23,6 +24,7 @@ namespace CMS.Controllers
 
         // GET: api/DailySpecials
         [HttpGet]
+        [Authorize(Policy = "AdminOrRestaurantOnly")]
         public async Task<ActionResult<IEnumerable<DailySpecialGetDto>>> GetDailySpecials()
         {
             var dailySpecials = await _context.DailySpecials.ToListAsync();
@@ -60,6 +62,7 @@ namespace CMS.Controllers
         // POST: api/DailySpecials
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult<DailySpecial>> PostDailySpecial(DailySpecialPostDto dailySpecialPostDto)
         {
             var soup = await _context.MenuItems.SingleOrDefaultAsync(mi => mi.Name == dailySpecialPostDto.SoupName);
@@ -96,6 +99,7 @@ namespace CMS.Controllers
 
         // DELETE: api/DailySpecials
         [HttpDelete]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> DeleteDailySpecials()
         {
             var dailySpecials = await _context.DailySpecials.ToListAsync();

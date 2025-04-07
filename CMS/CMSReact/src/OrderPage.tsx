@@ -113,7 +113,13 @@ const Dashboard: React.FC = () => {
     setSelectedCategory(category);
     if (category === "Napi ajánlat") {
       axios
-        .get("https://localhost:5000/api/DailySpecials")
+        .get("https://localhost:5000/api/DailySpecials", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+
         .then((response) => {
           const specials = response.data;
           const filteredSpecials = menuItems.filter((item) =>
