@@ -332,17 +332,6 @@ const Dashboard: React.FC = () => {
         setLoading(false);
       });
   }, [isUnauthorized]);
-  if (loading)
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
-        <CircularProgress size={120} sx={{ color: "#bfa181" }} />
-      </Box>
-    );
 
   if (isUnauthorized) {
     localStorage.setItem("isUnauthorizedRedirect", "true");
