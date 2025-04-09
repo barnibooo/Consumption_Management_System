@@ -372,17 +372,15 @@ const Dashboard: React.FC = () => {
         <Snackbar
           open={Boolean(error)}
           autoHideDuration={6000}
-          onClose={async () => {
+          onClose={() => {
             setError(null);
-            await new Promise((resolve) => setTimeout(resolve, 1));
-            if (error) setError(error); // Reopen if the error persists
+            window.location.href = "/";
           }}
         >
           <Alert
-            onClose={async () => {
+            onClose={() => {
               setError(null);
-              await new Promise((resolve) => setTimeout(resolve, 1));
-              if (error) setError(error); // Reopen if the error persists
+              window.location.href = "/";
             }}
             severity="error"
             variant="filled"

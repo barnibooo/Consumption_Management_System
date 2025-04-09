@@ -59,7 +59,7 @@ function MediaCard() {
         if (error.response && error.response.status === 401) {
           setError("Hibás felhasználónév vagy jelszó.");
         } else {
-          setError("Hiba történt: " + error.message);
+          setError("Hiba történt: Sikertelen bejelentkezés.");
         }
         setIsLoading(false);
       });
