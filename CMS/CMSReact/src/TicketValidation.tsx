@@ -13,6 +13,7 @@ import {
   TextField,
   Alert,
   Snackbar,
+  CircularProgress,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -114,9 +115,17 @@ function App() {
       </Box>
     );
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  if (loading)
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <CircularProgress size={120} sx={{ color: "#bfa181" }} />
+      </Box>
+    );
 
   return (
     <Box
@@ -193,15 +202,46 @@ function App() {
       </Box>
 
       {error && (
-        <Snackbar
-          open={!!error}
-          autoHideDuration={4000}
-          onClose={handleCloseSnackbar}
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100vh"
         >
-          <Alert severity="warning" variant="filled" sx={{ width: "100%" }}>
-            {error}
-          </Alert>
-        </Snackbar>
+          <Snackbar
+            open={Boolean(error)}
+            autoHideDuration={6000}
+            onClose={() => {
+              if (error === "A megadott kártyaazonosító nem található!") {
+                setError(null);
+                window.location.reload();
+              } else if (error === "Network Error") {
+                setError(null);
+                window.location.href = "/"; // Redirect to the main page for network errors
+              }
+            }}
+          >
+            <Alert
+              onClose={() => {
+                console.log(error);
+                if (error === "A megadott kártyaazonosító nem található!") {
+                  setError(null);
+                  window.location.reload(); // Reload the page for missing card error
+                } else if (error === "Network Error") {
+                  setError(null);
+                  window.location.href = "/"; // Redirect to the main page for network errors
+                }
+              }}
+              severity="error"
+              variant="filled"
+              sx={{ width: "100%" }}
+            >
+              {error === "A megadott kártyaazonosító nem található!"
+                ? "A megadott kártyaazonosító nem található!"
+                : "Hiba történt az adatok betöltése közben!"}
+            </Alert>
+          </Snackbar>
+        </Box>
       )}
 
       {customer && (
