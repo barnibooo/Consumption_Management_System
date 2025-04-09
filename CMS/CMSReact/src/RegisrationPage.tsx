@@ -120,8 +120,17 @@ function RegistrationCard() {
       setOpenSuccessSnackbar(true);
       setError(null);
     } catch (error: any) {
-      console.error("Registration failed:", error);
-      setError("Registration failed. Please try again.");
+      if (error.response) {
+        switch (error.response.status) {
+          case 500:
+            setError("Hiba történt a regisztráció során!");
+            break;
+          default:
+            setError("Hiba történt a regisztráció során!");
+        }
+      } else {
+        setError("Nem sikerült kapcsolódni a szerverhez!");
+      }
       setOpenSuccessSnackbar(false);
     }
   };
@@ -450,13 +459,12 @@ function RegistrationCard() {
           >
             Regisztráció
           </Button>
-          <Snackbar
-            open={openSuccessSnackbar && !error && !isUnauthorized}
-            autoHideDuration={6000}
-            onClose={() => setOpenSuccessSnackbar(false)}
-          >
+          <Snackbar open={openSuccessSnackbar} autoHideDuration={6000}>
             <Alert
-              onClose={() => setOpenSuccessSnackbar(false)}
+              onClose={() => {
+                setOpenSuccessSnackbar(false);
+                window.location.reload();
+              }}
               severity="success"
               variant="filled"
               sx={{ width: "100%" }}
@@ -465,18 +473,25 @@ function RegistrationCard() {
             </Alert>
           </Snackbar>
 
+          {/* Error Snackbar */}
           <Snackbar
             open={Boolean(error)}
             autoHideDuration={6000}
-            onClose={() => setError(null)}
+            onClose={() => {
+              setError(null);
+              window.location.href = "/"; // Redirect to landing page on error
+            }}
           >
             <Alert
-              onClose={() => setError(null)}
+              onClose={() => {
+                setError(null);
+                window.location.href = "/"; // Redirect to landing page on error
+              }}
               severity="error"
               variant="filled"
               sx={{ width: "100%" }}
             >
-              Sikertelen regisztráció!
+              {error}
             </Alert>
           </Snackbar>
         </CardContent>
