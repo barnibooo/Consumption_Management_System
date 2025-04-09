@@ -17,6 +17,7 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import MenuIcon from "@mui/icons-material/Menu";
 import { createTheme } from "@mui/material/styles";
 import { parseJwt } from "./JWTParser";
+import CountdownTimer from "./CountdownTimer";
 
 interface NavbarProps {
   role: string | null;
@@ -245,6 +246,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
 
             {/* User Avatar on the Edge */}
             <Box sx={{ flexGrow: 0 }}>
+              <CountdownTimer />
               <Tooltip title="Menü megnyitása">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar
