@@ -245,8 +245,10 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
             </Box>
 
             {/* User Avatar on the Edge */}
-            <Box sx={{ flexGrow: 0 }}>
-              <CountdownTimer />
+            <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
+              <Box sx={{ mr: 2 }}>
+                <CountdownTimer />
+              </Box>
               <Tooltip title="Menü megnyitása">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar

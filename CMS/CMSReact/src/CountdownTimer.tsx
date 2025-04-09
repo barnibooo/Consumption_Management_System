@@ -27,35 +27,34 @@ const CountdownTimer: React.FC = () => {
 
     checkToken(); // Initial check
     const interval = setInterval(checkToken, 1000);
-    
+
     // Listen for token updates
-    window.addEventListener('storage', checkToken);
+    window.addEventListener("storage", checkToken);
 
     return () => {
       clearInterval(interval);
-      window.removeEventListener('storage', checkToken);
+      window.removeEventListener("storage", checkToken);
     };
   }, []);
 
-  const formatTime = (milliseconds: number) => {
+  const formatTime = (milliseconds: number): string => {
     const totalSeconds = Math.floor(milliseconds / 1000);
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
-
-    return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
   return (
-    <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
+    <Box sx={{ mr: 2, display: "flex", alignItems: "center" }}>
       <Typography
         variant="body2"
         sx={{
-          color: timeLeft && timeLeft < 300000 ? '#ff4444' : '#d5d6d6',
-          fontSize: '0.9rem'
+          color: timeLeft && timeLeft < 300000 ? "#ff4444" : "#d5d6d6",
+          fontSize: "1rem",
+          fontWeight: "300",
         }}
       >
-        {timeLeft ? formatTime(timeLeft) : 'Token expired'}
+        {timeLeft ? formatTime(timeLeft) : "Token expired"}
       </Typography>
     </Box>
   );
