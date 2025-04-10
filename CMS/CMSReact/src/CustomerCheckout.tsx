@@ -13,6 +13,7 @@ import {
   Alert,
   Button,
   Snackbar,
+  CircularProgress,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -173,8 +174,10 @@ function App() {
           setError("A megadott kártyaazonosító nem található!");
         } else if (error.response && error.response.status === 401) {
           setError("Az oldal használatához magasabb jogosultság szükséges!");
+        } else if (error.response && error.response.message === 500) {
+          setError("Hiba történt az adatok betöltésekor!");
         } else {
-          setError(error.message);
+          setError("Hiba történt az adatok betöltésekor!");
         }
         setLoading(false);
       });
@@ -205,11 +208,7 @@ function App() {
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
+  if (loading)
     return (
       <Box
         display="flex"
@@ -217,12 +216,109 @@ function App() {
         alignItems="center"
         height="100vh"
       >
-        <ThemeProvider theme={darkTheme}>
-          <Alert severity="warning">{error}</Alert>
-        </ThemeProvider>
+        <CircularProgress size={120} sx={{ color: "#bfa181" }} />
       </Box>
     );
-  }
+
+  // Modify the error return statement
+  if (error)
+    return (
+      <>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100vh",
+            padding: 2,
+            alignItems: "center",
+          }}
+        >
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
+            }}
+          >
+            <TextField
+              sx={{
+                width: "30%",
+                height: "Auto",
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#d5d6d6",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#d5d6d6",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#BFA181",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "#d5d6d6",
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#BFA181",
+                },
+                "& .MuiInputBase-input": {
+                  color: "#d5d6d6",
+                  caretColor: "#d5d6d6",
+                },
+                marginBottom: 2,
+              }}
+              required
+              id="outlined-search"
+              label="Kártyaazonosító"
+              type="search"
+              margin="dense"
+              value={customerId}
+              onChange={(e) => setCustomerId(e.target.value)}
+            />
+            <IconButton
+              sx={{
+                fontSize: 40,
+                color: "#d5d6d6",
+                "&:hover": {
+                  color: "#BFA181",
+                },
+                "&:active": {
+                  color: "#BFA181",
+                },
+              }}
+              aria-label="add to shopping cart"
+              onClick={() => {
+                fetchCustomerData();
+                fetchCheckoutData();
+              }}
+            >
+              <SearchOutlinedIcon fontSize="inherit" />
+            </IconButton>
+          </Box>
+          <Snackbar
+            open={Boolean(error)}
+            autoHideDuration={6000}
+            onClose={() => {
+              setError(null);
+              window.location.reload();
+            }}
+          >
+            <Alert
+              onClose={() => {
+                setError(null);
+                window.location.reload();
+              }}
+              severity="error"
+              variant="filled"
+              sx={{ width: "100%" }}
+            >
+              {error}
+            </Alert>
+          </Snackbar>
+        </Box>
+      </>
+    );
 
   return (
     <Box
