@@ -57,6 +57,7 @@ interface Customer {
   isActive: boolean;
 }
 
+
 function App() {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(false);
@@ -69,6 +70,20 @@ function App() {
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
+  const [sucessmessagestatus, setsucessmessagestatus] = useState(false);
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: "timeout" | "clickaway" | "escapeKeyDown" | undefined
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setsucessmessagestatus(false);
+    setTimeout(() => {
+      window.location.reload();
+    }, 300);
+  };
+  
 
   useEffect(() => {
     const validateAndFetchData = async () => {
@@ -182,6 +197,8 @@ function App() {
       });
   };
 
+  const [isBoxVisible, setIsBoxVisible] = useState(true);
+
   const finalizeCustomer = () => {
     if (customer) {
       axios
@@ -197,8 +214,12 @@ function App() {
           }
         )
         .then((response) => {
+          setIsBoxVisible(false); // Immediately hide box
           setCustomer({ ...response.data, isActive: false });
-          alert("Customer finalized successfully!");
+          setsucessmessagestatus(true);
+          setTimeout(() => {
+            window.location.reload();
+          }, 6000);
         })
         .catch((error) => {
           console.error("Error finalizing customer:", error);
@@ -206,7 +227,7 @@ function App() {
         });
     }
   };
-
+  
   if (loading)
     return (
       <Box
@@ -216,6 +237,7 @@ function App() {
         height="100vh"
       >
         <CircularProgress size={120} sx={{ color: "#bfa181" }} />
+        
       </Box>
     );
 
@@ -392,7 +414,7 @@ function App() {
           <SearchOutlinedIcon fontSize="inherit" />
         </IconButton>
       </Box>
-      {checkoutData && customer && (
+      {isBoxVisible && checkoutData && customer && (
         <ThemeProvider theme={darkTheme}>
           <Card
             sx={{
@@ -522,8 +544,24 @@ function App() {
               </Button>
             </CardActions>
           </Card>
+          
         </ThemeProvider>
+        
       )}
+      <Snackbar
+      open={sucessmessagestatus}
+      autoHideDuration={6000}
+      onClose={handleClose}
+    >
+      <Alert
+        onClose={handleClose}
+        severity="success"
+        variant="filled"
+        sx={{ width: "100%" }}
+      >
+        Sikeres jegyvásárlás!
+      </Alert>
+    </Snackbar>
     </Box>
   );
 }

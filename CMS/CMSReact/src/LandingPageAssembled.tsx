@@ -73,11 +73,6 @@ const App = () => {
     <>
       <Navbar role={role || "Guest"} />
       <LandingPage />
-      <Box
-        sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
-      >
-        {/* Your content */}
-      </Box>
 
       {snackbarVisible && (
         <Snackbar
