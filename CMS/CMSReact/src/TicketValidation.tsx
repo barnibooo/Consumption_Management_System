@@ -19,6 +19,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { format } from "date-fns";
 import { parseJwt } from "./JWTParser";
+import { checkToken } from "./AuthService";
+import { refreshToken } from "./RefreshService";
 
 const darkTheme = createTheme({
   palette: {
@@ -55,9 +57,57 @@ function App() {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [customerId, setCustomerId] = useState<string>("");
+  const [tokenValidated, setTokenValidated] = useState(false);
+  const [tokenRefreshed, setTokenRefreshed] = useState(false);
+  const [dataFetched, setDataFetched] = useState(false);
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
+useEffect(() => {
+    const validateAndFetchData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found. Redirecting to login...");
+        window.location.href = "/login";
+        return;
+      }
 
+      const decodedToken = parseJwt(token);
+      if (
+        !decodedToken ||
+        (decodedToken.role !== "Admin" &&
+          decodedToken.role !== "TicketAssistant")
+      ) {
+        setIsUnauthorized(true);
+        return;
+      }
+
+      if (!tokenValidated) {
+        const isValidToken = await checkToken();
+
+        if (!isValidToken) {
+          console.error("Invalid token. Redirecting to login...");
+          window.location.href = "/login";
+          return;
+        }
+
+        if (!tokenRefreshed) {
+          await refreshToken();
+          setTokenRefreshed(true);
+        }
+
+        setTokenValidated(true);
+      }
+    };
+
+    validateAndFetchData();
+  }, []);
+
+  if (isUnauthorized) {
+    localStorage.setItem("isUnauthorizedRedirect", "true");
+    return setTimeout(() => {
+      window.location.href = "/";
+    }, 0);
+  }
   useEffect(() => {
     const validateAndFetchData = async () => {
       const token = localStorage.getItem("token");

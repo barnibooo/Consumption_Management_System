@@ -80,7 +80,6 @@ function App() {
       }
 
       const decodedToken = parseJwt(token);
-      console.log("Decoded token:", decodedToken.role);
       if (
         !decodedToken ||
         (decodedToken.role !== "Admin" &&
