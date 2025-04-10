@@ -108,6 +108,9 @@ const Dashboard: React.FC = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false); // State for success Snackbar
   const [cardId, setCardId] = useState<string | null>(null);
   const [dailySpecials, setDailySpecials] = useState<any | null>(null);
+  const [open, setOpen] = React.useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(false);
+  const [errorSnackbar, setErrorSnackbar] = useState(false);
 
   const handleCategoryClick = (category: string | null) => {
     setSelectedCategory(category);
@@ -144,6 +147,17 @@ const Dashboard: React.FC = () => {
           setDailySpecials([]);
         });
     }
+  };
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
   };
 
   const handleAddToOrder = (item: MenuItem) => {
@@ -315,20 +329,29 @@ const Dashboard: React.FC = () => {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
             })
-            .then(() => {
-              setSnackbarOpen(true); // Open success Snackbar
-              setOrders([]); // Clear the order list
-              setCardId(null); // Reset the TextField
+            .then((response) => {
+              console.log(response.data);
+              if (response.status === 201) {
+                setOrderSuccess(true);
+                setOrders([]);
+                setCardId("");
+                setTimeout(() => {
+                  setOrderSuccess(false);
+                }, 6000);
+              }
             })
-            .catch(() => {
-              setError("Hiba történt a rendelés leadása közben!");
+            .catch((error) => {
+              setDataLoadError(error);
             });
         } else {
-          setError("Nincs ilyen felhasználó!"); // Set error for invalid user
+          setErrorSnackbar(true);
+          setCardId("");
+          setTimeout(() => setErrorSnackbar(false), 6000);
         }
       })
-      .catch(() => {
-        setError("Hiba történt az adatok betöltése közben!");
+      .catch((error) => {
+        console.error("Hiba történt az adatok betöltése közben:", error);
+        setDataLoadError(error);
       });
   };
 
@@ -355,17 +378,15 @@ const Dashboard: React.FC = () => {
         <Snackbar
           open={Boolean(dataLoadError)}
           autoHideDuration={6000}
-          onClose={async () => {
+          onClose={() => {
             setDataLoadError(null);
-            await new Promise((resolve) => setTimeout(resolve, 1));
-            if (dataLoadError) setDataLoadError(dataLoadError);
+            window.location.href = "/";
           }}
         >
           <Alert
-            onClose={async () => {
+            onClose={() => {
               setDataLoadError(null);
-              await new Promise((resolve) => setTimeout(resolve, 1));
-              if (dataLoadError) setDataLoadError(dataLoadError);
+              window.location.href = "/";
             }}
             severity="error"
             variant="filled"
@@ -624,6 +645,34 @@ const Dashboard: React.FC = () => {
               >
                 Rendelés leadása
               </Button>
+              <Snackbar
+                open={orderSuccess}
+                autoHideDuration={6000}
+                onClose={() => setOrderSuccess(false)}
+              >
+                <Alert
+                  onClose={() => setOrderSuccess(false)}
+                  severity="success"
+                  variant="filled"
+                  sx={{ width: "100%" }}
+                >
+                  Sikeres rendelés leadás!
+                </Alert>
+              </Snackbar>
+              <Snackbar
+                open={errorSnackbar}
+                autoHideDuration={6000}
+                onClose={() => setErrorSnackbar(false)}
+              >
+                <Alert
+                  onClose={() => setErrorSnackbar(false)}
+                  severity="error"
+                  variant="filled"
+                  sx={{ width: "100%" }}
+                >
+                  A megadott kártyaszám nem létezik!
+                </Alert>
+              </Snackbar>
             </CardActions>
           </Card>
         </Box>
