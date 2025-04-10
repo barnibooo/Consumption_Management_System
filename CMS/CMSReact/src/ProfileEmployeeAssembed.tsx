@@ -12,6 +12,5 @@ createRoot(document.getElementById("root")!).render(
   <>
     <Navbar role={userRole} />
     <ProfilePage />
-    <Footer />
   </>
 );

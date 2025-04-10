@@ -12,6 +12,5 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Navbar role={userRole} />
     <ProfileCustomerPage />
-    <Footer />
   </StrictMode>
 );

@@ -6,7 +6,7 @@ import "./OrderPage.css";
 import { parseJwt } from "./JWTParser";
 import { checkToken } from "./AuthService";
 import { refreshToken } from "./RefreshService";
-import { Snackbar, Alert } from "@mui/material";
+import { Snackbar, Alert, Box } from "@mui/material";
 import Footer from "./Footer";
 
 const App = () => {
@@ -73,7 +73,11 @@ const App = () => {
     <>
       <Navbar role={role || "Guest"} />
       <LandingPage />
-      <Footer />
+      <Box
+        sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+      >
+        {/* Your content */}
+      </Box>
 
       {snackbarVisible && (
         <Snackbar

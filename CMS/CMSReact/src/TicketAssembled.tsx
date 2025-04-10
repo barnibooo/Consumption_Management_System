@@ -13,7 +13,6 @@ createRoot(document.getElementById("root")!).render(
   <>
     <Navbar role={userRole} />
     <TicketPage />
-    <Footer />
   </>
   // </StrictMode>
 );
