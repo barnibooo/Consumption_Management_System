@@ -476,8 +476,11 @@ const Dashboard: React.FC = () => {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
+    // Add timeout to refresh page after Snackbar closes
+    setTimeout(() => {
+      window.location.reload();
+    }, 300);
   };
 
   const hasBelepoInOrder = orders.some((item) => item.category === "Belépő");
