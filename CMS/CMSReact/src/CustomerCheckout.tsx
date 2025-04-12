@@ -23,6 +23,7 @@ import { checkToken } from "./AuthService";
 import { refreshToken } from "./RefreshService";
 import { parseJwt } from "./JWTParser";
 import UnauthorizedMessage from "./UnauthorizedMessage";
+import ReceiptPdfAssembled from "./ReceiptPdfAssembled";
 
 const darkTheme = createTheme({
   palette: {
@@ -35,7 +36,7 @@ const formatDateTime = (dateTimeString: string) => {
   return format(date, "yyyy-MM-dd HH:mm");
 };
 
-interface ConsumptionItem {
+export interface ConsumptionItem {
   productName: string;
   description: string;
   orderDate: string;
@@ -56,7 +57,6 @@ interface Customer {
   createdBy: number;
   isActive: boolean;
 }
-
 
 function App() {
   const [customer, setCustomer] = useState<Customer | null>(null);
@@ -83,7 +83,6 @@ function App() {
       window.location.reload();
     }, 300);
   };
-  
 
   useEffect(() => {
     const validateAndFetchData = async () => {
@@ -227,7 +226,7 @@ function App() {
         });
     }
   };
-  
+
   if (loading)
     return (
       <Box
@@ -237,7 +236,6 @@ function App() {
         height="100vh"
       >
         <CircularProgress size={120} sx={{ color: "#bfa181" }} />
-        
       </Box>
     );
 
@@ -530,38 +528,28 @@ function App() {
                   </Box>
                 )}
             </CardContent>
-            <CardActions>
-              <Button
-                variant="contained"
-                endIcon={<SendIcon />}
-                onClick={finalizeCustomer}
-                sx={{
-                  bgcolor: "#BFA181",
-                  color: "#d5d6d6",
-                }}
-              >
-                Véglegesítés
-              </Button>
-            </CardActions>
+            <ReceiptPdfAssembled
+              customer={customer}
+              checkoutData={checkoutData}
+              onFinalize={finalizeCustomer}
+            />
           </Card>
-          
         </ThemeProvider>
-        
       )}
       <Snackbar
-      open={sucessmessagestatus}
-      autoHideDuration={6000}
-      onClose={handleClose}
-    >
-      <Alert
+        open={sucessmessagestatus}
+        autoHideDuration={6000}
         onClose={handleClose}
-        severity="success"
-        variant="filled"
-        sx={{ width: "100%" }}
       >
-        Sikeres jegyvásárlás!
-      </Alert>
-    </Snackbar>
+        <Alert
+          onClose={handleClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          Sikeres jegyvásárlás!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
