@@ -72,7 +72,6 @@ public class AuthController : ControllerBase
         });
     }
     [HttpPost("refreshToken")]
-    //Védett, de nem az [Authorize]-zal.
     public async Task<IActionResult> RefreshToken()
     {
         var authHeader = Request.Headers["Authorization"].ToString();

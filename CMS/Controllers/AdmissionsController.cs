@@ -12,7 +12,7 @@ namespace CMS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "AdminOrTicketOnly")]
+    
     public class AdmissionsController : ControllerBase
     {
         private readonly CMSContext _context;
@@ -24,6 +24,7 @@ namespace CMS.Controllers
 
         // GET: api/Admissions
         [HttpGet]
+        [Authorize(Policy = "AdminOrTicketOnly")]
         public async Task<ActionResult<IEnumerable<Admission>>> GetAdmissions()
         {
             return await _context.Admissions.ToListAsync();
@@ -34,13 +35,15 @@ namespace CMS.Controllers
         // POST: api/Admissions
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult<Admission>> PostAdmission(Admission admission)
         {
             _context.Admissions.Add(admission);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAdmission", new { id = admission.AdmissionId }, admission);
+            return StatusCode(StatusCodes.Status201Created, admission);
         }
+
 
         private bool AdmissionExists(int id)
         {
