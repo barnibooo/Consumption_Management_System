@@ -547,7 +547,7 @@ function App() {
           variant="filled"
           sx={{ width: "100%" }}
         >
-          Sikeres jegyvásárlás!
+          A vendég kijelentkeztetés sikeresen megtörtént!
         </Alert>
       </Snackbar>
     </Box>
