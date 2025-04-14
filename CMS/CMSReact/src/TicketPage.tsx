@@ -15,7 +15,14 @@ import {
   ListItemAvatar,
   CircularProgress,
   Alert,
+  AlertTitle,
+  ThemeProvider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
   TextField,
+  DialogActions,
   Snackbar,
   SnackbarCloseReason,
 } from "@mui/material";
@@ -26,10 +33,18 @@ import AddShoppingCartOutlinedIcon from "@mui/icons-material/AddShoppingCartOutl
 import AppsIcon from "@mui/icons-material/Apps";
 import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
-import { checkToken } from "./AuthService";
-import { refreshToken } from "./RefreshService";
+import { createTheme } from "@mui/material/styles";
+import { Category } from "@mui/icons-material";
+import { checkToken } from "./AuthService"; // Import the checkToken function
+import { refreshToken } from "./RefreshService"; // Import the refreshToken function
 import { parseJwt } from "./JWTParser";
 import { AxiosResponse } from "axios";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
 
 interface ticketItem {
   imagePath: string | undefined;
@@ -79,7 +94,20 @@ const Dashboard: React.FC = () => {
   const [orders, setOrders] = useState<ticketItem[]>([]);
   const [ordersa, setOrdersa] = useState<admissionItem[]>([]);
   const [cardId, setCardId] = useState<string | null>(null);
+  // Your useEffect and other logic here
+  const [finalizedOrders, setFinalizedOrders] = useState<
+    { ticketId: number }[]
+  >([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [orderId, setOrderId] = useState("");
+  const [openSuccessDialogs, setOpenSuccessDialogs] = useState<boolean[]>([]);
+  const [ids, setIds] = useState<string[]>([]);
+  const [openDialogs, setOpenDialogs] = useState<boolean[]>([]);
   const [fullName, setFullName] = useState<string>("");
+
+  const [tokenValidated, setTokenValidated] = useState(false);
+  const [tokenRefreshed, setTokenRefreshed] = useState(false);
+  const [dataFetched, setDataFetched] = useState(false);
   const [open, setOpen] = React.useState(false);
 
   const handleCategoryClick = (category: string | null) => {
@@ -172,8 +200,11 @@ const Dashboard: React.FC = () => {
           return;
         }
 
+        setTokenValidated(true);
         await refreshToken();
+        setTokenRefreshed(true);
 
+        // Fetch tickets data
         const fetchTickets = axios.get("https://localhost:5000/api/Tickets", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -258,11 +289,29 @@ const Dashboard: React.FC = () => {
         }
 
         if (Array.isArray(ticketsResponse.data)) {
+          const tickets = ticketsResponse.data.map((ticket: ticketItem) => ({
+            ticketId: ticket.ticketId,
+            ticketName: ticket.ticketName,
+            category: ticket.category,
+            price: ticket.price,
+            description: ticket.description,
+            imagePath: ticket.imagePath,
+          }));
         } else {
           console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
         }
 
         if (Array.isArray(admissionsResponse.data)) {
+          const admissions = admissionsResponse.data.map(
+            (admission: admissionItem) => ({
+              admissionId: admission.admissionId,
+              admissionName: admission.admissionName,
+              category: admission.category,
+              price: admission.price,
+              description: admission.description,
+              imagePath: admission.imagePath,
+            })
+          );
         } else {
           console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
         }
@@ -370,6 +419,14 @@ const Dashboard: React.FC = () => {
     ? admissionItems.filter((item) => item.category === selectedCategory)
     : admissionItems;
 
+  const handleIdChange = (index: number, value: string) => {
+    setIds((prev) => {
+      const newIds = [...prev];
+      newIds[index] = value;
+      return newIds;
+    });
+  };
+
   const handleSubmitOrder = () => {
     const token = localStorage.getItem("token");
     let decodedToken: { EmployeeId: number } | null = null;
@@ -395,6 +452,10 @@ const Dashboard: React.FC = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
+      .then((response) => {
+        setOrderId(response.data.orderId);
+        handleClick();
+      })
       .catch((error) => {
         console.error("Error creating customer:", error);
         setError(error.message);
@@ -404,8 +465,12 @@ const Dashboard: React.FC = () => {
       });
   };
 
+  const handleClick = () => {
+    setOpen(true);
+  };
+
   const handleClose = (
-    _event?: React.SyntheticEvent | Event,
+    event?: React.SyntheticEvent | Event,
     reason?: SnackbarCloseReason
   ) => {
     if (reason === "clickaway") {
