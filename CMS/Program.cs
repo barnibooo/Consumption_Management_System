@@ -8,14 +8,12 @@ using System.Diagnostics;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-//RunBuildScript();
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//MSSQL-es
-//builder.Services.AddDbContext<CMSContext>(db => db.UseSqlServer(
-//builder.Configuration.GetConnectionString("CMSContext")));
+
 
 // SQLite
 builder.Services.AddDbContext<CMSContext>(
@@ -67,6 +65,20 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
+app.UseDefaultFiles(); // Serve the index.html file by default
+
+string currentDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+
+app.UseStaticFiles(new StaticFileOptions
+
+{
+
+    FileProvider = new PhysicalFileProvider(currentDir),
+
+    RequestPath = ""
+
+});
+
 app.UseAuthentication();
 
 app.UseAuthorization();
@@ -89,7 +101,6 @@ app.MapControllers();
 
 #region Static frontend serving
 app.UseDefaultFiles(); // Serve the index.html file by default
-string currentDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(currentDir),
@@ -99,30 +110,3 @@ app.UseStaticFiles(new StaticFileOptions
 
 
 app.Run();
-//Script for build
-void RunBuildScript()
-{
-    try
-    {
-        var processInfo = new ProcessStartInfo
-        {
-            FileName = "cmd.exe",
-            Arguments = "/c builder.cmd",
-            WorkingDirectory = Directory.GetCurrentDirectory(),
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-
-        var process = new Process { StartInfo = processInfo };
-        process.Start();
-        process.WaitForExit();
-
-        Console.WriteLine("React build sikeresen lefutott.");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Hiba történt a React build során: {ex.Message}");
-    }
-}
