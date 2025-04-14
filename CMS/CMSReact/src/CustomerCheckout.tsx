@@ -5,24 +5,20 @@ import {
   Card,
   CardContent,
   Typography,
-  CardActions,
   CardHeader,
   Avatar,
   IconButton,
   TextField,
   Alert,
-  Button,
   Snackbar,
   CircularProgress,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import SendIcon from "@mui/icons-material/Send";
 import { format } from "date-fns";
 import { checkToken } from "./AuthService";
 import { refreshToken } from "./RefreshService";
 import { parseJwt } from "./JWTParser";
-import UnauthorizedMessage from "./UnauthorizedMessage";
 import ReceiptPdfAssembled from "./ReceiptPdfAssembled";
 
 const darkTheme = createTheme({
@@ -68,11 +64,10 @@ function App() {
   );
   const [tokenValidated, setTokenValidated] = useState(false);
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
-  const [dataFetched, setDataFetched] = useState(false);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [sucessmessagestatus, setsucessmessagestatus] = useState(false);
   const handleClose = (
-    event?: React.SyntheticEvent | Event,
+    _event?: React.SyntheticEvent | Event,
     reason?: "timeout" | "clickaway" | "escapeKeyDown" | undefined
   ) => {
     if (reason === "clickaway") {

@@ -1,18 +1,13 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import {
   Box,
   Card,
   CardContent,
   Typography,
   CardActions,
-  CardHeader,
-  Avatar,
   CardMedia,
-  IconButton,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { parseJwt } from "./JWTParser";
 import { refreshToken } from "./RefreshService";
 import { checkToken } from "./AuthService";
@@ -33,9 +28,6 @@ interface Employee {
 function App() {
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [monogram, setMonogram] = useState<string | null>(null);
-  const [tokenValidated, setTokenValidated] = useState(false);
 
   useEffect(() => {
     const initialize = async () => {
@@ -52,7 +44,6 @@ function App() {
         if (token) {
           const parsedToken = parseJwt(token);
           if (parsedToken) {
-            setMonogram(parsedToken.monogram);
             setEmployee({
               firstName: parsedToken.FirstName,
               lastName: parsedToken.LastName,
@@ -70,10 +61,6 @@ function App() {
 
   if (loading) {
     return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
   }
 
   return (

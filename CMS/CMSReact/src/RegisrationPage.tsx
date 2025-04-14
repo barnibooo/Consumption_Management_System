@@ -1,4 +1,3 @@
-import * as React from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -9,7 +8,6 @@ import {
   Button,
   Snackbar,
   TextField,
-  ThemeProvider,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -17,26 +15,15 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { checkToken } from "./AuthService";
 import { refreshToken } from "./RefreshService";
 import axios from "axios";
-import { parseJwt } from "./JWTParser";
 import { useState, useEffect } from "react";
-import { createTheme } from "@mui/material/styles";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-  },
-});
-
 function RegistrationCard() {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("lg"));
-  const [tokenValidated, setTokenValidated] = useState(false);
-  const [tokenRefreshed, setTokenRefreshed] = useState(false);
-  const [dataFetched, setDataFetched] = useState(false);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [roles, setRoles] = useState<string[]>([]);
   const [role, setRole] = useState<string>("");
@@ -60,16 +47,12 @@ function RegistrationCard() {
         const isValidToken = await checkToken();
         if (!isValidToken) {
           console.error("Invalid token. Redirecting to login...");
-          setIsUnauthorized(true); // Ha a token érvénytelen, folyamatosan újra megjelenítjük a hibát
+          setIsUnauthorized(true);
           return;
         }
 
-        setTokenValidated(true);
-        await refreshToken(); // A token frissítése
-        setTokenRefreshed(true);
-        setDataFetched(true);
+        await refreshToken();
 
-        // Fetch roles from API
         const response = await axios.get(
           "https://localhost:5000/api/Employees/roles",
           {
@@ -83,7 +66,7 @@ function RegistrationCard() {
         setIsUnauthorized(false);
       } catch (error) {
         console.error("Error during token validation or data fetching:", error);
-        setIsUnauthorized(true); // Ha hiba történt, folyamatosan újra megjelenik a hiba
+        setIsUnauthorized(true);
       }
     };
 

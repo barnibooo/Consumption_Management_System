@@ -108,7 +108,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
       },
     },
     typography: {
-      fontFamily: "Roboto, Arial, sans-serif", // Set Roboto as the default font
+      fontFamily: "Roboto, Arial, sans-serif",
     },
   });
 
@@ -130,18 +130,9 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
 
   const settings = ["Profil", "Kijelentkezés"];
 
-  const menuStyles = {
-    "& .MuiMenuItem-root": {
-      color: "#d5d6d6",
-      "&:hover": {
-        backgroundColor: "#37404f",
-      },
-    },
-  };
-
   return (
     <ThemeProvider theme={darkTheme}>
-      {/* Ensures the font and background are applied globally */}
+      {}
       <AppBar position="static">
         <Container maxWidth={false}>
           <Toolbar
@@ -266,9 +257,9 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
                 sx={{
                   mt: "45px",
                   "& .MuiMenuItem-root": {
-                    color: "#d5d6d6", // Text color
+                    color: "#d5d6d6",
                     "&:hover": {
-                      backgroundColor: "#37404f", // Hover background color
+                      backgroundColor: "#37404f",
                     },
                   },
                 }}

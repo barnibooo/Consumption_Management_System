@@ -1,13 +1,12 @@
 import { createRoot } from "react-dom/client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import LandingPage from "./LandingPage";
 import Navbar from "./Navbar";
 import "./OrderPage.css";
 import { parseJwt } from "./JWTParser";
 import { checkToken } from "./AuthService";
 import { refreshToken } from "./RefreshService";
-import { Snackbar, Alert, Box } from "@mui/material";
-import Footer from "./Footer";
+import { Snackbar, Alert } from "@mui/material";
 
 const App = () => {
   const [role, setRole] = useState<string | null>(null);
@@ -19,14 +18,12 @@ const App = () => {
       try {
         const token = localStorage.getItem("token");
 
-        // Ha nincs token, irányítsuk a login oldalra
         if (!token) {
           console.log("No token found, redirecting to login.");
           window.location.href = "/login";
           return;
         }
 
-        // Ellenőrizzük a token érvényességét
         const isValid = await checkToken();
         if (!isValid) {
           console.log("No valid");
@@ -34,7 +31,6 @@ const App = () => {
           return;
         }
 
-        // Frissítsük a tokent, ha szükséges
         const isRefreshed = await refreshToken();
         if (!isRefreshed) {
           console.log("No rtoken found, redirecting to login.");
@@ -42,11 +38,9 @@ const App = () => {
           return;
         }
 
-        // Dekódoljuk a tokent, és állítsuk be a szerepkört
         const parsedToken = parseJwt(token);
         setRole(parsedToken.role);
 
-        // Ellenőrizzük az `isUnauthorizedRedirect` értékét
         const isUnauthorizedRedirect = localStorage.getItem(
           "isUnauthorizedRedirect"
         );
@@ -66,7 +60,7 @@ const App = () => {
   }, []);
 
   if (isLoading) {
-    return null; // Várakozás közben ne jelenjen meg semmi
+    return null;
   }
 
   return (

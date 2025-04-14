@@ -16,15 +16,7 @@ import {
   ListItemAvatar,
   CircularProgress,
   Alert,
-  AlertTitle,
-  ThemeProvider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
   TextField,
-  DialogActions,
-  SnackbarCloseReason,
   Snackbar,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -46,16 +38,9 @@ import BakeryDiningOutlinedIcon from "@mui/icons-material/BakeryDiningOutlined";
 import AppsIcon from "@mui/icons-material/Apps";
 import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
-import { createTheme } from "@mui/material/styles";
 import { checkToken } from "./AuthService";
 import { refreshToken } from "./RefreshService";
 import { parseJwt } from "./JWTParser";
-
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-  },
-});
 
 interface MenuItem {
   quantity: number;
@@ -87,28 +72,17 @@ const categoryIcons: { [key: string]: React.ReactElement } = {
   Ital: <LocalBarOutlined sx={iconStyle} />,
   Kávé: <EmojiFoodBeverageOutlinedIcon sx={iconStyle} />,
   Egyéb: <MoreHorizIcon sx={iconStyle} />,
-  "Napi ajánlat": <CalendarTodayOutlinedIcon sx={iconStyle} />, // Új ikon hozzáadása
+  "Napi ajánlat": <CalendarTodayOutlinedIcon sx={iconStyle} />,
 };
 
 const Dashboard: React.FC = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [orders, setOrders] = useState<MenuItem[]>([]);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [guestId, setGuestId] = useState<string | null>(null);
-  const [finalizedOrders, setFinalizedOrders] = useState<
-    { itemId: number; quantity: number }[]
-  >([]);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [orderId, setOrderId] = useState("");
-  const [isUnauthed, setIsUnauthed] = useState(false);
-  const [dataLoadError, setDataLoadError] = useState<string | null>(null); // State for data loading errors
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for success Snackbar
+  const [dataLoadError, setDataLoadError] = useState<string | null>(null);
   const [cardId, setCardId] = useState<string | null>(null);
   const [dailySpecials, setDailySpecials] = useState<any | null>(null);
-  const [open, setOpen] = React.useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [errorSnackbar, setErrorSnackbar] = useState(false);
 
@@ -147,17 +121,6 @@ const Dashboard: React.FC = () => {
           setDailySpecials([]);
         });
     }
-  };
-
-  const handleClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
   };
 
   const handleAddToOrder = (item: MenuItem) => {
@@ -201,9 +164,7 @@ const Dashboard: React.FC = () => {
       0
     );
   };
-  const [tokenValidated, setTokenValidated] = useState(false);
-  const [tokenRefreshed, setTokenRefreshed] = useState(false);
-  const [dataFetched, setDataFetched] = useState(false);
+
   const [isUnauthorized, setIsUnauthorized] = useState(false); // Új állapot
 
   useEffect(() => {
@@ -237,17 +198,13 @@ const Dashboard: React.FC = () => {
           return;
         }
 
-        setTokenValidated(true);
         await refreshToken();
-        setTokenRefreshed(true);
 
-        // Get the new token after refresh
         const newToken = localStorage.getItem("token");
         if (!newToken) {
           throw new Error("Token refresh failed");
         }
 
-        // Fetch menu items with new token
         const menuResponse = await axios.get(
           "https://localhost:5000/api/MenuItems",
           {
@@ -277,7 +234,6 @@ const Dashboard: React.FC = () => {
 
         setIsUnauthorized(false);
         setLoading(false);
-        setDataFetched(true);
       } catch (error) {
         console.error("Error during token validation or data fetching:", error);
         setIsUnauthorized(true);
@@ -297,7 +253,6 @@ const Dashboard: React.FC = () => {
 
   const handleSubmitOrder = () => {
     if (!cardId || orders.length === 0) {
-      setError("Kártyaazonosító szükséges és legalább egy tétel a listában!");
       return;
     }
 
@@ -425,16 +380,6 @@ const Dashboard: React.FC = () => {
   const filteredMenuItems = selectedCategory
     ? menuItems.filter((item) => item.category === selectedCategory)
     : menuItems;
-
-  const handleSnackbarClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setSnackbarOpen(false);
-  };
 
   return (
     <>

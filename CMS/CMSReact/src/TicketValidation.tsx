@@ -60,9 +60,8 @@ function App() {
   const [customerId, setCustomerId] = useState<string>("");
   const [tokenValidated, setTokenValidated] = useState(false);
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
-  const [dataFetched, setDataFetched] = useState(false);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
-useEffect(() => {
+  useEffect(() => {
     const validateAndFetchData = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -109,12 +108,7 @@ useEffect(() => {
     }, 0);
   }
   useEffect(() => {
-    const validateAndFetchData = async () => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const decodedToken = parseJwt(token);
-      }
-    };
+    const validateAndFetchData = async () => {};
 
     validateAndFetchData();
   }, []);
@@ -143,10 +137,6 @@ useEffect(() => {
         }
         setLoading(false);
       });
-  };
-
-  const handleCloseSnackbar = () => {
-    setError(null);
   };
 
   if (isUnauthorized)

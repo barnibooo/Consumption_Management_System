@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Alert,
   Snackbar,
@@ -50,19 +50,16 @@ function App() {
   const [italOptions, setItalOptions] = useState<string[]>([]);
   const [kaveOptions, setKaveOptions] = useState<string[]>([]);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
-  const [tokenValidated, setTokenValidated] = useState(false);
-  const [tokenRefreshed, setTokenRefreshed] = useState(false);
-  const [dataFetched, setDataFetched] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [foodSelections, setFoodSelections] = useState<string[]>([
-    "", // Leves
-    "", // Előétel
-    "", // Főétel
-    "", // Hamburger
-    "", // Pizza
-    "", // Desszert
-    "", // Ital
-    "", // Kávé
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
   ]);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -77,7 +74,6 @@ function App() {
       }
 
       try {
-        // Add admin role check
         const decodedToken = parseJwt(token);
         if (!decodedToken || decodedToken.role !== "Admin") {
           console.error("Unauthorized access: Admin role required");
@@ -92,11 +88,7 @@ function App() {
           return;
         }
 
-        setTokenValidated(true);
         await refreshToken();
-        setTokenRefreshed(true);
-
-        // ...existing fetch logic...
       } catch (error) {
         console.error("Error during token validation or data fetching:", error);
         setIsUnauthorized(true);
@@ -107,7 +99,6 @@ function App() {
     validateAndFetchData();
   }, []);
 
-  // Add unauthorized redirect
   if (isUnauthorized) {
     localStorage.setItem("isUnauthorizedRedirect", "true");
     window.location.href = "/";

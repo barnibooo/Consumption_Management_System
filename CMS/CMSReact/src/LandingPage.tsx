@@ -10,9 +10,7 @@ import {
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
-import { checkToken } from "./AuthService";
 import { parseJwt } from "./JWTParser";
-import { refreshToken } from "./RefreshService";
 
 const darkTheme = createTheme({
   palette: {

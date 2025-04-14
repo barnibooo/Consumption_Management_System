@@ -3,7 +3,6 @@ import "./OrderPage.css";
 import OrderPage from "./OrderPage.tsx";
 import Navbar from "./Navbar.tsx";
 import { parseJwt } from "./JWTParser";
-import Footer from "./Footer.tsx";
 
 const userRole = parseJwt(localStorage.getItem("token")!).role;
 
