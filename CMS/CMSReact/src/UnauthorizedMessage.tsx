@@ -26,7 +26,8 @@ const UnauthorizedMessage: React.FC<UnauthorizedMessageProps> = ({
   return (
     <Snackbar open={showSnackbar} autoHideDuration={4000} onClose={handleClose}>
       <Alert severity="warning" variant="filled" sx={{ width: "100%" }}>
-        Az oldal használatához magasabb jogosultság szükséges!
+        Az oldal használatához magasabb jogosultság szükséges vagy a kapcsolat
+        megszakadt!
       </Alert>
     </Snackbar>
   );

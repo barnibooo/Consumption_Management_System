@@ -15,16 +15,8 @@ import {
   ListItemAvatar,
   CircularProgress,
   Alert,
-  AlertTitle,
-  ThemeProvider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
   TextField,
-  DialogActions,
   Snackbar,
-  SnackbarCloseReason,
 } from "@mui/material";
 import ExtensionOutlinedIcon from "@mui/icons-material/ExtensionOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
@@ -33,18 +25,10 @@ import AddShoppingCartOutlinedIcon from "@mui/icons-material/AddShoppingCartOutl
 import AppsIcon from "@mui/icons-material/Apps";
 import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
-import { createTheme } from "@mui/material/styles";
-import { Category } from "@mui/icons-material";
-import { checkToken } from "./AuthService"; // Import the checkToken function
-import { refreshToken } from "./RefreshService"; // Import the refreshToken function
+import { checkToken } from "./AuthService";
+import { refreshToken } from "./RefreshService";
 import { parseJwt } from "./JWTParser";
 import { AxiosResponse } from "axios";
-
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-  },
-});
 
 interface ticketItem {
   imagePath: string | undefined;
@@ -94,20 +78,7 @@ const Dashboard: React.FC = () => {
   const [orders, setOrders] = useState<ticketItem[]>([]);
   const [ordersa, setOrdersa] = useState<admissionItem[]>([]);
   const [cardId, setCardId] = useState<string | null>(null);
-  // Your useEffect and other logic here
-  const [finalizedOrders, setFinalizedOrders] = useState<
-    { ticketId: number }[]
-  >([]);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [orderId, setOrderId] = useState("");
-  const [openSuccessDialogs, setOpenSuccessDialogs] = useState<boolean[]>([]);
-  const [ids, setIds] = useState<string[]>([]);
-  const [openDialogs, setOpenDialogs] = useState<boolean[]>([]);
   const [fullName, setFullName] = useState<string>("");
-
-  const [tokenValidated, setTokenValidated] = useState(false);
-  const [tokenRefreshed, setTokenRefreshed] = useState(false);
-  const [dataFetched, setDataFetched] = useState(false);
   const [open, setOpen] = React.useState(false);
 
   const handleCategoryClick = (category: string | null) => {
@@ -200,9 +171,7 @@ const Dashboard: React.FC = () => {
           return;
         }
 
-        setTokenValidated(true);
         await refreshToken();
-        setTokenRefreshed(true);
 
         // Fetch tickets data
         const fetchTickets = axios.get("https://localhost:5000/api/Tickets", {
@@ -258,80 +227,6 @@ const Dashboard: React.FC = () => {
     window.location.href = "/";
     return null;
   }
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    const fetchTickets = axios.get("https://localhost:5000/api/Tickets", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const fetchAdmissions = axios.get("https://localhost:5000/api/Admissions", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    Promise.all([fetchTickets, fetchAdmissions])
-      .then(([ticketsResponse, admissionsResponse]) => {
-        if (Array.isArray(ticketsResponse.data)) {
-          setticketItems(ticketsResponse.data);
-        } else {
-          console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
-        }
-
-        if (Array.isArray(admissionsResponse.data)) {
-          setAdmissionItems(admissionsResponse.data);
-        } else {
-          console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
-        }
-
-        if (Array.isArray(ticketsResponse.data)) {
-          const tickets = ticketsResponse.data.map((ticket: ticketItem) => ({
-            ticketId: ticket.ticketId,
-            ticketName: ticket.ticketName,
-            category: ticket.category,
-            price: ticket.price,
-            description: ticket.description,
-            imagePath: ticket.imagePath,
-          }));
-        } else {
-          console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
-        }
-
-        if (Array.isArray(admissionsResponse.data)) {
-          const admissions = admissionsResponse.data.map(
-            (admission: admissionItem) => ({
-              admissionId: admission.admissionId,
-              admissionName: admission.admissionName,
-              category: admission.category,
-              price: admission.price,
-              description: admission.description,
-              imagePath: admission.imagePath,
-            })
-          );
-        } else {
-          console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
-        }
-
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Hiba történt:", error);
-        if (
-          error.response &&
-          error.response.status === 403 &&
-          !isUnauthorized
-        ) {
-          setIsUnauthorized(true);
-        } else {
-          setError(error.message);
-        }
-        setLoading(false);
-      });
-  }, [isUnauthorized]);
 
   if (isUnauthorized) {
     localStorage.setItem("isUnauthorizedRedirect", "true");
@@ -394,7 +289,6 @@ const Dashboard: React.FC = () => {
 
     for (let i = 0; i < l; i++) {
       const admissionCategory = admissionItems[i].category;
-      // console.log("admissionCategory:", admissionCategory);
       if (!categories.includes(admissionCategory)) {
         categories.push(admissionCategory);
       }
@@ -418,14 +312,6 @@ const Dashboard: React.FC = () => {
   const filteredadmissionItems = selectedCategory
     ? admissionItems.filter((item) => item.category === selectedCategory)
     : admissionItems;
-
-  const handleIdChange = (index: number, value: string) => {
-    setIds((prev) => {
-      const newIds = [...prev];
-      newIds[index] = value;
-      return newIds;
-    });
-  };
 
   const handleSubmitOrder = () => {
     const token = localStorage.getItem("token");
@@ -452,8 +338,7 @@ const Dashboard: React.FC = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
-      .then((response) => {
-        setOrderId(response.data.orderId);
+      .then(() => {
         handleClick();
       })
       .catch((error) => {
@@ -470,14 +355,13 @@ const Dashboard: React.FC = () => {
   };
 
   const handleClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason
+    _event: React.SyntheticEvent | Event | null,
+    reason?: string
   ) => {
     if (reason === "clickaway") {
       return;
     }
     setOpen(false);
-    // Add timeout to refresh page after Snackbar closes
     setTimeout(() => {
       window.location.reload();
     }, 300);

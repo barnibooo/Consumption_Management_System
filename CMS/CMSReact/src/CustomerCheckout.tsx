@@ -140,11 +140,15 @@ function App() {
       .catch((error) => {
         console.error("Hiba történt:", error);
         if (error.response && error.response.status === 400) {
-          setError("Az oldal használatához magasabb jogosultság szükséges!");
+          setError(
+            "Az oldal használatához magasabb jogosultság szükséges vagy a kapcsolat megszakadt!"
+          );
         } else if (error.response && error.response.status === 404) {
           setError("A megadott kártyaazonosító nem található!");
         } else if (error.response && error.response.status === 401) {
-          setError("Az oldal használatához magasabb jogosultság szükséges!");
+          setError(
+            "Az oldal használatához magasabb jogosultság szükséges vagy a kapcsolat megszakadt!"
+          );
         } else {
           setError(error.message);
         }
@@ -177,11 +181,15 @@ function App() {
       .catch((error) => {
         console.error("Hiba történt:", error);
         if (error.response && error.response.status === 400) {
-          setError("Az oldal használatához magasabb jogosultság szükséges!");
+          setError(
+            "Az oldal használatához magasabb jogosultság szükséges vagy a kapcsolat megszakadt!"
+          );
         } else if (error.response && error.response.status === 404) {
           setError("A megadott kártyaazonosító nem található!");
         } else if (error.response && error.response.status === 401) {
-          setError("Az oldal használatához magasabb jogosultság szükséges!");
+          setError(
+            "Az oldal használatához magasabb jogosultság szükséges vagy a kapcsolat megszakadt!"
+          );
         } else if (error.response && error.response.message === 500) {
           setError("Hiba történt az adatok betöltésekor!");
         } else {

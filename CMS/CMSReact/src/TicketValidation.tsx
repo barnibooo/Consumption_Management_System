@@ -107,11 +107,6 @@ function App() {
       window.location.href = "/";
     }, 0);
   }
-  useEffect(() => {
-    const validateAndFetchData = async () => {};
-
-    validateAndFetchData();
-  }, []);
 
   const fetchCustomerData = () => {
     setLoading(true);
@@ -149,7 +144,8 @@ function App() {
       >
         <ThemeProvider theme={darkTheme}>
           <Alert severity="warning">
-            Az oldal használatához magasabb jogosultság szükséges!
+            Az oldal használatához magasabb jogosultság szükséges vagy a
+            kapcsolat megszakadt!
           </Alert>
         </ThemeProvider>
       </Box>
@@ -220,22 +216,22 @@ function App() {
           value={customerId}
           onChange={(e) => {
             setCustomerId(e.target.value);
-            setCustomer(null); // A Card eltüntetése minden keresésnél
+            setCustomer(null);
           }}
         />
         <IconButton
           sx={{
             fontSize: 40,
-            color: "#d5d6d6",
+            color: customerId ? "#d5d6d6" : "#565656",
             "&:hover": {
-              color: "#BFA181",
+              color: customerId ? "#BFA181" : "#565656",
             },
             "&:active": {
-              color: "#BFA181",
+              color: customerId ? "#BFA181" : "#565656",
             },
           }}
-          aria-label="add to shopping cart"
           onClick={fetchCustomerData}
+          disabled={!customerId}
         >
           <SearchOutlinedIcon fontSize="inherit" />
         </IconButton>
@@ -257,7 +253,7 @@ function App() {
                 window.location.reload();
               } else if (error === "Network Error") {
                 setError(null);
-                window.location.href = "/"; // Redirect to the main page for network errors
+                window.location.href = "/";
               }
             }}
           >
@@ -266,10 +262,10 @@ function App() {
                 console.log(error);
                 if (error === "A megadott kártyaazonosító nem található!") {
                   setError(null);
-                  window.location.reload(); // Reload the page for missing card error
+                  window.location.reload();
                 } else if (error === "Network Error") {
                   setError(null);
-                  window.location.href = "/"; // Redirect to the main page for network errors
+                  window.location.href = "/";
                 }
               }}
               severity="error"

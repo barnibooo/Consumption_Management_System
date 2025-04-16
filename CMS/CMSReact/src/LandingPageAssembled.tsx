@@ -75,7 +75,8 @@ const App = () => {
           onClose={() => setSnackbarVisible(false)}
         >
           <Alert severity="warning" variant="filled" sx={{ width: "100%" }}>
-            Az oldal használatához magasabb jogosultság szükséges!
+            Az oldal használatához magasabb jogosultság szükséges vagy a
+            kapcsolat megszakadt!
           </Alert>
         </Snackbar>
       )}

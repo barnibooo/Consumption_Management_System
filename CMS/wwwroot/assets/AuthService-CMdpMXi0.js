@@ -1,0 +1,1 @@
+import{n as o}from"./index-DW2RJM_L.js";const s=async()=>{const e=localStorage.getItem("token");if(!e)return!1;try{return(await o.post("https://localhost:5000/api/Auth/Checktoken",{},{headers:{"Content-Type":"application/json",Authorization:`Bearer ${e}`}})).status===200}catch{return!1}};export{s as c};

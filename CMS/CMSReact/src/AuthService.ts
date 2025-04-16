@@ -20,13 +20,13 @@ export const checkToken = async () => {
 
     // Check if the response status is 200 (OK)
     if (response.status === 200) {
-      console.log("Ellenőrzés megtörtént, a token érvényes");
+      //console.log("Ellenőrzés megtörtént, a token érvényes");
       return true;
     } else {
       return false;
     }
   } catch (error) {
-    console.error("Token validation error:", error);
+    //  console.error("Token validation error:", error);
     return false;
   }
 };
