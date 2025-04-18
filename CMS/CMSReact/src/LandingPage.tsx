@@ -31,7 +31,11 @@ const cardContent = (image: string, text: string, link: string) => (
         alt={text}
         sx={{
           width: "100%",
-          height: "300px",
+          height: {
+            xs: "200px",
+            sm: "250px",
+            md: "300px",
+          },
           objectFit: "cover",
         }}
       />
