@@ -132,33 +132,41 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
 
   return (
     <ThemeProvider theme={darkTheme}>
-      {}
-      <AppBar position="static">
-        <Container maxWidth={false}>
+      <AppBar
+        position="static"
+        sx={{
+          maxWidth: "100vw",
+          overflow: "hidden",
+        }}
+      >
+        <Container
+          maxWidth={false}
+          sx={{
+            px: { xs: 0.5, sm: 1 },
+            overflowX: "hidden",
+          }}
+        >
           <Toolbar
             disableGutters
             sx={{
               justifyContent: "space-between",
-              padding: { xs: "0 16px", xl: "0 24px" },
+              minHeight: { xs: 48, sm: 56 }, // Reduced height
+              px: { xs: 0.5, sm: 1 }, // Reduced padding
             }}
           >
-            {/* BarChart Icon for Navigation */}
+            {/* Menu Icon */}
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <IconButton
                 size="large"
-                aria-label="menu"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
                 onClick={handleOpenNavMenu}
                 color="inherit"
                 sx={{
-                  marginRight: { xs: 0, md: 2 },
-                  "&:hover": {
-                    color: "#BFA181",
-                  },
+                  mr: { xs: 0.5, sm: 2 },
+                  p: { xs: 1, sm: 1.5 },
+                  "&:hover": { color: "#BFA181" },
                 }}
               >
-                <MenuIcon sx={{ fontSize: 35 }} />
+                <MenuIcon sx={{ fontSize: { xs: 24, sm: 28 } }} />
               </IconButton>
               <Menu
                 id="menu-appbar"
@@ -174,6 +182,16 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
                 }}
                 open={Boolean(anchorElNav)}
                 onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: "block" },
+                  "& .MuiPaper-root": {
+                    width: { xs: "100%", sm: "auto" },
+                    maxHeight: "80vh",
+                    overflowY: "auto",
+                    backgroundColor: "#202938",
+                    mt: 1,
+                  },
+                }}
               >
                 {pages
                   .filter((page) => page.roles.includes(role || ""))
@@ -182,16 +200,15 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
                       key={page.name}
                       onClick={() => handlePageNavigation(page.name)}
                       sx={{
-                        "&:hover": {
-                          backgroundColor: "#37404f",
-                        },
+                        py: { xs: 1.5, sm: 1 },
+                        px: { xs: 2, sm: 2 },
+                        "&:hover": { backgroundColor: "#37404f" },
                       }}
                     >
                       <Typography
                         sx={{
-                          textAlign: "center",
                           color: "#d5d6d6",
-                          fontSize: "1.2rem",
+                          fontSize: { xs: "1rem", sm: "1.2rem" },
                         }}
                       >
                         {page.name}
@@ -201,20 +218,20 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
               </Menu>
             </Box>
 
-            {/* Title and BarChartIcon in the Center */}
+            {/* Center Logo */}
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
-                flexGrow: 1,
                 justifyContent: "center",
+                flexGrow: 1,
               }}
             >
               <BarChartIcon
                 sx={{
-                  marginRight: 1,
+                  mr: { xs: 0.5, sm: 1 },
                   color: "#d5d6d6",
-                  fontSize: { xs: 24, md: 30 },
+                  fontSize: { xs: 22, sm: 24, md: 30 },
                 }}
               />
               <Typography
@@ -226,25 +243,47 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
                   fontWeight: 700,
                   color: "#d5d6d6",
                   textDecoration: "none",
-                  fontSize: { xs: "1.2rem", md: "1.5rem" },
+                  fontSize: { xs: "0.8rem", sm: "1rem", md: "1.2rem" },
+                  maxWidth: { xs: "120px", sm: "none" }, // Limit width on mobile
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
                 }}
               >
-                {window.innerWidth >= 1200
+                {window.innerWidth >= 600
                   ? "Consumption Management System"
                   : "CMS"}
               </Typography>
             </Box>
 
-            {/* User Avatar on the Edge */}
-            <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
-              <Box sx={{ mr: 2 }}>
+            {/* User Menu */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: { xs: 1, sm: 2 },
+              }}
+            >
+              <Box
+                sx={{
+                  display: { xs: "none", sm: "block" },
+                  mr: { xs: 1, sm: 2 },
+                }}
+              >
                 <CountdownTimer />
               </Box>
               <Tooltip title="Menü megnyitása">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <IconButton
+                  onClick={handleOpenUserMenu}
+                  sx={{
+                    p: { xs: 0.5, sm: 1 },
+                  }}
+                >
                   <Avatar
                     sx={{
-                      fontSize: 18,
+                      width: { xs: 28, sm: 32 }, // Smaller size
+                      height: { xs: 28, sm: 32 }, // Smaller size
+                      fontSize: { xs: 14, sm: 16 }, // Smaller font
                       color: "#d5d6d6",
                       bgcolor: "#bfa181",
                     }}
@@ -256,7 +295,11 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
               <Menu
                 sx={{
                   mt: "45px",
+                  "& .MuiPaper-root": {
+                    width: { xs: "200px", sm: "auto" },
+                  },
                   "& .MuiMenuItem-root": {
+                    py: { xs: 1.5, sm: 1 },
                     color: "#d5d6d6",
                     "&:hover": {
                       backgroundColor: "#37404f",

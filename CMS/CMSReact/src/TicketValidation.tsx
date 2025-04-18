@@ -62,6 +62,12 @@ function App() {
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   useEffect(() => {
+    document.body.style.overflowX = "hidden";
+    return () => {
+      document.body.style.overflowX = "auto";
+    };
+  }, []);
+  useEffect(() => {
     const validateAndFetchData = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -168,23 +174,35 @@ function App() {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "100vh",
-        padding: 2,
+        minHeight: "100vh",
+        padding: { xs: 0, sm: 2 },
+        paddingTop: { xs: 2, sm: 2 },
+        paddingBottom: { xs: 2, sm: 2 },
         alignItems: "center",
+        width: "100%",
+        maxWidth: "100%",
+        backgroundColor: "#0F1827",
+        overflowX: "hidden",
       }}
     >
+      {/* Search Section */}
       <Box
         sx={{
           width: "100%",
+          maxWidth: "100%",
           display: "flex",
-          justifyContent: "flex-start",
+          flexDirection: { xs: "row", sm: "row" },
+          justifyContent: "center",
           alignItems: "center",
+          gap: { xs: 1, sm: 2 },
+          p: { xs: 0, sm: 0 },
         }}
       >
         <TextField
           sx={{
-            width: "30%",
+            width: { xs: "90%", sm: "50%", md: "30%" },
             height: "Auto",
+            marginTop: 0,
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
                 borderColor: "#d5d6d6",
@@ -198,6 +216,7 @@ function App() {
             },
             "& .MuiInputLabel-root": {
               color: "#d5d6d6",
+              fontSize: { xs: "0.9rem", sm: "1rem" },
             },
             "& .MuiInputLabel-root.Mui-focused": {
               color: "#BFA181",
@@ -205,13 +224,14 @@ function App() {
             "& .MuiInputBase-input": {
               color: "#d5d6d6",
               caretColor: "#d5d6d6",
+              padding: { xs: "12px", sm: "14px" },
             },
-            marginBottom: 2,
+            marginBottom: { xs: 0, sm: 0 },
           }}
           required
           id="outlined-search"
           label="Kártyaazonosító"
-          type="search"
+          type="text"
           margin="dense"
           value={customerId}
           onChange={(e) => {
@@ -221,13 +241,16 @@ function App() {
         />
         <IconButton
           sx={{
-            fontSize: 40,
-            color: customerId ? "#d5d6d6" : "#565656",
-            "&:hover": {
-              color: customerId ? "#BFA181" : "#565656",
+            fontSize: { xs: 32, sm: 40 },
+            color: "#d5d6d6",
+            "&.Mui-disabled": {
+              color: "#6d737d !important", // Added !important to ensure override
             },
-            "&:active": {
-              color: customerId ? "#BFA181" : "#565656",
+            "&:not(.Mui-disabled):hover": {
+              color: "#BFA181",
+            },
+            "&:not(.Mui-disabled):active": {
+              color: "#d5d6d6",
             },
           }}
           onClick={fetchCustomerData}
@@ -280,6 +303,7 @@ function App() {
         </Box>
       )}
 
+      {/* Customer Card Section */}
       {customer && (
         <ThemeProvider theme={darkTheme}>
           <Card
@@ -287,48 +311,70 @@ function App() {
               bgcolor: "#202938",
               color: "#d5d6d6",
               width: {
-                xs: "100%",
+                xs: "95%",
                 sm: "70%",
                 md: "60%",
                 lg: "50%",
                 xl: "40%",
               },
-              marginTop: 2,
+              marginTop: { xs: 1, sm: 2 },
+              borderRadius: { xs: 0, sm: 1 },
+              overflowX: "hidden",
             }}
           >
             <CardHeader
               avatar={
                 <Avatar
-                  sx={{ bgcolor: "#BFA181", color: "#d5d6d6" }}
-                  aria-label="recipe"
-                ></Avatar>
+                  sx={{
+                    bgcolor: "#BFA181",
+                    color: "#d5d6d6",
+                    width: { xs: 40, sm: 48 },
+                    height: { xs: 40, sm: 48 },
+                  }}
+                />
               }
               title={
-                <Typography variant="h5" sx={{ color: "#d5d6d6" }}>
+                <Typography
+                  sx={{
+                    fontSize: { xs: "1.2rem", sm: "1.5rem" },
+                    fontWeight: 500,
+                    color: "#d5d6d6",
+                  }}
+                >
                   {customer?.name} #{customer?.customerId}
                 </Typography>
               }
               subheader={
-                <Typography variant="subtitle1" sx={{ color: "#d5d6d6" }}>
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    color: "#d5d6d6",
+                    fontSize: { xs: "0.9rem", sm: "1rem" },
+                  }}
+                >
                   Adatok
                 </Typography>
               }
             />
             <CardMedia
               component="img"
-              height="194"
+              sx={{
+                height: { xs: 150, sm: 194 },
+                objectFit: "cover",
+              }}
               image="/img/profile/profile_temp.png"
             />
-            <CardContent>
+            <CardContent
+              sx={{ padding: { xs: 1, sm: 2 }, overflowX: "hidden" }}
+            >
               <Typography
                 variant="h4"
                 sx={{
                   color: "text.secondary",
-                  marginTop: "10px",
-                  marginBottom: "10px",
-                  textIndent: "20px",
+                  marginY: { xs: 1, sm: 2 },
+                  textIndent: { xs: 10, sm: 20 },
                   fontWeight: 400,
-                  textAlign: "left",
+                  fontSize: { xs: "1.5rem", sm: "2rem" },
                 }}
               >
                 {customer ? `Hello ${customer?.name}!` : ""}
@@ -366,14 +412,14 @@ function App() {
                   : "N/A"}
               </Typography>
               <Typography
-                variant="h6"
                 sx={{
                   color: "text.secondary",
-                  marginTop: "10px",
-                  marginBottom: "10px",
-                  textIndent: "20px",
-                  fontWeight: 300,
-                  textAlign: "left",
+                  marginY: { xs: 1, sm: 2 },
+                  textIndent: { xs: 10, sm: 20 },
+                  fontWeight: 400,
+                  fontSize: { xs: "1.2rem", sm: "1.5rem" },
+                  overflowWrap: "break-word",
+                  wordWrap: "break-word",
                 }}
               >
                 Kiegészítő jegy(ek):
