@@ -124,51 +124,60 @@ function App() {
           }
         );
 
+        // Filter active items by category with isAvailable boolean
         const levesItems = response.data.filter(
-          (item: { category: string }) => item.category === "Leves"
+          (item: { category: string; isAvailable: boolean }) =>
+            item.category === "Leves" && item.isAvailable === true
         );
         setLevesOptions(levesItems.map((item: { name: string }) => item.name));
 
         const EloetelItems = response.data.filter(
-          (item: { category: string }) => item.category === "Előétel"
+          (item: { category: string; isAvailable: boolean }) =>
+            item.category === "Előétel" && item.isAvailable === true
         );
         setEloetelOptions(
           EloetelItems.map((item: { name: string }) => item.name)
         );
 
         const foetelItems = response.data.filter(
-          (item: { category: string }) => item.category === "Főétel"
+          (item: { category: string; isAvailable: boolean }) =>
+            item.category === "Főétel" && item.isAvailable === true
         );
         setFoetelOptions(
           foetelItems.map((item: { name: string }) => item.name)
         );
 
         const hamburgerItems = response.data.filter(
-          (item: { category: string }) => item.category === "Hamburger"
+          (item: { category: string; isAvailable: boolean }) =>
+            item.category === "Hamburger" && item.isAvailable === true
         );
         setHamburgerOptions(
           hamburgerItems.map((item: { name: string }) => item.name)
         );
 
         const pizzaItems = response.data.filter(
-          (item: { category: string }) => item.category === "Pizza"
+          (item: { category: string; isAvailable: boolean }) =>
+            item.category === "Pizza" && item.isAvailable === true
         );
         setPizzaOptions(pizzaItems.map((item: { name: string }) => item.name));
 
         const desszertItems = response.data.filter(
-          (item: { category: string }) => item.category === "Desszert"
+          (item: { category: string; isAvailable: boolean }) =>
+            item.category === "Desszert" && item.isAvailable === true
         );
         setDesszertOptions(
           desszertItems.map((item: { name: string }) => item.name)
         );
 
         const italItems = response.data.filter(
-          (item: { category: string }) => item.category === "Ital"
+          (item: { category: string; isAvailable: boolean }) =>
+            item.category === "Ital" && item.isAvailable === true
         );
         setItalOptions(italItems.map((item: { name: string }) => item.name));
 
         const kaveItems = response.data.filter(
-          (item: { category: string }) => item.category === "Kávé"
+          (item: { category: string; isAvailable: boolean }) =>
+            item.category === "Kávé" && item.isAvailable === true
         );
         setKaveOptions(kaveItems.map((item: { name: string }) => item.name));
       } catch (error) {
