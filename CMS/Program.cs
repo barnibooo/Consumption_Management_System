@@ -6,14 +6,16 @@ using Microsoft.IdentityModel.Tokens;
 using System.Data;
 using System.Diagnostics;
 using System.Text;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Net.Http.Headers;
-using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
+//RunBuildScript();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//MSSQL-es
+//builder.Services.AddDbContext<CMSContext>(db => db.UseSqlServer(
+//builder.Configuration.GetConnectionString("CMSContext")));
 
 // SQLite
 builder.Services.AddDbContext<CMSContext>(
@@ -50,16 +52,24 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
 builder.Services.AddAuthorization(options =>
 {
+
     options.AddPolicy("AdminOnly", policy => policy.RequireRole(nameof(Roles.Admin)));
+
     options.AddPolicy("RestaurantOnly", policy => policy.RequireRole(nameof(Roles.RestaurantAssistant)));
     options.AddPolicy("TicketOnly", policy => policy.RequireRole(nameof(Roles.TicketAssistant)));
     options.AddPolicy("AdminOrRestaurantOnly", policy => policy.RequireRole(nameof(Roles.Admin), nameof(Roles.RestaurantAssistant)));
     options.AddPolicy("AdminOrTicketOnly", policy => policy.RequireRole(nameof(Roles.Admin), nameof(Roles.TicketAssistant)));
+
 });
 
 var app = builder.Build();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 // CORS middleware használata
 app.UseCors("AllowAllOrigins");
@@ -70,65 +80,49 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+
+
 app.UseRouting();
-app.UseAuthentication();
 app.UseAuthorization();
+app.MapControllers();
 
+#region Static frontend serving
+app.UseDefaultFiles(); // Serve the index.html file by default
 string currentDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-
-// Egyéni middleware a .html kiterjesztés nélküli fájlok kezeléséhez
-app.UseMiddleware<HtmlExtensionMiddleware>();
-
-// Statikus fájlok kiszolgálása
-app.UseDefaultFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(currentDir),
     RequestPath = ""
 });
+#endregion 
 
-app.MapControllers();
-
-// Végsõ fallback az index.html-re
-app.MapFallbackToFile("index.html");
 
 app.Run();
-
-// Egyéni middleware osztály a .html kiterjesztés nélküli URL-ek kezeléséhez
-public class HtmlExtensionMiddleware
+//Script for build
+void RunBuildScript()
 {
-    private readonly RequestDelegate _next;
-    private readonly string _rootPath;
-
-    public HtmlExtensionMiddleware(RequestDelegate next, IWebHostEnvironment env)
+    try
     {
-        _next = next;
-        _rootPath = Path.Combine(env.ContentRootPath, "wwwroot");
-    }
-
-    public async Task InvokeAsync(HttpContext context)
-    {
-        var path = context.Request.Path.Value?.TrimStart('/');
-
-        // Ha nincs kiterjesztés és nem végzõdik /-re
-        if (!string.IsNullOrEmpty(path) && !Path.HasExtension(path) && !path.EndsWith("/"))
+        var processInfo = new ProcessStartInfo
         {
-            var htmlFilePath = Path.Combine(_rootPath, path + ".html");
+            FileName = "cmd.exe",
+            Arguments = "/c builder.cmd",
+            WorkingDirectory = Directory.GetCurrentDirectory(),
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
 
-            // Ellenõrizzük, hogy létezik-e a .html fájl
-            if (File.Exists(htmlFilePath))
-            {
-                // Beállítjuk a megfelelõ fejléceket
-                context.Response.ContentType = "text/html";
-                context.Response.Headers[HeaderNames.CacheControl] = "no-cache";
+        var process = new Process { StartInfo = processInfo };
+        process.Start();
+        process.WaitForExit();
 
-                // Közvetlenül kiszolgáljuk a fájlt
-                await context.Response.SendFileAsync(htmlFilePath);
-                return;
-            }
-        }
-
-        // Ha nem találtunk megfelelõ .html fájlt, folytatjuk a pipeline-t
-        await _next(context);
+        Console.WriteLine("React build sikeresen lefutott.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Hiba történt a React build során: {ex.Message}");
     }
 }

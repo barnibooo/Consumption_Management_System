@@ -17,6 +17,7 @@ import {
   Alert,
   TextField,
   Snackbar,
+  SnackbarCloseReason,
 } from "@mui/material";
 import ExtensionOutlinedIcon from "@mui/icons-material/ExtensionOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
@@ -173,7 +174,6 @@ const Dashboard: React.FC = () => {
 
         await refreshToken();
 
-        // Fetch tickets data
         const fetchTickets = axios.get("https://localhost:5000/api/Tickets", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -227,6 +227,62 @@ const Dashboard: React.FC = () => {
     window.location.href = "/";
     return null;
   }
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    const fetchTickets = axios.get("https://localhost:5000/api/Tickets", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const fetchAdmissions = axios.get("https://localhost:5000/api/Admissions", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    Promise.all([fetchTickets, fetchAdmissions])
+      .then(([ticketsResponse, admissionsResponse]) => {
+        if (Array.isArray(ticketsResponse.data)) {
+          setticketItems(ticketsResponse.data);
+        } else {
+          console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
+        }
+
+        if (Array.isArray(admissionsResponse.data)) {
+          setAdmissionItems(admissionsResponse.data);
+        } else {
+          console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
+        }
+
+        if (Array.isArray(ticketsResponse.data)) {
+        } else {
+          console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
+        }
+
+        if (Array.isArray(admissionsResponse.data)) {
+        } else {
+          console.error("Hibás API válasz: nem tömb", admissionsResponse.data);
+        }
+
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Hiba történt:", error);
+        if (
+          error.response &&
+          error.response.status === 403 &&
+          !isUnauthorized
+        ) {
+          setIsUnauthorized(true);
+        } else {
+          setError(error.message);
+        }
+        setLoading(false);
+      });
+  }, [isUnauthorized]);
 
   if (isUnauthorized) {
     localStorage.setItem("isUnauthorizedRedirect", "true");
@@ -289,6 +345,7 @@ const Dashboard: React.FC = () => {
 
     for (let i = 0; i < l; i++) {
       const admissionCategory = admissionItems[i].category;
+      // console.log("admissionCategory:", admissionCategory);
       if (!categories.includes(admissionCategory)) {
         categories.push(admissionCategory);
       }
@@ -338,9 +395,6 @@ const Dashboard: React.FC = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
-      .then(() => {
-        handleClick();
-      })
       .catch((error) => {
         console.error("Error creating customer:", error);
         setError(error.message);
@@ -350,18 +404,15 @@ const Dashboard: React.FC = () => {
       });
   };
 
-  const handleClick = () => {
-    setOpen(true);
-  };
-
   const handleClose = (
-    _event: React.SyntheticEvent | Event | null,
-    reason?: string
+    _event?: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason
   ) => {
     if (reason === "clickaway") {
       return;
     }
     setOpen(false);
+    // Add timeout to refresh page after Snackbar closes
     setTimeout(() => {
       window.location.reload();
     }, 300);

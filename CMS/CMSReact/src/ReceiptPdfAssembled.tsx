@@ -2,6 +2,8 @@ import { CardActions, Button, Box } from "@mui/material";
 import { useState } from "react";
 import ConsumptionPDF from "./ReceiptPdf";
 import SendIcon from "@mui/icons-material/Send";
+import PrintIcon from "@mui/icons-material/Print";
+import { pdf } from "@react-pdf/renderer";
 import type { ConsumptionItem } from "./CustomerCheckout";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 
@@ -23,6 +25,26 @@ const ReceiptPdfAssembled = ({
   onFinalize,
 }: ReceiptPdfAssembledProps) => {
   const [showPDF, setShowPDF] = useState(false);
+
+  const handlePrint = async () => {
+    const blob = await pdf(
+      <ConsumptionPDF
+        customer={customer}
+        consumption={checkoutData.consumption}
+        totalAmount={checkoutData.totalAmount}
+      />
+    ).toBlob();
+
+    const url = URL.createObjectURL(blob);
+    const printWindow = window.open(url);
+
+    if (printWindow) {
+      printWindow.onload = () => {
+        printWindow.print();
+        URL.revokeObjectURL(url);
+      };
+    }
+  };
 
   return (
     <>
@@ -49,6 +71,18 @@ const ReceiptPdfAssembled = ({
           }}
         >
           PDF megtekintése
+        </Button>
+        <Button
+          variant="contained"
+          startIcon={<PrintIcon />}
+          onClick={handlePrint}
+          sx={{
+            bgcolor: "#BFA181",
+            color: "#d5d6d6",
+            ml: 2,
+          }}
+        >
+          Nyomtatás
         </Button>
       </CardActions>
 

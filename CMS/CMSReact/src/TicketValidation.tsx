@@ -62,12 +62,6 @@ function App() {
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   useEffect(() => {
-    document.body.style.overflowX = "hidden";
-    return () => {
-      document.body.style.overflowX = "auto";
-    };
-  }, []);
-  useEffect(() => {
     const validateAndFetchData = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -113,6 +107,11 @@ function App() {
       window.location.href = "/";
     }, 0);
   }
+  useEffect(() => {
+    const validateAndFetchData = async () => {};
+
+    validateAndFetchData();
+  }, []);
 
   const fetchCustomerData = () => {
     setLoading(true);
@@ -150,8 +149,7 @@ function App() {
       >
         <ThemeProvider theme={darkTheme}>
           <Alert severity="warning">
-            Az oldal használatához magasabb jogosultság szükséges vagy a
-            kapcsolat megszakadt!
+            Az oldal használatához magasabb jogosultság szükséges!
           </Alert>
         </ThemeProvider>
       </Box>
@@ -174,35 +172,23 @@ function App() {
       sx={{
         display: "flex",
         flexDirection: "column",
-        minHeight: "100vh",
-        padding: { xs: 0, sm: 2 },
-        paddingTop: { xs: 2, sm: 2 },
-        paddingBottom: { xs: 2, sm: 2 },
+        height: "100vh",
+        padding: 2,
         alignItems: "center",
-        width: "100%",
-        maxWidth: "100%",
-        backgroundColor: "#0F1827",
-        overflowX: "hidden",
       }}
     >
-      {/* Search Section */}
       <Box
         sx={{
           width: "100%",
-          maxWidth: "100%",
           display: "flex",
-          flexDirection: { xs: "row", sm: "row" },
-          justifyContent: "center",
+          justifyContent: "flex-start",
           alignItems: "center",
-          gap: { xs: 1, sm: 2 },
-          p: { xs: 0, sm: 0 },
         }}
       >
         <TextField
           sx={{
-            width: { xs: "90%", sm: "50%", md: "30%" },
+            width: "30%",
             height: "Auto",
-            marginTop: 0,
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
                 borderColor: "#d5d6d6",
@@ -216,7 +202,6 @@ function App() {
             },
             "& .MuiInputLabel-root": {
               color: "#d5d6d6",
-              fontSize: { xs: "0.9rem", sm: "1rem" },
             },
             "& .MuiInputLabel-root.Mui-focused": {
               color: "#BFA181",
@@ -224,37 +209,33 @@ function App() {
             "& .MuiInputBase-input": {
               color: "#d5d6d6",
               caretColor: "#d5d6d6",
-              padding: { xs: "12px", sm: "14px" },
             },
-            marginBottom: { xs: 0, sm: 0 },
+            marginBottom: 2,
           }}
           required
           id="outlined-search"
           label="Kártyaazonosító"
-          type="text"
+          type="search"
           margin="dense"
           value={customerId}
           onChange={(e) => {
             setCustomerId(e.target.value);
-            setCustomer(null);
+            setCustomer(null); // A Card eltüntetése minden keresésnél
           }}
         />
         <IconButton
           sx={{
-            fontSize: { xs: 32, sm: 40 },
+            fontSize: 40,
             color: "#d5d6d6",
-            "&.Mui-disabled": {
-              color: "#6d737d !important", // Added !important to ensure override
-            },
-            "&:not(.Mui-disabled):hover": {
+            "&:hover": {
               color: "#BFA181",
             },
-            "&:not(.Mui-disabled):active": {
-              color: "#d5d6d6",
+            "&:active": {
+              color: "#BFA181",
             },
           }}
+          aria-label="add to shopping cart"
           onClick={fetchCustomerData}
-          disabled={!customerId}
         >
           <SearchOutlinedIcon fontSize="inherit" />
         </IconButton>
@@ -276,7 +257,7 @@ function App() {
                 window.location.reload();
               } else if (error === "Network Error") {
                 setError(null);
-                window.location.href = "/";
+                window.location.href = "/"; // Redirect to the main page for network errors
               }
             }}
           >
@@ -285,10 +266,10 @@ function App() {
                 console.log(error);
                 if (error === "A megadott kártyaazonosító nem található!") {
                   setError(null);
-                  window.location.reload();
+                  window.location.reload(); // Reload the page for missing card error
                 } else if (error === "Network Error") {
                   setError(null);
-                  window.location.href = "/";
+                  window.location.href = "/"; // Redirect to the main page for network errors
                 }
               }}
               severity="error"
@@ -303,7 +284,6 @@ function App() {
         </Box>
       )}
 
-      {/* Customer Card Section */}
       {customer && (
         <ThemeProvider theme={darkTheme}>
           <Card
@@ -311,70 +291,48 @@ function App() {
               bgcolor: "#202938",
               color: "#d5d6d6",
               width: {
-                xs: "95%",
+                xs: "100%",
                 sm: "70%",
                 md: "60%",
                 lg: "50%",
                 xl: "40%",
               },
-              marginTop: { xs: 1, sm: 2 },
-              borderRadius: { xs: 0, sm: 1 },
-              overflowX: "hidden",
+              marginTop: 2,
             }}
           >
             <CardHeader
               avatar={
                 <Avatar
-                  sx={{
-                    bgcolor: "#BFA181",
-                    color: "#d5d6d6",
-                    width: { xs: 40, sm: 48 },
-                    height: { xs: 40, sm: 48 },
-                  }}
-                />
+                  sx={{ bgcolor: "#BFA181", color: "#d5d6d6" }}
+                  aria-label="recipe"
+                ></Avatar>
               }
               title={
-                <Typography
-                  sx={{
-                    fontSize: { xs: "1.2rem", sm: "1.5rem" },
-                    fontWeight: 500,
-                    color: "#d5d6d6",
-                  }}
-                >
+                <Typography variant="h5" sx={{ color: "#d5d6d6" }}>
                   {customer?.name} #{customer?.customerId}
                 </Typography>
               }
               subheader={
-                <Typography
-                  variant="subtitle1"
-                  sx={{
-                    color: "#d5d6d6",
-                    fontSize: { xs: "0.9rem", sm: "1rem" },
-                  }}
-                >
+                <Typography variant="subtitle1" sx={{ color: "#d5d6d6" }}>
                   Adatok
                 </Typography>
               }
             />
             <CardMedia
               component="img"
-              sx={{
-                height: { xs: 150, sm: 194 },
-                objectFit: "cover",
-              }}
+              height="194"
               image="/img/profile/profile_temp.png"
             />
-            <CardContent
-              sx={{ padding: { xs: 1, sm: 2 }, overflowX: "hidden" }}
-            >
+            <CardContent>
               <Typography
                 variant="h4"
                 sx={{
                   color: "text.secondary",
-                  marginY: { xs: 1, sm: 2 },
-                  textIndent: { xs: 10, sm: 20 },
+                  marginTop: "10px",
+                  marginBottom: "10px",
+                  textIndent: "20px",
                   fontWeight: 400,
-                  fontSize: { xs: "1.5rem", sm: "2rem" },
+                  textAlign: "left",
                 }}
               >
                 {customer ? `Hello ${customer?.name}!` : ""}
@@ -412,14 +370,14 @@ function App() {
                   : "N/A"}
               </Typography>
               <Typography
+                variant="h6"
                 sx={{
                   color: "text.secondary",
-                  marginY: { xs: 1, sm: 2 },
-                  textIndent: { xs: 10, sm: 20 },
-                  fontWeight: 400,
-                  fontSize: { xs: "1.2rem", sm: "1.5rem" },
-                  overflowWrap: "break-word",
-                  wordWrap: "break-word",
+                  marginTop: "10px",
+                  marginBottom: "10px",
+                  textIndent: "20px",
+                  fontWeight: 300,
+                  textAlign: "left",
                 }}
               >
                 Kiegészítő jegy(ek):

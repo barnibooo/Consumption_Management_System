@@ -7,6 +7,7 @@ import { parseJwt } from "./JWTParser";
 import { checkToken } from "./AuthService";
 import { refreshToken } from "./RefreshService";
 import { Snackbar, Alert } from "@mui/material";
+import React from "react";
 
 const App = () => {
   const [role, setRole] = useState<string | null>(null);
@@ -75,8 +76,7 @@ const App = () => {
           onClose={() => setSnackbarVisible(false)}
         >
           <Alert severity="warning" variant="filled" sx={{ width: "100%" }}>
-            Az oldal használatához magasabb jogosultság szükséges vagy a
-            kapcsolat megszakadt!
+            Az oldal használatához magasabb jogosultság szükséges!
           </Alert>
         </Snackbar>
       )}

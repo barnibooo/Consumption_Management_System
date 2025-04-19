@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Models;
@@ -21,29 +19,23 @@ namespace CMS.Controllers
             _context = context;
         }
 
-
         [HttpGet("GetCustomerIdByCardId/{cardId}")]
         [Authorize(Policy = "AdminOrRestaurantOnly")]
-
-        public async Task<ActionResult<int>> GetCustomerIdByCardId(string cardId)
+        public async Task<ActionResult<object>> GetCustomerIdByCardId(string cardId)
         {
-            // Search for the customer with the given CardId
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(c => c.CardId == cardId);
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.CardId == cardId);
 
             if (customer == null)
             {
-                return Ok("Customer not found.");
+                return NotFound(new { Message = "Customer not found." });
             }
 
-            // Check if the customer is active
             if (!customer.IsActive)
             {
-                return Ok("Customer is not active.");
+                return Ok(new { Message = "Customer is not active." });
             }
 
-            // Return the CustomerId
-            return Ok(customer.CustomerId);
+            return Ok(new { CustomerId = customer.CustomerId });
         }
     }
 }

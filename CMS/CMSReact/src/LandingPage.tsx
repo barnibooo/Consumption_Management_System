@@ -11,6 +11,7 @@ import {
 
 import { useEffect, useState } from "react";
 import { parseJwt } from "./JWTParser";
+import React from "react";
 
 const darkTheme = createTheme({
   palette: {
@@ -31,11 +32,7 @@ const cardContent = (image: string, text: string, link: string) => (
         alt={text}
         sx={{
           width: "100%",
-          height: {
-            xs: "200px",
-            sm: "250px",
-            md: "300px",
-          },
+          height: "300px",
           objectFit: "cover",
         }}
       />

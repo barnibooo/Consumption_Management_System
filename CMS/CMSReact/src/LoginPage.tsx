@@ -81,15 +81,14 @@ function MediaCard() {
           color: "#d5d6d6",
           backgroundColor: "#202938",
           width: {
-            xs: "95%",
-            sm: "85%",
+            xs: "90%",
+            sm: "70%",
             md: "55%",
             lg: "60%",
           },
           height: "auto",
           display: "flex",
           flexDirection: isSmallScreen ? "column" : "row",
-          maxHeight: { xs: "100vh", sm: "none" },
         }}
       >
         {!isSmallScreen && (
@@ -113,9 +112,6 @@ function MediaCard() {
             alignItems: "center",
             width: isSmallScreen ? "100%" : "60%",
             flex: 1,
-            padding: { xs: 0, sm: 3, md: 4 },
-            paddingBottom: { xs: 2, sm: 3, md: 4 },
-            paddingTop: { xs: 2, sm: 3, md: 4 },
           }}
         >
           <Typography
@@ -129,8 +125,6 @@ function MediaCard() {
               color: "#d5d6d6",
               textDecoration: "none",
               marginBottom: 2,
-              fontSize: { xs: "1.2rem", sm: "1.5rem" }, // Smaller font on mobile
-              textAlign: "center",
             }}
           >
             Consumption Management System
@@ -146,8 +140,6 @@ function MediaCard() {
               color: "#d5d6d6",
               textDecoration: "none",
               marginBottom: 2,
-              fontSize: { xs: "2rem", sm: "3rem", md: "3.75rem" }, // Responsive font size
-              textAlign: "center",
             }}
           >
             Üdvözöljük!
@@ -178,7 +170,7 @@ function MediaCard() {
           >
             <TextField
               sx={{
-                width: { xs: "90%", sm: "80%", md: "70%" },
+                width: "70%",
                 height: "Auto",
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": {
@@ -193,7 +185,6 @@ function MediaCard() {
                 },
                 "& .MuiInputLabel-root": {
                   color: "#d5d6d6",
-                  fontSize: { xs: "0.9rem", sm: "1rem" },
                 },
                 "& .MuiInputLabel-root.Mui-focused": {
                   color: "#BFA181",
@@ -201,9 +192,8 @@ function MediaCard() {
                 "& .MuiInputBase-input": {
                   color: "#d5d6d6",
                   caretColor: "#d5d6d6",
-                  padding: { xs: "12px 14px", sm: "16.5px 14px" },
                 },
-                marginBottom: { xs: 1, sm: 2 },
+                marginBottom: 2,
               }}
               required
               id="outlined-search"
@@ -215,7 +205,7 @@ function MediaCard() {
             />
             <TextField
               sx={{
-                width: { xs: "90%", sm: "80%", md: "70%" },
+                width: "70%",
                 height: "Auto",
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": {
@@ -230,7 +220,6 @@ function MediaCard() {
                 },
                 "& .MuiInputLabel-root": {
                   color: "#d5d6d6",
-                  fontSize: { xs: "0.9rem", sm: "1rem" },
                 },
                 "& .MuiInputLabel-root.Mui-focused": {
                   color: "#BFA181",
@@ -238,9 +227,8 @@ function MediaCard() {
                 "& .MuiInputBase-input": {
                   color: "#d5d6d6",
                   caretColor: "#d5d6d6",
-                  padding: { xs: "12px 14px", sm: "16.5px 14px" },
                 },
-                marginBottom: { xs: 1, sm: 2 },
+                marginBottom: 2,
               }}
               required
               id="outlined-password-input"
@@ -274,12 +262,10 @@ function MediaCard() {
             ) : (
               <Button
                 sx={{
-                  width: { xs: "90%", sm: "80%", md: "70%" },
+                  width: "70%",
                   height: "Auto",
                   backgroundColor: "#BFA181",
-                  marginBottom: { xs: 1, sm: 2 },
-                  padding: { xs: "8px", sm: "12px" }, // Adjust button padding
-                  fontSize: { xs: "0.9rem", sm: "1rem" }, // Adjust button text size
+                  marginBottom: 2,
                 }}
                 variant="contained"
                 endIcon={<LoginIcon />}

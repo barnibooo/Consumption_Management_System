@@ -23,46 +23,32 @@ public class AuthController : ControllerBase
 
     [HttpPost("register")]
     [Authorize(Policy = "AdminOnly")]
-    public async Task<IActionResult> Register([FromBody] List<RegisterDto> models)
+    public async Task<IActionResult> Register([FromBody] RegisterDto model)
     {
-        var errors = new List<string>();
+        if (await _context.Employees.AnyAsync(u => u.Username == model.Username))
+            return BadRequest("User already exists.");
 
-        foreach (var model in models)
+        if (!Enum.TryParse(typeof(Roles), model.Role, true, out var role))
+            return BadRequest("Invalid role.");
+
+        var currentUserRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+        if ((Roles)role == Roles.Admin && currentUserRole != nameof(Roles.Admin))
+            return Unauthorized("Only admins can register admin users.");
+
+        var user = new Employee
         {
-            if (await _context.Employees.AnyAsync(u => u.Username == model.Username))
-            {
-                errors.Add($"User with username '{model.Username}' already exists.");
-                continue;
-            }
+            Username = model.Username,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
+            FirstName = model.FirstName,
+            LastName = model.LastName,
+            Role = role.ToString(),
+        };
 
-            if (!Enum.TryParse(typeof(Roles), model.Role, true, out var role))
-            {
-                errors.Add($"Invalid role for username '{model.Username}'.");
-                continue;
-            }
-
-            var user = new Employee
-            {
-                Username = model.Username,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Role = role.ToString(),
-            };
-
-            _context.Employees.Add(user);
-        }
-
-        if (errors.Any())
-        {
-            return BadRequest(new { message = "Some users could not be registered.", errors });
-        }
-
+        _context.Employees.Add(user);
         await _context.SaveChangesAsync();
 
-        return Ok(new { message = "Users registered successfully." });
+        return Ok(new { message = "User registered successfully." });
     }
-
 
 
     [HttpPost("login")]

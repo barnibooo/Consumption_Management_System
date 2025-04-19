@@ -22,10 +22,10 @@ export const refreshToken = async () => {
     localStorage.setItem("token", data.token);
     localStorage.setItem("refreshToken", data.refreshToken);
 
-    //console.log("Token refreshed successfully");
+    console.log("Token refreshed successfully");
     return true;
   } catch (error) {
-    //console.log(error);
+    console.log(error);
     localStorage.clear();
     window.location.href = "/login";
     return false;
