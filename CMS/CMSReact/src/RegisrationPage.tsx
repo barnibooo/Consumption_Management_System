@@ -87,13 +87,16 @@ function RegistrationCard() {
 
       await axios.post(
         "https://localhost:5000/api/Auth/register",
-        employeeData,
+        [employeeData],
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
+
+      setOpenSuccessSnackbar(true);
+      setError(null);
 
       setOpenSuccessSnackbar(true);
       setError(null);
@@ -304,7 +307,7 @@ function RegistrationCard() {
 
           <Snackbar
             open={openSuccessSnackbar}
-            autoHideDuration={6000}
+            autoHideDuration={3000}
             onClose={() => {
               setOpenSuccessSnackbar(false);
               window.location.reload();
