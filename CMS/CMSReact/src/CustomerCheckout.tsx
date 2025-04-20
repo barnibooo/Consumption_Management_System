@@ -119,6 +119,13 @@ function App() {
     validateAndFetchData();
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflowX = "hidden";
+    return () => {
+      document.body.style.overflowX = "auto";
+    };
+  }, []);
+
   if (isUnauthorized) {
     localStorage.setItem("isUnauthorizedRedirect", "true");
     return setTimeout(() => {
@@ -229,299 +236,357 @@ function App() {
         });
     }
   };
+  const commonStyles = {
+    textField: {
+      width: { xs: "80%", sm: "50%", md: "30%" }, // Reduced width on mobile
+      height: "Auto",
+      marginTop: { xs: 1, sm: 2 },
+      marginBottom: { xs: 1, sm: 2 },
+      "& .MuiOutlinedInput-root": {
+        "& fieldset": {
+          borderColor: "#d5d6d6",
+        },
+        "&:hover fieldset": {
+          borderColor: "#d5d6d6",
+        },
+        "&.Mui-focused fieldset": {
+          borderColor: "#BFA181",
+        },
+      },
+      "& .MuiInputLabel-root": {
+        color: "#d5d6d6",
+        fontSize: { xs: "0.9rem", sm: "1rem" },
+      },
+      "& .MuiInputLabel-root.Mui-focused": {
+        color: "#BFA181",
+      },
+      "& .MuiInputBase-input": {
+        color: "#d5d6d6",
+        caretColor: "#d5d6d6",
+        padding: { xs: "12px", sm: "14px" },
+      },
+    },
+    iconButton: {
+      fontSize: { xs: 32, sm: 40 },
+      color: "#d5d6d6",
+      margin: { xs: 1, sm: 2 },
+      "&.Mui-disabled": {
+        color: "#6d737d !important",
+      },
+      "&:not(.Mui-disabled):hover": {
+        color: "#BFA181",
+      },
+      "&:not(.Mui-disabled):active": {
+        color: "#d5d6d6",
+      },
+    },
+    mainContainer: {
+      display: "flex",
+      flexDirection: "column",
+      minHeight: "100vh",
+      width: "100%",
+      backgroundColor: "#0F1827",
+      padding: 0,
+      overflowX: "hidden",
+    },
+    contentContainer: {
+      flex: 1,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      padding: { xs: 1, sm: 2 },
+      width: "100%",
+      overflowX: "hidden",
+    },
+    searchBox: {
+      width: "100%",
+      display: "flex",
+      flexDirection: { xs: "row", sm: "row" },
+      justifyContent: "center",
+      alignItems: "center",
+      gap: { xs: 1, sm: 2 },
+      p: { xs: 1, sm: 2 },
+      marginTop: { xs: 1, sm: 2 },
+      overflowX: "hidden",
+    },
+    cardContainer: {
+      width: { xs: "100%", sm: "85%", md: "70%", lg: "60%" },
+      display: "flex",
+      flexDirection: "column",
+      overflowX: "hidden",
+    },
+    cardContent: {
+      flex: 1,
+      display: "flex",
+      flexDirection: "column",
+      gap: 2,
+      overflowX: "hidden",
+    },
+  };
 
-  if (loading)
+  if (loading) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
-        <CircularProgress size={120} sx={{ color: "#bfa181" }} />
-      </Box>
-    );
-
-  // Modify the error return statement
-  if (error)
-    return (
-      <>
+      <Box sx={commonStyles.mainContainer}>
+        <Box sx={commonStyles.searchBox}>
+          <TextField
+            sx={commonStyles.textField}
+            required
+            label="Kártyaazonosító"
+            type="text"
+            margin="dense"
+            value={customerId}
+            onChange={(e) => setCustomerId(e.target.value)}
+            disabled
+          />
+          <IconButton sx={commonStyles.iconButton} disabled>
+            <SearchOutlinedIcon fontSize="inherit" />
+          </IconButton>
+        </Box>
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
-            height: "100vh",
-            padding: 2,
+            justifyContent: "center",
             alignItems: "center",
+            height: "50vh",
           }}
         >
-          <Box
+          <CircularProgress size={80} sx={{ color: "#bfa181" }} />
+        </Box>
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box sx={commonStyles.mainContainer}>
+        <Box sx={commonStyles.searchBox}>
+          <TextField
+            sx={commonStyles.textField}
+            required
+            label="Kártyaazonosító"
+            type="text"
+            margin="dense"
+            value={customerId}
+            onChange={(e) => setCustomerId(e.target.value)}
+          />
+          <IconButton
+            sx={commonStyles.iconButton}
+            onClick={() => {
+              fetchCustomerData();
+              fetchCheckoutData();
+            }}
+            disabled={!customerId}
+          >
+            <SearchOutlinedIcon fontSize="inherit" />
+          </IconButton>
+        </Box>
+        <Snackbar
+          open={Boolean(error)}
+          autoHideDuration={6000}
+          onClose={() => {
+            setError(null);
+            window.location.reload();
+          }}
+          sx={{
+            width: { xs: "90%", sm: "auto" },
+            bottom: { xs: 16, sm: 24 },
+            left: { xs: "50%", sm: 24 },
+            transform: { xs: "translateX(-50%)", sm: "none" },
+          }}
+        >
+          <Alert
+            severity="error"
+            variant="filled"
             sx={{
               width: "100%",
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
+              fontSize: { xs: "0.8rem", sm: "0.9rem" },
+              padding: { xs: "6px 12px", sm: "8px 16px" },
             }}
           >
-            <TextField
-              sx={{
-                width: "30%",
-                height: "Auto",
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "#d5d6d6",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "#d5d6d6",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#BFA181",
-                  },
-                },
-                "& .MuiInputLabel-root": {
-                  color: "#d5d6d6",
-                },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#BFA181",
-                },
-                "& .MuiInputBase-input": {
-                  color: "#d5d6d6",
-                  caretColor: "#d5d6d6",
-                },
-                marginBottom: 2,
-              }}
-              required
-              id="outlined-search"
-              label="Kártyaazonosító"
-              type="search"
-              margin="dense"
-              value={customerId}
-              onChange={(e) => setCustomerId(e.target.value)}
-            />
-            <IconButton
-              sx={{
-                fontSize: 40,
-                color: "#d5d6d6",
-                "&:hover": {
-                  color: "#BFA181",
-                },
-                "&:active": {
-                  color: "#BFA181",
-                },
-              }}
-              aria-label="add to shopping cart"
-              onClick={() => {
-                fetchCustomerData();
-                fetchCheckoutData();
-              }}
-            >
-              <SearchOutlinedIcon fontSize="inherit" />
-            </IconButton>
-          </Box>
-          <Snackbar
-            open={Boolean(error)}
-            autoHideDuration={6000}
-            onClose={() => {
-              setError(null);
-              window.location.reload();
-            }}
-          >
-            <Alert
-              onClose={() => {
-                setError(null);
-                window.location.reload();
-              }}
-              severity="error"
-              variant="filled"
-              sx={{ width: "100%" }}
-            >
-              {error}
-            </Alert>
-          </Snackbar>
-        </Box>
-      </>
+            {error}
+          </Alert>
+        </Snackbar>
+      </Box>
     );
+  }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh",
-        padding: 2,
-        alignItems: "center",
-      }}
-    >
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "flex-start",
-          alignItems: "center",
-        }}
-      >
+    <Box sx={commonStyles.mainContainer}>
+      <Box sx={commonStyles.searchBox}>
         <TextField
-          sx={{
-            width: "30%",
-            height: "Auto",
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "#d5d6d6",
-              },
-              "&:hover fieldset": {
-                borderColor: "#d5d6d6",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "#BFA181",
-              },
-            },
-            "& .MuiInputLabel-root": {
-              color: "#d5d6d6",
-            },
-            "& .MuiInputLabel-root.Mui-focused": {
-              color: "#BFA181",
-            },
-            "& .MuiInputBase-input": {
-              color: "#d5d6d6",
-              caretColor: "#d5d6d6",
-            },
-            marginBottom: 2,
-          }}
+          sx={commonStyles.textField}
           required
-          id="outlined-search"
           label="Kártyaazonosító"
-          type="search"
+          type="text"
           margin="dense"
           value={customerId}
           onChange={(e) => setCustomerId(e.target.value)}
         />
         <IconButton
-          sx={{
-            fontSize: 40,
-            color: "#d5d6d6",
-            "&:hover": {
-              color: "#BFA181",
-            },
-            "&:active": {
-              color: "#BFA181",
-            },
-          }}
-          aria-label="add to shopping cart"
+          sx={commonStyles.iconButton}
           onClick={() => {
             fetchCustomerData();
             fetchCheckoutData();
           }}
+          disabled={!customerId}
         >
           <SearchOutlinedIcon fontSize="inherit" />
         </IconButton>
       </Box>
+
+      {/* Loading Indicator */}
+      {loading && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "50vh",
+          }}
+        >
+          <CircularProgress size={80} sx={{ color: "#bfa181" }} />
+        </Box>
+      )}
+
+      {/* Error Display */}
+      {error && (
+        <Snackbar
+          open={Boolean(error)}
+          autoHideDuration={6000}
+          onClose={() => {
+            setError(null);
+            window.location.reload();
+          }}
+          sx={{
+            width: { xs: "100%", sm: "auto" },
+            bottom: { xs: 0, sm: 24 },
+          }}
+        >
+          <Alert severity="error" variant="filled" sx={{ width: "100%" }}>
+            {error}
+          </Alert>
+        </Snackbar>
+      )}
+
+      {/* Customer Data Display */}
       {isBoxVisible && checkoutData && customer && (
         <ThemeProvider theme={darkTheme}>
           <Card
             sx={{
               bgcolor: "#202938",
               color: "#d5d6d6",
-              width: {
-                xs: "100%",
-                sm: "70%",
-                md: "60%",
-                lg: "50%",
-                xl: "40%",
-              },
-              marginTop: 2,
-              padding: 2,
-              fontFamily: "Courier New, monospace",
+              width: { xs: "100%", sm: "85%", md: "70%", lg: "60%" },
+              mx: "auto",
+              mb: { xs: 2, sm: 3 },
+              borderRadius: { xs: 1, sm: 2 },
+              overflowX: "hidden",
             }}
           >
             <CardHeader
               avatar={
                 <Avatar
-                  sx={{ bgcolor: "#BFA181", color: "#d5d6d6" }}
-                  aria-label="recipe"
-                ></Avatar>
+                  sx={{
+                    bgcolor: "#BFA181",
+                    color: "#d5d6d6",
+                    width: { xs: 40, sm: 48 },
+                    height: { xs: 40, sm: 48 },
+                  }}
+                />
               }
               title={
-                <Typography variant="h5" sx={{ color: "#d5d6d6" }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    color: "#d5d6d6",
+                    fontSize: { xs: "1.2rem", sm: "1.5rem" },
+                  }}
+                >
                   {customer.name} #{customer.customerId}
                 </Typography>
               }
               subheader={
-                <Typography variant="subtitle1" sx={{ color: "#d5d6d6" }}>
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    color: "#d5d6d6",
+                    fontSize: { xs: "0.9rem", sm: "1rem" },
+                  }}
+                >
                   Adatok
                 </Typography>
               }
             />
-            <CardContent>
+
+            <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+              {/* Total Amount Display */}
               <Typography
                 variant="h4"
                 sx={{
                   color: "#d5d6d6",
-                  marginTop: "10px",
-                  marginBottom: "10px",
-                  textIndent: "20px",
+                  fontSize: { xs: "1.2rem", sm: "1.5rem" },
+                  mb: { xs: 2, sm: 3 },
                   fontWeight: 400,
-                  textAlign: "left",
                 }}
               >
                 {checkoutData.totalAmount === 0
                   ? "Nem történt fogyasztás"
                   : `Összes fogyasztás: ${checkoutData.totalAmount} Ft`}
               </Typography>
+
+              {/* Consumption List */}
               {checkoutData.consumption &&
                 checkoutData.consumption.length > 0 && (
                   <Box
                     sx={{
-                      maxHeight: "300px",
+                      maxHeight: { xs: "50vh", sm: "60vh" },
                       overflowY: "auto",
                       borderTop: "1px dashed #d5d6d6",
                       borderBottom: "1px dashed #d5d6d6",
-                      paddingTop: "10px",
-                      paddingBottom: "10px",
+                      py: { xs: 1, sm: 2 },
                     }}
                   >
                     {checkoutData.consumption.map((item, index) => (
-                      <Box key={index} sx={{ marginBottom: "10px" }}>
+                      <Box
+                        key={index}
+                        sx={{
+                          mb: { xs: 2, sm: 3 },
+                          p: { xs: 1, sm: 2 },
+                        }}
+                      >
                         <Typography
-                          variant="h6"
                           sx={{
-                            color: "#d5d6d6",
-                            fontFamily: "Courier New, monospace",
+                            fontSize: { xs: "1rem", sm: "1.1rem" },
+                            mb: 1,
                           }}
                         >
                           {item.productName}
                         </Typography>
                         <Typography
-                          variant="body2"
                           sx={{
-                            color: "#d5d6d6",
-                            fontFamily: "Courier New, monospace",
+                            fontSize: { xs: "0.9rem", sm: "1rem" },
+                            mb: 0.5,
                           }}
                         >
                           {item.description}
                         </Typography>
                         <Typography
-                          variant="body2"
                           sx={{
-                            color: "#d5d6d6",
-                            fontFamily: "Courier New, monospace",
+                            fontSize: { xs: "0.9rem", sm: "1rem" },
                           }}
                         >
                           Mennyiség: {item.quantity}
                         </Typography>
                         <Typography
-                          variant="body2"
                           sx={{
-                            color: "#d5d6d6",
-                            fontFamily: "Courier New, monospace",
+                            fontSize: { xs: "0.9rem", sm: "1rem" },
                           }}
                         >
                           Ár: {item.price} Ft
                         </Typography>
                         <Typography
-                          variant="body2"
                           sx={{
-                            color: "#d5d6d6",
-                            fontFamily: "Courier New, monospace",
+                            fontSize: { xs: "0.8rem", sm: "0.9rem" },
+                            color: "#9e9e9e",
                           }}
                         >
                           Rendelés ideje: {formatDateTime(item.orderDate)}
@@ -530,25 +595,40 @@ function App() {
                     ))}
                   </Box>
                 )}
+
+              {/* PDF Section */}
+              <Box sx={{ mt: { xs: 2, sm: 3 } }}>
+                <ReceiptPdfAssembled
+                  customer={customer}
+                  checkoutData={checkoutData}
+                  onFinalize={finalizeCustomer}
+                />
+              </Box>
             </CardContent>
-            <ReceiptPdfAssembled
-              customer={customer}
-              checkoutData={checkoutData}
-              onFinalize={finalizeCustomer}
-            />
           </Card>
         </ThemeProvider>
       )}
+
+      {/* Success Message */}
       <Snackbar
         open={sucessmessagestatus}
         autoHideDuration={6000}
         onClose={handleClose}
+        sx={{
+          width: { xs: "90%", sm: "auto" },
+          bottom: { xs: 16, sm: 24 },
+          left: { xs: "50%", sm: 24 },
+          transform: { xs: "translateX(-50%)", sm: "none" },
+        }}
       >
         <Alert
-          onClose={handleClose}
           severity="success"
           variant="filled"
-          sx={{ width: "100%" }}
+          sx={{
+            width: "100%",
+            fontSize: { xs: "0.8rem", sm: "0.9rem" },
+            padding: { xs: "6px 12px", sm: "8px 16px" },
+          }}
         >
           A vendég kijelentkeztetés sikeresen megtörtént!
         </Alert>

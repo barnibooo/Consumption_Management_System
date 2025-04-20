@@ -9,41 +9,44 @@ import {
 import { ConsumptionItem } from "./CustomerCheckout";
 
 const styles = StyleSheet.create({
-  page: {
-    flexDirection: "column",
-    backgroundColor: "#FFFFFF",
-    padding: 30,
-  },
-  section: {
-    margin: 10,
-    padding: 10,
-    flexGrow: 1,
-  },
   viewer: {
     width: "100%",
     height: "100%",
+    border: "none",
+    maxWidth: "100vw", // Ensure it doesn't overflow horizontally
+    maxHeight: "100vh", // Ensure it doesn't overflow vertically
+  },
+  page: {
+    flexDirection: "column",
+    backgroundColor: "#FFFFFF",
+    padding: 10, // Reduced padding for mobile
+  },
+  section: {
+    margin: 3, // Reduced margin for mobile
+    padding: 3, // Reduced padding for mobile
+    flexGrow: 1,
   },
   title: {
-    fontSize: 24,
-    marginBottom: 20,
+    fontSize: 16, // Smaller font for mobile
+    marginBottom: 10,
     textAlign: "center",
   },
   header: {
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: 12, // Smaller font for mobile
+    marginBottom: 8,
   },
   item: {
-    marginBottom: 10,
-    padding: 10,
+    marginBottom: 6,
+    padding: 6,
     borderBottom: "1 solid #CCCCCC",
   },
   text: {
-    fontSize: 12,
-    marginBottom: 5,
+    fontSize: 8, // Smaller font for mobile
+    marginBottom: 3,
   },
   total: {
-    marginTop: 20,
-    fontSize: 16,
+    marginTop: 10,
+    fontSize: 12, // Smaller font for mobile
     fontWeight: "bold",
   },
 });

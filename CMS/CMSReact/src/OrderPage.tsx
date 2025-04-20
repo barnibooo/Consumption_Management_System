@@ -493,6 +493,9 @@ const Dashboard: React.FC = () => {
                         },
                         "& .MuiInputLabel-root": {
                           color: "#d5d6d6",
+                          "&.Mui-focused": {
+                            color: "#d5d6d6",
+                          },
                         },
                         "& .MuiInput-underline:before": {
                           borderBottomColor: "#d5d6d6",
@@ -512,6 +515,7 @@ const Dashboard: React.FC = () => {
                         "& .Mui-focused .MuiInput-underline:after": {
                           borderBottomColor: "#d5d6d6 !important",
                         },
+                        marginTop: 2,
                       }}
                     />
                   </Box>

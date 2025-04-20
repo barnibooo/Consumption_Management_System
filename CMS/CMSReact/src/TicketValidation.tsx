@@ -196,6 +196,7 @@ function App() {
           alignItems: "center",
           gap: { xs: 1, sm: 2 },
           p: { xs: 0, sm: 0 },
+          overflowX: "hidden",
         }}
       >
         <TextField
