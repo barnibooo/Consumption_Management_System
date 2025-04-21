@@ -1,0 +1,699 @@
+{
+	"info": {
+		"_postman_id": "44eeaa78-b4e7-4da2-b85b-72dc53dcc4cc",
+		"name": "CMS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38088701"
+	},
+	"item": [
+		{
+			"name": "MenuItems",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5000/api/MenuItems",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"MenuItems"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MenuItemOrders",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5000/api/MenuItemOrders",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"MenuItemOrders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Orders",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5000/api/Orders",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Orders",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiRW1wbG95ZWVJZCI6IjEiLCJGaXJzdE5hbWUiOiJQcsOzYmEiLCJMYXN0TmFtZSI6IkFkbWluIiwiTW9ub2dyYW0iOiJBUCIsIm5iZiI6MTc0NDQ4OTc3NSwiZXhwIjoxNzQ0NDkzMzc1LCJpYXQiOjE3NDQ0ODk3NzUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0.K3rAeuOx7cw_EQBjARiPKbOzBmSzZNoJKld8n4N7v14",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"customerId\": 22,\r\n  \"employeeId\": 1,\r\n  \"menuItems\": [\r\n    {\r\n      \"menuItemId\": 1,\r\n      \"quantity\": 3\r\n    },\r\n      {\r\n      \"menuItemId\": 6,\r\n      \"quantity\": 7\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/api/Orders",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CustomerGET ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiRW1wbG95ZWVJZCI6IjEiLCJGaXJzdE5hbWUiOiJQcsOzYmEiLCJMYXN0TmFtZSI6IkFkbWluIiwiTW9ub2dyYW0iOiJBUCIsIm5iZiI6MTc0NDQ4Njk1NSwiZXhwIjoxNzQ0NDkwNTU1LCJpYXQiOjE3NDQ0ODY5NTUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0.PR2Zh5A74jxYldc190mSiWou0eeBNhERX_H2N72lzys",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:5000/api/Customers/147852369",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Customers",
+						"147852369"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CustomerPost",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiRW1wbG95ZWVJZCI6IjEiLCJGaXJzdE5hbWUiOiJQcsOzYmEiLCJMYXN0TmFtZSI6IkFkbWluIiwiTW9ub2dyYW0iOiJBUCIsIm5iZiI6MTc0NDQ4Njk1NSwiZXhwIjoxNzQ0NDkwNTU1LCJpYXQiOjE3NDQ0ODY5NTUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0.PR2Zh5A74jxYldc190mSiWou0eeBNhERX_H2N72lzys",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"cardId\": \"741147\",\r\n  \"name\": \"Próba Áron\",\r\n  \"createdBy\": 1,\r\n  \"isActive\": true,\r\n  \"ticketsIds\": [\r\n    {\r\n      \"ticketId\": 1\r\n    }\r\n  ],\r\n  \"admissions\": [\r\n    {\r\n      \"admissionId\": 2\r\n    },\r\n    {\r\n      \"admissionId\": 1\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/api/Customers",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CMS Customer resetcardid",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiRW1wbG95ZWVJZCI6IjEiLCJGaXJzdE5hbWUiOiJQcsOzYmEiLCJMYXN0TmFtZSI6IkFkbWluIiwiTW9ub2dyYW0iOiJBUCIsIm5iZiI6MTc0NDQ4Njk1NSwiZXhwIjoxNzQ0NDkwNTU1LCJpYXQiOjE3NDQ0ODY5NTUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0.PR2Zh5A74jxYldc190mSiWou0eeBNhERX_H2N72lzys",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"isActive\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/api/Customers/resetcardid/741147",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Customers",
+						"resetcardid",
+						"741147"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admission GET",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiRW1wbG95ZWVJZCI6IjEiLCJGaXJzdE5hbWUiOiJQcsOzYmEiLCJMYXN0TmFtZSI6IkFkbWluIiwiTW9ub2dyYW0iOiJBUCIsIm5iZiI6MTc0NDQ4MTU4NiwiZXhwIjoxNzQ0NDg1MTg2LCJpYXQiOjE3NDQ0ODE1ODYsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0._ygH9v0zxpzaW1DtTtf-afLSYCgn57HNPrnS9-QQXSs",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:5000/api/Admissions",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Admissions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admission POST",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiRW1wbG95ZWVJZCI6IjEiLCJGaXJzdE5hbWUiOiJQcsOzYmEiLCJMYXN0TmFtZSI6IkFkbWluIiwiTW9ub2dyYW0iOiJBUCIsIm5iZiI6MTc0NDQ4MTU4NiwiZXhwIjoxNzQ0NDg1MTg2LCJpYXQiOjE3NDQ0ODE1ODYsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0._ygH9v0zxpzaW1DtTtf-afLSYCgn57HNPrnS9-QQXSs",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"admissionId\": 0,\r\n  \"admissionName\": \"Szauna hozzáférés\",\r\n  \"category\": \"Kiegészítő\",\r\n  \"price\": 3500,\r\n  \"description\": \"Szanua hozzáférést biztosít\",\r\n  \"imagePath\": \"/img/tickets/extra/szauna.jpg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/api/Admissions",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Admissions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth Register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiRW1wbG95ZWVJZCI6IjEiLCJGaXJzdE5hbWUiOiJQcsOzYmEiLCJMYXN0TmFtZSI6IkFkbWluIiwiTW9ub2dyYW0iOiJBUCIsIm5iZiI6MTc0NDQ4NDc3NSwiZXhwIjoxNzQ0NDg4Mzc1LCJpYXQiOjE3NDQ0ODQ3NzUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0.6KVkcz3JoxvRQlR13zDw7i7HiQ8Zbydjs7lQBY1mo2U",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"penztarosm\",\r\n  \"firstName\": \"Marika\",\r\n  \"lastName\": \"Pénztáros\",\r\n  \"password\": \"jelszo123\",\r\n  \"role\": \"TicketAssistant\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/api/Auth/register",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"admin\",\r\n  \"password\": \"jelszo123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/api/Auth/login",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth Refresh",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InBlbnp0YXJvc20iLCJyb2xlIjoiVGlja2V0QXNzaXN0YW50IiwiRW1wbG95ZWVJZCI6IjQiLCJGaXJzdE5hbWUiOiJNYXJpa2EiLCJMYXN0TmFtZSI6IlDDqW56dMOhcm9zIiwiTW9ub2dyYW0iOiJQTSIsIm5iZiI6MTc0NDQ4NTM3NywiZXhwIjoxNzQ0NDg4OTc3LCJpYXQiOjE3NDQ0ODUzNzcsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0.sraS-4Yj4sxT2J_GiAEbCcgIaCrFk07GlrInZZ-6lrE",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:5000/api/Auth/refreshToken",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Auth",
+						"refreshToken"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth logout",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InBlbnp0YXJvc20iLCJyb2xlIjoiVGlja2V0QXNzaXN0YW50IiwiRW1wbG95ZWVJZCI6IjQiLCJGaXJzdE5hbWUiOiJNYXJpa2EiLCJMYXN0TmFtZSI6IlDDqW56dMOhcm9zIiwiTW9ub2dyYW0iOiJQTSIsIm5iZiI6MTc0NDQ4NTM3NywiZXhwIjoxNzQ0NDg4OTc3LCJpYXQiOjE3NDQ0ODUzNzcsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0.sraS-4Yj4sxT2J_GiAEbCcgIaCrFk07GlrInZZ-6lrE",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:5000/api/Auth/logout",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth Checktoken",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InBlbnp0YXJvc20iLCJyb2xlIjoiVGlja2V0QXNzaXN0YW50IiwiRW1wbG95ZWVJZCI6IjQiLCJGaXJzdE5hbWUiOiJNYXJpa2EiLCJMYXN0TmFtZSI6IlDDqW56dMOhcm9zIiwiTW9ub2dyYW0iOiJQTSIsIm5iZiI6MTc0NDQ4NTk2NywiZXhwIjoxNzQ0NDg5NTY3LCJpYXQiOjE3NDQ0ODU5NjcsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0.ue9FbZ1wfhSk1CxzdDehhpP61PfDmyHGMlG7duA5B5g",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:5000/api/Auth/Checktoken",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Auth",
+						"Checktoken"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cards To Id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiRW1wbG95ZWVJZCI6IjEiLCJGaXJzdE5hbWUiOiJQcsOzYmEiLCJMYXN0TmFtZSI6IkFkbWluIiwiTW9ub2dyYW0iOiJBUCIsIm5iZiI6MTc0NDQ4Njk1NSwiZXhwIjoxNzQ0NDkwNTU1LCJpYXQiOjE3NDQ0ODY5NTUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0.PR2Zh5A74jxYldc190mSiWou0eeBNhERX_H2N72lzys",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:5000/api/Cards/GetCustomerIdByCardId/147852369",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Cards",
+						"GetCustomerIdByCardId",
+						"147852369"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Checkout",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InBlbnp0YXJvc20iLCJyb2xlIjoiVGlja2V0QXNzaXN0YW50IiwiRW1wbG95ZWVJZCI6IjQiLCJGaXJzdE5hbWUiOiJNYXJpa2EiLCJMYXN0TmFtZSI6IlDDqW56dMOhcm9zIiwiTW9ub2dyYW0iOiJQTSIsIm5iZiI6MTc0NDQ4NTM3NywiZXhwIjoxNzQ0NDg4OTc3LCJpYXQiOjE3NDQ0ODUzNzcsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0.sraS-4Yj4sxT2J_GiAEbCcgIaCrFk07GlrInZZ-6lrE",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/api/Checkout/741147",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Checkout",
+						"741147"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DailySpecials",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiRW1wbG95ZWVJZCI6IjEiLCJGaXJzdE5hbWUiOiJQcsOzYmEiLCJMYXN0TmFtZSI6IkFkbWluIiwiTW9ub2dyYW0iOiJBUCIsIm5iZiI6MTc0NDQ4OTc3NSwiZXhwIjoxNzQ0NDkzMzc1LCJpYXQiOjE3NDQ0ODk3NzUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0.K3rAeuOx7cw_EQBjARiPKbOzBmSzZNoJKld8n4N7v14",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/api/DailySpecials",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"DailySpecials"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DailySpecials",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiRW1wbG95ZWVJZCI6IjEiLCJGaXJzdE5hbWUiOiJQcsOzYmEiLCJMYXN0TmFtZSI6IkFkbWluIiwiTW9ub2dyYW0iOiJBUCIsIm5iZiI6MTc0NDQ4OTc3NSwiZXhwIjoxNzQ0NDkzMzc1LCJpYXQiOjE3NDQ0ODk3NzUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0.K3rAeuOx7cw_EQBjARiPKbOzBmSzZNoJKld8n4N7v14",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"soupName\": \"Halászlé\",\r\n        \"appetizerName\": \"Rántott hagymakarikák\",\r\n        \"mainCourseName\": \"Lángos tejföllel és sajttal\",\r\n        \"hamburgerName\": \"Halas Burger\",\r\n        \"pizzaName\": \"Hawaii Pizza\",\r\n        \"dessertName\": \"Túrós Palacsinta\",\r\n        \"drinkName\": \"Házi Limonádé\",\r\n        \"coffeeName\": \"Jegeskávé\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/api/DailySpecials",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"DailySpecials"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DailySpecials",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiRW1wbG95ZWVJZCI6IjEiLCJGaXJzdE5hbWUiOiJQcsOzYmEiLCJMYXN0TmFtZSI6IkFkbWluIiwiTW9ub2dyYW0iOiJBUCIsIm5iZiI6MTc0NDQ4OTc3NSwiZXhwIjoxNzQ0NDkzMzc1LCJpYXQiOjE3NDQ0ODk3NzUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0.K3rAeuOx7cw_EQBjARiPKbOzBmSzZNoJKld8n4N7v14",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"soupName\": \"Halászlé\",\r\n        \"appetizerName\": \"Rántott hagymakarikák\",\r\n        \"mainCourseName\": \"Lángos tejföllel és sajttal\",\r\n        \"hamburgerName\": \"Halas Burger\",\r\n        \"pizzaName\": \"Hawaii Pizza\",\r\n        \"dessertName\": \"Túrós Palacsinta\",\r\n        \"drinkName\": \"Házi Limonádé\",\r\n        \"coffeeName\": \"Jegeskávé\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/api/DailySpecials",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"DailySpecials"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Employees role",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiRW1wbG95ZWVJZCI6IjEiLCJGaXJzdE5hbWUiOiJQcsOzYmEiLCJMYXN0TmFtZSI6IkFkbWluIiwiTW9ub2dyYW0iOiJBUCIsIm5iZiI6MTc0NDY2MDc2OSwiZXhwIjoxNzQ0NjY0MzY5LCJpYXQiOjE3NDQ2NjA3NjksImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0.M94jwz-QWG4Zy_Fjlt45L14ZUrquaaowBeLS4d7iBFg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:5000/api/Employees/roles",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Employees",
+						"roles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Menuitems",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiRW1wbG95ZWVJZCI6IjEiLCJGaXJzdE5hbWUiOiJQcsOzYmEiLCJMYXN0TmFtZSI6IkFkbWluIiwiTW9ub2dyYW0iOiJBUCIsIm5iZiI6MTc0NDQ4OTc3NSwiZXhwIjoxNzQ0NDkzMzc1LCJpYXQiOjE3NDQ0ODk3NzUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0.K3rAeuOx7cw_EQBjARiPKbOzBmSzZNoJKld8n4N7v14",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"soupName\": \"Halászlé\",\r\n        \"appetizerName\": \"Rántott hagymakarikák\",\r\n        \"mainCourseName\": \"Lángos tejföllel és sajttal\",\r\n        \"hamburgerName\": \"Halas Burger\",\r\n        \"pizzaName\": \"Hawaii Pizza\",\r\n        \"dessertName\": \"Túrós Palacsinta\",\r\n        \"drinkName\": \"Házi Limonádé\",\r\n        \"coffeeName\": \"Jegeskávé\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/api/MenuItems",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"MenuItems"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tickets",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiRW1wbG95ZWVJZCI6IjEiLCJGaXJzdE5hbWUiOiJQcsOzYmEiLCJMYXN0TmFtZSI6IkFkbWluIiwiTW9ub2dyYW0iOiJBUCIsIm5iZiI6MTc0NDQ4OTc3NSwiZXhwIjoxNzQ0NDkzMzc1LCJpYXQiOjE3NDQ0ODk3NzUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAwIn0.K3rAeuOx7cw_EQBjARiPKbOzBmSzZNoJKld8n4N7v14",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"customerId\": 22,\r\n  \"employeeId\": 1,\r\n  \"menuItems\": [\r\n    {\r\n      \"menuItemId\": 1,\r\n      \"quantity\": 3\r\n    },\r\n      {\r\n      \"menuItemId\": 6,\r\n      \"quantity\": 7\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/api/Tickets",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Tickets"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

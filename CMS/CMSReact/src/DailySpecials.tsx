@@ -274,7 +274,7 @@ function App() {
               >
                 Leves
               </Typography>
-              <FormControl fullWidth>
+              <FormControl fullWidth required>
                 <InputLabel
                   id="food-select-label-0"
                   sx={{
@@ -350,7 +350,7 @@ function App() {
               >
                 Előétel
               </Typography>
-              <FormControl fullWidth>
+              <FormControl fullWidth required>
                 <InputLabel
                   id="food-select-label-1"
                   sx={{
@@ -426,7 +426,7 @@ function App() {
               >
                 Főétel
               </Typography>
-              <FormControl fullWidth>
+              <FormControl fullWidth required>
                 <InputLabel
                   id="food-select-label-2"
                   sx={{
@@ -502,7 +502,7 @@ function App() {
               >
                 Hamburger
               </Typography>
-              <FormControl fullWidth>
+              <FormControl fullWidth required>
                 <InputLabel
                   id="food-select-label-3"
                   sx={{
@@ -578,7 +578,7 @@ function App() {
               >
                 Pizza
               </Typography>
-              <FormControl fullWidth>
+              <FormControl fullWidth required>
                 <InputLabel
                   id="food-select-label-4"
                   sx={{
@@ -654,7 +654,7 @@ function App() {
               >
                 Desszert
               </Typography>
-              <FormControl fullWidth>
+              <FormControl fullWidth required>
                 <InputLabel
                   id="food-select-label-5"
                   sx={{
@@ -730,7 +730,7 @@ function App() {
               >
                 Ital
               </Typography>
-              <FormControl fullWidth>
+              <FormControl fullWidth required>
                 <InputLabel
                   id="food-select-label-6"
                   sx={{
@@ -806,7 +806,7 @@ function App() {
               >
                 Kávé
               </Typography>
-              <FormControl fullWidth>
+              <FormControl fullWidth required>
                 <InputLabel
                   id="food-select-label-7"
                   sx={{

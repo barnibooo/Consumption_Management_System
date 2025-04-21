@@ -25,10 +25,9 @@ const CountdownTimer: React.FC = () => {
       setTimeLeft(Math.max(remainingTime, 0));
     };
 
-    checkToken(); // Initial check
+    checkToken();
     const interval = setInterval(checkToken, 1000);
 
-    // Listen for token updates
     window.addEventListener("storage", checkToken);
 
     return () => {
@@ -54,7 +53,7 @@ const CountdownTimer: React.FC = () => {
           fontWeight: "300",
         }}
       >
-        {timeLeft ? formatTime(timeLeft) : "Token expired"}
+        {timeLeft ? formatTime(timeLeft) : "00:00"}
       </Typography>
     </Box>
   );

@@ -75,7 +75,6 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
       }
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
-      localStorage.removeItem("monogram");
       window.location.href = "/login";
     }
   };
@@ -150,8 +149,8 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
             disableGutters
             sx={{
               justifyContent: "space-between",
-              minHeight: { xs: 48, sm: 56 }, // Reduced height
-              px: { xs: 0.5, sm: 1 }, // Reduced padding
+              minHeight: { xs: 48, sm: 56 },
+              px: { xs: 0.5, sm: 1 },
             }}
           >
             {/* Menu Icon */}
@@ -244,7 +243,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
                   color: "#d5d6d6",
                   textDecoration: "none",
                   fontSize: { xs: "0.8rem", sm: "1rem", md: "1.2rem" },
-                  maxWidth: { xs: "120px", sm: "none" }, // Limit width on mobile
+                  maxWidth: { xs: "120px", sm: "none" },
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",
@@ -281,9 +280,9 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
                 >
                   <Avatar
                     sx={{
-                      width: { xs: 28, sm: 32 }, // Smaller size
-                      height: { xs: 28, sm: 32 }, // Smaller size
-                      fontSize: { xs: 14, sm: 16 }, // Smaller font
+                      width: { xs: 28, sm: 32 },
+                      height: { xs: 28, sm: 32 },
+                      fontSize: { xs: 14, sm: 16 },
                       color: "#d5d6d6",
                       bgcolor: "#bfa181",
                     }}

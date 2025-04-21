@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -15,7 +16,6 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { checkToken } from "./AuthService";
 import { refreshToken } from "./RefreshService";
 import axios from "axios";
-import { useState, useEffect } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -27,12 +27,19 @@ function RegistrationCard() {
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [roles, setRoles] = useState<string[]>([]);
   const [role, setRole] = useState<string>("");
-  const [username, setUsername] = useState<string | null>(null);
-  const [firstName, setFirstName] = useState<string | null>(null);
-  const [lastName, setLastName] = useState<string | null>(null);
-  const [password, setPassword] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>("");
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [touched, setTouched] = useState({
+    username: false,
+    firstName: false,
+    lastName: false,
+    password: false,
+    role: false,
+  });
 
   useEffect(() => {
     const validateAndFetchData = async () => {
@@ -76,6 +83,19 @@ function RegistrationCard() {
   }
 
   const handleRegister = async () => {
+    // Mark all fields as touched
+    setTouched({
+      username: true,
+      firstName: true,
+      lastName: true,
+      password: true,
+      role: true,
+    });
+
+    if (!isFormValid()) {
+      return;
+    }
+
     try {
       const employeeData = {
         username,
@@ -98,8 +118,19 @@ function RegistrationCard() {
       setOpenSuccessSnackbar(true);
       setError(null);
 
-      setOpenSuccessSnackbar(true);
-      setError(null);
+      // Reset form
+      setUsername("");
+      setFirstName("");
+      setLastName("");
+      setPassword("");
+      setRole("");
+      setTouched({
+        username: false,
+        firstName: false,
+        lastName: false,
+        password: false,
+        role: false,
+      });
     } catch (error: any) {
       if (error.response) {
         setError("Hiba történt a regisztráció során!");
@@ -112,12 +143,16 @@ function RegistrationCard() {
 
   const isFormValid = () => {
     return (
-      username?.trim() !== "" &&
-      firstName?.trim() !== "" &&
-      lastName?.trim() !== "" &&
-      password?.trim() !== "" &&
+      username.trim() !== "" &&
+      firstName.trim() !== "" &&
+      lastName.trim() !== "" &&
+      password.trim() !== "" &&
       role.trim() !== ""
     );
+  };
+
+  const handleBlur = (field: keyof typeof touched) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
   };
 
   const textFieldStyle = {
@@ -209,31 +244,48 @@ function RegistrationCard() {
               fontWeight: 300,
             }}
           >
-            Új munkaválláló regisztrációja
+            Új munkavállaló regisztrációja
           </Typography>
 
           <TextField
             sx={textFieldStyle}
             required
             label="Felhasználónév"
-            value={username || ""}
+            value={username}
             onChange={(e) => setUsername(e.target.value)}
+            onBlur={() => handleBlur("username")}
+            error={touched.username && username.trim() === ""}
+            helperText={
+              touched.username && username.trim() === "" ? "Kötelező mező" : ""
+            }
           />
 
           <TextField
             sx={textFieldStyle}
             required
             label="Keresztnév"
-            value={firstName || ""}
+            value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
+            onBlur={() => handleBlur("firstName")}
+            error={touched.firstName && firstName.trim() === ""}
+            helperText={
+              touched.firstName && firstName.trim() === ""
+                ? "Kötelező mező"
+                : ""
+            }
           />
 
           <TextField
             sx={textFieldStyle}
             required
             label="Vezetéknév"
-            value={lastName || ""}
+            value={lastName}
             onChange={(e) => setLastName(e.target.value)}
+            onBlur={() => handleBlur("lastName")}
+            error={touched.lastName && lastName.trim() === ""}
+            helperText={
+              touched.lastName && lastName.trim() === "" ? "Kötelező mező" : ""
+            }
           />
 
           <TextField
@@ -242,19 +294,27 @@ function RegistrationCard() {
             label="Jelszó"
             type="password"
             autoComplete="new-password"
-            value={password || ""}
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onBlur={() => handleBlur("password")}
+            error={touched.password && password.trim() === ""}
+            helperText={
+              touched.password && password.trim() === "" ? "Kötelező mező" : ""
+            }
           />
 
-          <FormControl sx={{ ...textFieldStyle, mt: 1 }}>
-            <InputLabel>Munkakör</InputLabel>
+          <FormControl
+            sx={{ ...textFieldStyle, mt: 1 }}
+            error={touched.role && role === ""}
+          >
+            <InputLabel required>Munkakör</InputLabel>
             <Select
-              required
               value={role}
               label="Munkakör"
               onChange={(event: SelectChangeEvent) =>
                 setRole(event.target.value)
               }
+              onBlur={() => handleBlur("role")}
               sx={{
                 "& .MuiSelect-icon": {
                   color: "#d5d6d6",
@@ -320,7 +380,6 @@ function RegistrationCard() {
 
           <Snackbar
             open={Boolean(error)}
-            autoHideDuration={6000}
             onClose={() => {
               setError(null);
               window.location.href = "/";

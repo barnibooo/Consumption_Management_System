@@ -177,7 +177,6 @@ const Dashboard: React.FC = () => {
       }
 
       try {
-        // Check for Admin or RestaurantAssistant role
         const decodedToken = parseJwt(token);
         if (
           !decodedToken ||

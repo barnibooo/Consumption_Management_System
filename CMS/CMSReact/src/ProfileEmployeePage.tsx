@@ -33,7 +33,6 @@ function App() {
     const initialize = async () => {
       const isValidToken = await checkToken();
       if (!isValidToken) {
-        console.error("Invalid token. Redirecting to login...");
         window.location.href = "/login";
         return;
       }
@@ -106,7 +105,7 @@ function App() {
               }}
             >
               {employee
-                ? `${employee.firstName} ${employee.lastName}`
+                ? `${employee.lastName} ${employee.firstName}`
                 : "Hiba a lekérés során!"}
             </Typography>
             <Typography

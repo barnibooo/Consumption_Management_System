@@ -7,9 +7,16 @@ import Typography from "@mui/material/Typography";
 import LoginIcon from "@mui/icons-material/Login";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Button, TextField, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  TextField,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { checkToken } from "./AuthService";
-
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 function MediaCard() {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("lg"));
@@ -17,6 +24,9 @@ function MediaCard() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const validateToken = async () => {
@@ -35,33 +45,43 @@ function MediaCard() {
       setError("Minden mezőt ki kell tölteni!");
       return;
     }
-    setIsLoading(true);
+
+    setIsChecking(true);
+    setError("");
+    setStatusMessage("Adatok ellenőrzése folyamatban...");
+
     axios
       .post("https://localhost:5000/api/Auth/login", {
         userName,
         password,
       })
       .then((response) => {
-        console.log(response);
         if (response.data.token && response.data.refreshToken) {
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("refreshToken", response.data.refreshToken);
-          setError("");
+          setIsChecking(false);
+          setIsLoading(true);
+          setStatusMessage("Sikeres belépés! Átirányítás folyamatban...");
           setTimeout(() => {
             window.location.href = "/";
-          }, 0);
+          }, 1500);
         } else {
           setError("Hiba történt: Érvénytelen válasz a szervertől.");
-          setIsLoading(false);
+          setIsChecking(false);
+          setStatusMessage("");
         }
       })
       .catch((error) => {
+        setIsChecking(false);
+        setIsLoading(false);
+        setStatusMessage("");
         if (error.response && error.response.status === 401) {
           setError("Hibás felhasználónév vagy jelszó.");
         } else {
-          setError("Hiba történt: Sikertelen bejelentkezés.");
+          setError(
+            "Sikertelen kapcsolódás a kiszolgálószerverrel! Próbálja újra később!"
+          );
         }
-        setIsLoading(false);
       });
   };
 
@@ -129,7 +149,7 @@ function MediaCard() {
               color: "#d5d6d6",
               textDecoration: "none",
               marginBottom: 2,
-              fontSize: { xs: "1.2rem", sm: "1.5rem" }, // Smaller font on mobile
+              fontSize: { xs: "1.2rem", sm: "1.5rem" },
               textAlign: "center",
             }}
           >
@@ -146,7 +166,7 @@ function MediaCard() {
               color: "#d5d6d6",
               textDecoration: "none",
               marginBottom: 2,
-              fontSize: { xs: "2rem", sm: "3rem", md: "3.75rem" }, // Responsive font size
+              fontSize: { xs: "2rem", sm: "3rem", md: "3.75rem" },
               textAlign: "center",
             }}
           >
@@ -245,41 +265,59 @@ function MediaCard() {
               required
               id="outlined-password-input"
               label="Jelszó"
-              type="password"
+              type={showPassword ? "text" : "password"}
               autoComplete="current-password"
               margin="dense"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                    sx={{ color: "#d5d6d6" }}
+                  >
+                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  </IconButton>
+                ),
+              }}
             />
             {error && (
               <Typography
                 variant="body2"
                 color="error"
-                sx={{ marginBottom: 2 }}
+                sx={{ marginBottom: 2, textAlign: "center" }}
               >
                 {error}
               </Typography>
             )}
-            {isLoading ? (
+            {(isChecking || isLoading) && (
               <>
                 <Typography
                   variant="body2"
-                  color="success"
-                  sx={{ marginBottom: 2 }}
+                  color={isLoading ? "success" : "primary"}
+                  sx={{ marginBottom: 2, textAlign: "center" }}
                 >
-                  Sikeres belépés, átirányítás...
+                  {statusMessage}
                 </Typography>
-                <CircularProgress sx={{ marginBottom: 2 }} />
+                <CircularProgress
+                  sx={{ marginBottom: 2 }}
+                  color={isLoading ? "success" : "primary"}
+                />
               </>
-            ) : (
+            )}
+            {!isChecking && !isLoading && (
               <Button
                 sx={{
                   width: { xs: "90%", sm: "80%", md: "70%" },
                   height: "Auto",
                   backgroundColor: "#BFA181",
                   marginBottom: { xs: 1, sm: 2 },
-                  padding: { xs: "8px", sm: "12px" }, // Adjust button padding
-                  fontSize: { xs: "0.9rem", sm: "1rem" }, // Adjust button text size
+                  padding: { xs: "8px", sm: "12px" },
+                  fontSize: { xs: "0.9rem", sm: "1rem" },
+                  "&:hover": {
+                    backgroundColor: "#8B7355",
+                  },
                 }}
                 variant="contained"
                 endIcon={<LoginIcon />}
