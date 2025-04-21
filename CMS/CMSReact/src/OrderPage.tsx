@@ -165,7 +165,7 @@ const Dashboard: React.FC = () => {
     );
   };
 
-  const [isUnauthorized, setIsUnauthorized] = useState(false); // Új állapot
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
 
   useEffect(() => {
     const validateAndFetchData = async () => {
@@ -216,8 +216,6 @@ const Dashboard: React.FC = () => {
         if (Array.isArray(menuResponse.data)) {
           setMenuItems(menuResponse.data);
         }
-
-        // Fetch daily specials with new token
         const dailySpecialsResponse = await axios.get(
           "https://localhost:5000/api/DailySpecials",
           {

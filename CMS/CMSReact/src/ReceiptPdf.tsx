@@ -13,26 +13,26 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     border: "none",
-    maxWidth: "100vw", // Ensure it doesn't overflow horizontally
-    maxHeight: "100vh", // Ensure it doesn't overflow vertically
+    maxWidth: "100vw",
+    maxHeight: "100vh",
   },
   page: {
     flexDirection: "column",
     backgroundColor: "#FFFFFF",
-    padding: 10, // Reduced padding for mobile
+    padding: 10,
   },
   section: {
-    margin: 3, // Reduced margin for mobile
-    padding: 3, // Reduced padding for mobile
+    margin: 3,
+    padding: 3,
     flexGrow: 1,
   },
   title: {
-    fontSize: 16, // Smaller font for mobile
+    fontSize: 16,
     marginBottom: 10,
     textAlign: "center",
   },
   header: {
-    fontSize: 12, // Smaller font for mobile
+    fontSize: 12,
     marginBottom: 8,
   },
   item: {
@@ -41,12 +41,12 @@ const styles = StyleSheet.create({
     borderBottom: "1 solid #CCCCCC",
   },
   text: {
-    fontSize: 8, // Smaller font for mobile
+    fontSize: 8,
     marginBottom: 3,
   },
   total: {
     marginTop: 10,
-    fontSize: 12, // Smaller font for mobile
+    fontSize: 12,
     fontWeight: "bold",
   },
 });

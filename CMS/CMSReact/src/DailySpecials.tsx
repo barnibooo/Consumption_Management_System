@@ -123,8 +123,6 @@ function App() {
             },
           }
         );
-
-        // Filter active items by category with isAvailable boolean
         const levesItems = response.data.filter(
           (item: { category: string; isAvailable: boolean }) =>
             item.category === "Leves" && item.isAvailable === true
@@ -896,7 +894,6 @@ function App() {
                 };
 
                 try {
-                  // Perform DELETE request
                   await axios.delete(
                     "https://localhost:5000/api/DailySpecials",
                     {
@@ -909,7 +906,6 @@ function App() {
                     }
                   );
 
-                  // Perform POST request
                   await axios.post(
                     "https://localhost:5000/api/DailySpecials",
                     payload,
@@ -923,13 +919,10 @@ function App() {
                     }
                   );
 
-                  // Clear all selections
                   setFoodSelections(["", "", "", "", "", "", "", ""]);
 
-                  // Show success message
                   setSuccessSnackbarOpen(true);
                 } catch (error: any) {
-                  console.error("Error during DELETE or POST request:", error);
                   if (error.response) {
                     switch (error.response.status) {
                       case 500:
@@ -946,7 +939,7 @@ function App() {
                   setSuccessSnackbarOpen(false);
                 }
               }}
-              disabled={foodSelections.some((selection) => selection === "")} // Disable if any selection is empty
+              disabled={foodSelections.some((selection) => selection === "")}
             >
               Kész
             </Button>
@@ -978,7 +971,7 @@ function App() {
         autoHideDuration={2000}
         onClose={() => {
           setSuccessSnackbarOpen(false);
-          window.location.reload(); // Reload page after success message
+          window.location.reload();
         }}
       >
         <Alert
@@ -995,7 +988,7 @@ function App() {
             },
           }}
         >
-          Sikeres frissítés!
+          Sikeres napi ajánlat frissítés!
         </Alert>
       </Snackbar>
     </>
