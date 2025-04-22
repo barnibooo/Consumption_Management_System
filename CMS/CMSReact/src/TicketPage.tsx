@@ -63,6 +63,18 @@ const iconStyle = {
   },
 };
 
+// Global Styles
+const style = document.createElement("style");
+style.textContent = `
+  body {
+    background-color: #0f1827;
+    color: #d5d6d6;
+    margin: 0;
+    padding: 0;
+  }
+`;
+document.head.appendChild(style);
+
 const categoryIcons: { [key: string]: React.ReactElement } = {
   Belépő: <ConfirmationNumberOutlinedIcon sx={iconStyle} />,
   Kiegészítő: <ExtensionOutlinedIcon sx={iconStyle} />,

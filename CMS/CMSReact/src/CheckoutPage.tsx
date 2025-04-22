@@ -21,17 +21,32 @@ import { refreshToken } from "./RefreshService";
 import { parseJwt } from "./JWTParser";
 import ReceiptPdfAssembled from "./ReceiptPdfAssembled";
 
+// Theme Configuration
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
   },
 });
 
+// Global Styles
+const style = document.createElement("style");
+style.textContent = `
+  body {
+    background-color: #0f1827;
+    color: #d5d6d6;
+    margin: 0;
+    padding: 0;
+  }
+`;
+document.head.appendChild(style);
+
+// Helper Functions
 const formatDateTime = (dateTimeString: string) => {
   const date = new Date(dateTimeString);
   return format(date, "yyyy-MM-dd HH:mm");
 };
 
+// Type Definitions
 export interface ConsumptionItem {
   productName: string;
   description: string;
@@ -54,7 +69,97 @@ interface Customer {
   isActive: boolean;
 }
 
-function App() {
+// Component Styles
+const commonStyles = {
+  textField: {
+    width: { xs: "80%", sm: "50%", md: "30%" },
+    height: "Auto",
+    marginTop: { xs: 1, sm: 2 },
+    marginBottom: { xs: 1, sm: 2 },
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "#d5d6d6",
+      },
+      "&:hover fieldset": {
+        borderColor: "#d5d6d6",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#BFA181",
+      },
+    },
+    "& .MuiInputLabel-root": {
+      color: "#d5d6d6",
+      fontSize: { xs: "0.9rem", sm: "1rem" },
+    },
+    "& .MuiInputLabel-root.Mui-focused": {
+      color: "#BFA181",
+    },
+    "& .MuiInputBase-input": {
+      color: "#d5d6d6",
+      caretColor: "#d5d6d6",
+      padding: { xs: "12px", sm: "14px" },
+    },
+  },
+  iconButton: {
+    fontSize: { xs: 32, sm: 40 },
+    color: "#d5d6d6",
+    margin: { xs: 1, sm: 2 },
+    "&.Mui-disabled": {
+      color: "#6d737d !important",
+    },
+    "&:not(.Mui-disabled):hover": {
+      color: "#BFA181",
+    },
+    "&:not(.Mui-disabled):active": {
+      color: "#d5d6d6",
+    },
+  },
+  mainContainer: {
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "100vh",
+    width: "100%",
+    backgroundColor: "#0F1827",
+    padding: 0,
+    overflowX: "hidden",
+  },
+  contentContainer: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: { xs: 1, sm: 2 },
+    width: "100%",
+    overflowX: "hidden",
+  },
+  searchBox: {
+    width: "100%",
+    display: "flex",
+    flexDirection: { xs: "row", sm: "row" },
+    justifyContent: "center",
+    alignItems: "center",
+    gap: { xs: 1, sm: 2 },
+    p: { xs: 1, sm: 2 },
+    marginTop: { xs: 1, sm: 2 },
+    overflowX: "hidden",
+  },
+  cardContainer: {
+    width: { xs: "100%", sm: "85%", md: "70%", lg: "60%" },
+    display: "flex",
+    flexDirection: "column",
+    overflowX: "hidden",
+  },
+  cardContent: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
+    overflowX: "hidden",
+  },
+};
+
+function Checkout() {
+  // State Management
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -66,6 +171,9 @@ function App() {
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [sucessmessagestatus, setsucessmessagestatus] = useState(false);
+  const [isBoxVisible, setIsBoxVisible] = useState(true);
+
+  // Event Handlers
   const handleClose = (
     _event?: React.SyntheticEvent | Event,
     reason?: "timeout" | "clickaway" | "escapeKeyDown" | undefined
@@ -79,6 +187,7 @@ function App() {
     }, 300);
   };
 
+  // Authentication & Token Management
   useEffect(() => {
     const validateAndFetchData = async () => {
       const token = localStorage.getItem("token");
@@ -119,6 +228,7 @@ function App() {
     validateAndFetchData();
   }, []);
 
+  // Layout Effect - Overflow Control
   useEffect(() => {
     document.body.style.overflowX = "hidden";
     return () => {
@@ -132,6 +242,8 @@ function App() {
       window.location.href = "/";
     }, 0);
   }
+
+  // API Calls
   const fetchCustomerData = () => {
     setLoading(true);
     axios
@@ -174,13 +286,11 @@ function App() {
       .then((response) => {
         console.log(response.data);
         if (response.data.message) {
-          // Ha nincs fogyasztás
           setCheckoutData({
             consumption: [],
             totalAmount: response.data.totalAmount,
           });
         } else {
-          // Ha van fogyasztás
           setCheckoutData(response.data);
         }
         setLoading(false);
@@ -206,8 +316,6 @@ function App() {
       });
   };
 
-  const [isBoxVisible, setIsBoxVisible] = useState(true);
-
   const finalizeCustomer = () => {
     if (customer) {
       axios
@@ -223,7 +331,7 @@ function App() {
           }
         )
         .then((response) => {
-          setIsBoxVisible(false); // Immediately hide box
+          setIsBoxVisible(false);
           setCustomer({ ...response.data, isActive: false });
           setsucessmessagestatus(true);
           setTimeout(() => {
@@ -236,94 +344,8 @@ function App() {
         });
     }
   };
-  const commonStyles = {
-    textField: {
-      width: { xs: "80%", sm: "50%", md: "30%" }, // Reduced width on mobile
-      height: "Auto",
-      marginTop: { xs: 1, sm: 2 },
-      marginBottom: { xs: 1, sm: 2 },
-      "& .MuiOutlinedInput-root": {
-        "& fieldset": {
-          borderColor: "#d5d6d6",
-        },
-        "&:hover fieldset": {
-          borderColor: "#d5d6d6",
-        },
-        "&.Mui-focused fieldset": {
-          borderColor: "#BFA181",
-        },
-      },
-      "& .MuiInputLabel-root": {
-        color: "#d5d6d6",
-        fontSize: { xs: "0.9rem", sm: "1rem" },
-      },
-      "& .MuiInputLabel-root.Mui-focused": {
-        color: "#BFA181",
-      },
-      "& .MuiInputBase-input": {
-        color: "#d5d6d6",
-        caretColor: "#d5d6d6",
-        padding: { xs: "12px", sm: "14px" },
-      },
-    },
-    iconButton: {
-      fontSize: { xs: 32, sm: 40 },
-      color: "#d5d6d6",
-      margin: { xs: 1, sm: 2 },
-      "&.Mui-disabled": {
-        color: "#6d737d !important",
-      },
-      "&:not(.Mui-disabled):hover": {
-        color: "#BFA181",
-      },
-      "&:not(.Mui-disabled):active": {
-        color: "#d5d6d6",
-      },
-    },
-    mainContainer: {
-      display: "flex",
-      flexDirection: "column",
-      minHeight: "100vh",
-      width: "100%",
-      backgroundColor: "#0F1827",
-      padding: 0,
-      overflowX: "hidden",
-    },
-    contentContainer: {
-      flex: 1,
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      padding: { xs: 1, sm: 2 },
-      width: "100%",
-      overflowX: "hidden",
-    },
-    searchBox: {
-      width: "100%",
-      display: "flex",
-      flexDirection: { xs: "row", sm: "row" },
-      justifyContent: "center",
-      alignItems: "center",
-      gap: { xs: 1, sm: 2 },
-      p: { xs: 1, sm: 2 },
-      marginTop: { xs: 1, sm: 2 },
-      overflowX: "hidden",
-    },
-    cardContainer: {
-      width: { xs: "100%", sm: "85%", md: "70%", lg: "60%" },
-      display: "flex",
-      flexDirection: "column",
-      overflowX: "hidden",
-    },
-    cardContent: {
-      flex: 1,
-      display: "flex",
-      flexDirection: "column",
-      gap: 2,
-      overflowX: "hidden",
-    },
-  };
 
+  // Conditional Renders
   if (loading) {
     return (
       <Box sx={commonStyles.mainContainer}>
@@ -410,8 +432,10 @@ function App() {
     );
   }
 
+  // Main Component Render
   return (
     <Box sx={commonStyles.mainContainer}>
+      {/* Search Section */}
       <Box sx={commonStyles.searchBox}>
         <TextField
           sx={commonStyles.textField}
@@ -434,7 +458,7 @@ function App() {
         </IconButton>
       </Box>
 
-      {/* Loading Indicator */}
+      {/* Loading State */}
       {loading && (
         <Box
           sx={{
@@ -482,6 +506,7 @@ function App() {
               overflowX: "hidden",
             }}
           >
+            {/* Customer Header */}
             <CardHeader
               avatar={
                 <Avatar
@@ -516,9 +541,9 @@ function App() {
                 </Typography>
               }
             />
-
+            {/* Customer Content */}
             <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
-              {/* Total Amount Display */}
+              {/* Total Amount Section */}
               <Typography
                 variant="h4"
                 sx={{
@@ -596,7 +621,7 @@ function App() {
                   </Box>
                 )}
 
-              {/* PDF Section */}
+              {/* PDF Generation Section */}
               <Box sx={{ mt: { xs: 2, sm: 3 } }}>
                 <ReceiptPdfAssembled
                   customer={customer}
@@ -609,7 +634,7 @@ function App() {
         </ThemeProvider>
       )}
 
-      {/* Success Message */}
+      {/* Success Message Display */}
       <Snackbar
         open={sucessmessagestatus}
         autoHideDuration={6000}
@@ -637,4 +662,4 @@ function App() {
   );
 }
 
-export default App;
+export default Checkout;

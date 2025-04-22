@@ -6,9 +6,11 @@ import {
   StyleSheet,
   PDFViewer,
 } from "@react-pdf/renderer";
-import { ConsumptionItem } from "./CustomerCheckout";
+import { ConsumptionItem } from "./CheckoutPage";
 
+// PDF Styles
 const styles = StyleSheet.create({
+  // Viewer Styles
   viewer: {
     width: "100%",
     height: "100%",
@@ -16,6 +18,8 @@ const styles = StyleSheet.create({
     maxWidth: "100vw",
     maxHeight: "100vh",
   },
+
+  // Page Layout
   page: {
     flexDirection: "column",
     backgroundColor: "#FFFFFF",
@@ -26,6 +30,8 @@ const styles = StyleSheet.create({
     padding: 3,
     flexGrow: 1,
   },
+
+  // Typography
   title: {
     fontSize: 16,
     marginBottom: 10,
@@ -34,11 +40,6 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 12,
     marginBottom: 8,
-  },
-  item: {
-    marginBottom: 6,
-    padding: 6,
-    borderBottom: "1 solid #CCCCCC",
   },
   text: {
     fontSize: 8,
@@ -49,8 +50,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "bold",
   },
+  // Content Containers
+  item: {
+    marginBottom: 6,
+    padding: 6,
+    borderBottom: "1 solid #CCCCCC",
+  },
 });
 
+// Component Props Interface
 interface ConsumptionPDFProps {
   customer: {
     name: string;
@@ -60,6 +68,10 @@ interface ConsumptionPDFProps {
   totalAmount: number;
 }
 
+/**
+ * ConsumptionPDF Component
+ * Generates a PDF receipt for customer consumption
+ */
 const ConsumptionPDF = ({
   customer,
   consumption,

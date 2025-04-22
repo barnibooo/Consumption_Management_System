@@ -19,7 +19,7 @@ import { checkToken } from "./AuthService";
 import { parseJwt } from "./JWTParser";
 import { refreshToken } from "./RefreshService";
 
-// Dark theme definiálása
+// Theme Configuration
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -40,7 +40,20 @@ const darkTheme = createTheme({
   },
 });
 
-function App() {
+// Global Styles
+const style = document.createElement("style");
+style.textContent = `
+  body {
+    background-color: #0f1827;
+    color: #d5d6d6;
+    margin: 0;
+    padding: 0;
+  }
+`;
+document.head.appendChild(style);
+
+function DailySpecials() {
+  // State Management
   const [levesOptions, setLevesOptions] = useState<string[]>([]);
   const [EloetelOptions, setEloetelOptions] = useState<string[]>([]);
   const [foetelOptions, setFoetelOptions] = useState<string[]>([]);
@@ -61,9 +74,10 @@ function App() {
     "",
     "",
   ]);
-
   const [isLoading, setIsLoading] = useState(true);
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
+
+  // Authentication & Token Validation
   useEffect(() => {
     const validateAndFetchData = async () => {
       const token = localStorage.getItem("token");
@@ -105,6 +119,7 @@ function App() {
     return null;
   }
 
+  // Data Fetching
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
@@ -189,12 +204,14 @@ function App() {
     fetchData();
   }, []);
 
+  // Event Handlers
   const handleFoodChange = (index: number) => (event: any) => {
     const newSelections = [...foodSelections];
     newSelections[index] = event.target.value as string;
     setFoodSelections(newSelections);
   };
 
+  // Conditional Renders
   if (isLoading)
     return (
       <Box
@@ -237,10 +254,12 @@ function App() {
       </Box>
     );
 
+  // Main Component Render
   return (
     <>
       <ThemeProvider theme={darkTheme}>
         <Box sx={{ padding: 4 }}>
+          {/* Page Title */}
           <Typography
             variant="h4"
             textAlign="center"
@@ -249,6 +268,7 @@ function App() {
             Napi Ajánlat Kezelő
           </Typography>
 
+          {/* Food Selection Forms */}
           <Box
             sx={{
               display: "flex",
@@ -256,7 +276,7 @@ function App() {
               justifyContent: "center",
             }}
           >
-            {/* Leves */}
+            {/* Soup Selection */}
             <Box
               sx={{
                 width: { xs: "100%", sm: "40%" },
@@ -332,7 +352,7 @@ function App() {
               </FormControl>
             </Box>
 
-            {/* Előétel */}
+            {/* Appetizer Selection */}
             <Box
               sx={{
                 width: { xs: "100%", sm: "40%" },
@@ -408,7 +428,7 @@ function App() {
               </FormControl>
             </Box>
 
-            {/* Főétel */}
+            {/* Main Course Selection */}
             <Box
               sx={{
                 width: { xs: "100%", sm: "40%" },
@@ -484,7 +504,7 @@ function App() {
               </FormControl>
             </Box>
 
-            {/* Hamburger */}
+            {/* Hamburger Selection */}
             <Box
               sx={{
                 width: { xs: "100%", sm: "40%" },
@@ -560,7 +580,7 @@ function App() {
               </FormControl>
             </Box>
 
-            {/* Pizza */}
+            {/* Pizza Selection */}
             <Box
               sx={{
                 width: { xs: "100%", sm: "40%" },
@@ -636,7 +656,7 @@ function App() {
               </FormControl>
             </Box>
 
-            {/* Desszert */}
+            {/* Dessert Selection */}
             <Box
               sx={{
                 width: { xs: "100%", sm: "40%" },
@@ -712,7 +732,7 @@ function App() {
               </FormControl>
             </Box>
 
-            {/* Ital */}
+            {/* Drink Selection */}
             <Box
               sx={{
                 width: { xs: "100%", sm: "40%" },
@@ -788,7 +808,7 @@ function App() {
               </FormControl>
             </Box>
 
-            {/* Kávé */}
+            {/* Coffee Selection */}
             <Box
               sx={{
                 width: { xs: "100%", sm: "40%" },
@@ -865,7 +885,7 @@ function App() {
             </Box>
           </Box>
 
-          {/* Buttons */}
+          {/* Submit Button */}
           <Box sx={{ marginTop: 4, textAlign: "center" }}>
             <Button
               variant="contained"
@@ -946,6 +966,8 @@ function App() {
           </Box>
         </Box>
       </ThemeProvider>
+
+      {/* Notifications */}
       <Snackbar
         open={Boolean(error)}
         autoHideDuration={6000}
@@ -995,4 +1017,4 @@ function App() {
   );
 }
 
-export default App;
+export default DailySpecials;

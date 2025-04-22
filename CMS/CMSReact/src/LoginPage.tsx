@@ -17,7 +17,9 @@ import {
 import { checkToken } from "./AuthService";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-function MediaCard() {
+
+function Login() {
+  // State management
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("lg"));
   const [userName, setUserName] = useState("");
@@ -28,6 +30,7 @@ function MediaCard() {
   const [statusMessage, setStatusMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  // Authentication Check Effect
   useEffect(() => {
     const validateToken = async () => {
       const isValid = await checkToken();
@@ -39,6 +42,7 @@ function MediaCard() {
     validateToken();
   }, []);
 
+  // Form Submit Handler
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!userName || !password) {
@@ -85,7 +89,9 @@ function MediaCard() {
       });
   };
 
+  // Component Render
   return (
+    // Main Container
     <Box
       sx={{
         backgroundColor: "#0F1827",
@@ -96,6 +102,7 @@ function MediaCard() {
         minHeight: "100vh",
       }}
     >
+      {/* Login Card */}
       <Card
         sx={{
           color: "#d5d6d6",
@@ -112,6 +119,7 @@ function MediaCard() {
           maxHeight: { xs: "100vh", sm: "none" },
         }}
       >
+        {/* Login Image - Desktop Only */}
         {!isSmallScreen && (
           <CardMedia
             component="img"
@@ -125,6 +133,8 @@ function MediaCard() {
             alt="Login sample"
           />
         )}
+
+        {/* Login Form Container */}
         <CardContent
           sx={{
             display: "flex",
@@ -138,6 +148,7 @@ function MediaCard() {
             paddingTop: { xs: 2, sm: 3, md: 4 },
           }}
         >
+          {/* Header Section */}
           <Typography
             gutterBottom
             variant="h5"
@@ -187,6 +198,8 @@ function MediaCard() {
           >
             Kérjük jelentkezz be!
           </Typography>
+
+          {/* Login Form */}
           <form
             onSubmit={handleSubmit}
             style={{
@@ -196,6 +209,7 @@ function MediaCard() {
               alignItems: "center",
             }}
           >
+            {/* Username Field */}
             <TextField
               sx={{
                 width: { xs: "90%", sm: "80%", md: "70%" },
@@ -233,6 +247,8 @@ function MediaCard() {
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
             />
+
+            {/* Password Field */}
             <TextField
               sx={{
                 width: { xs: "90%", sm: "80%", md: "70%" },
@@ -282,6 +298,8 @@ function MediaCard() {
                 ),
               }}
             />
+
+            {/* Error Message */}
             {error && (
               <Typography
                 variant="body2"
@@ -291,6 +309,8 @@ function MediaCard() {
                 {error}
               </Typography>
             )}
+
+            {/* Loading State */}
             {(isChecking || isLoading) && (
               <>
                 <Typography
@@ -306,6 +326,8 @@ function MediaCard() {
                 />
               </>
             )}
+
+            {/* Submit Button */}
             {!isChecking && !isLoading && (
               <Button
                 sx={{
@@ -333,4 +355,4 @@ function MediaCard() {
   );
 }
 
-export default MediaCard;
+export default Login;

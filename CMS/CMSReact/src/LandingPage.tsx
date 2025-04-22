@@ -8,10 +8,10 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-
 import { useEffect, useState } from "react";
 import { parseJwt } from "./JWTParser";
 
+// Theme Configuration
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -21,6 +21,19 @@ const darkTheme = createTheme({
   },
 });
 
+// Global Styles
+const style = document.createElement("style");
+style.textContent = `
+  body {
+    background-color: #0f1827;
+    color: #d5d6d6;
+    margin: 0;
+    padding: 0;
+  }
+`;
+document.head.appendChild(style);
+
+// Card Component Factory
 const cardContent = (image: string, text: string, link: string) => (
   <CardActionArea onClick={() => (window.location.href = link)}>
     <Box sx={{ position: "relative" }}>
@@ -67,10 +80,13 @@ const cardContent = (image: string, text: string, link: string) => (
   </CardActionArea>
 );
 
-function App() {
+// Main Component
+function Landing() {
+  // State Management
   const [role, setRole] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Role Authentication Effect
   useEffect(() => {
     const handleRole = async () => {
       const token = localStorage.getItem("token");
@@ -84,19 +100,23 @@ function App() {
     handleRole();
   }, []);
 
+  // Loading State
   if (isLoading) {
     return null;
   }
 
+  // Main Render
   return (
     <>
       <ThemeProvider theme={darkTheme}>
+        {/* Card Grid Container */}
         <Box
           display="flex"
           flexWrap="wrap"
           justifyContent="center"
           sx={{ mt: 4, mb: 4, width: "100%" }}
         >
+          {/* Ticket Sales Card - Admin & TicketAssistant Only */}
           {role === "Admin" || role === "TicketAssistant" ? (
             <Box
               sx={{
@@ -119,11 +139,13 @@ function App() {
                 {cardContent(
                   "/img/landing/ticket_temp.png",
                   "Jegyértékesítés",
-                  "tickets"
+                  "ticket"
                 )}
               </Card>
             </Box>
           ) : null}
+
+          {/* Ticket Validation Card - Admin, TicketAssistant & RestaurantAssistant */}
           {role === "Admin" ||
           role === "TicketAssistant" ||
           role === "RestaurantAssistant" ? (
@@ -143,11 +165,13 @@ function App() {
                 {cardContent(
                   "/img/landing/ticketcheck_temp.png",
                   "Jegyellenőrzés",
-                  "ticketvalidation"
+                  "ticketValidation"
                 )}
               </Card>
             </Box>
           ) : null}
+
+          {/* Registration Card - Admin Only */}
           {role === "Admin" ? (
             <Box
               sx={{
@@ -170,6 +194,8 @@ function App() {
               </Card>
             </Box>
           ) : null}
+
+          {/* Daily Specials Card - Admin Only */}
           {role === "Admin" ? (
             <Box
               sx={{
@@ -192,6 +218,8 @@ function App() {
               </Card>
             </Box>
           ) : null}
+
+          {/* Restaurant Card - Admin & RestaurantAssistant Only */}
           {role === "Admin" || role === "RestaurantAssistant" ? (
             <Box
               sx={{
@@ -209,11 +237,13 @@ function App() {
                 {cardContent(
                   "/img/landing/restaurant_temp.png",
                   "Étterem",
-                  "restaurant"
+                  "order"
                 )}
               </Card>
             </Box>
           ) : null}
+
+          {/* Checkout Card - Admin & TicketAssistant Only */}
           {role === "Admin" || role === "TicketAssistant" ? (
             <Box
               sx={{
@@ -231,7 +261,7 @@ function App() {
                 {cardContent(
                   "/img/landing/checkout_temp.png",
                   "Véglegesítés",
-                  "customercheckout"
+                  "checkout"
                 )}
               </Card>
             </Box>
@@ -242,4 +272,4 @@ function App() {
   );
 }
 
-export default App;
+export default Landing;

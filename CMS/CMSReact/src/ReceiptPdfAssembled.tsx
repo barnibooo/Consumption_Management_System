@@ -8,7 +8,7 @@ import {
 import { useState } from "react";
 import ConsumptionPDF from "./ReceiptPdf";
 import SendIcon from "@mui/icons-material/Send";
-import type { ConsumptionItem } from "./CustomerCheckout";
+import type { ConsumptionItem } from "./CheckoutPage";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 

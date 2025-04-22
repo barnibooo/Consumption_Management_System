@@ -1,14 +1,15 @@
 import { createRoot } from "react-dom/client";
-import TicketPage from "./TicketPage.tsx";
+import DailySpecials from "./DailySpecialsPage.tsx";
 import Navbar from "./Navbar.tsx";
-import "./OrderPage.css";
-import { parseJwt } from "./JWTParser";
+import { parseJwt } from "./JWTParser.tsx";
 
+// Authentication
 const userRole = parseJwt(localStorage.getItem("token")!).role;
 
+// Root Application Assembly
 createRoot(document.getElementById("root")!).render(
   <>
     <Navbar role={userRole} />
-    <TicketPage />
+    <DailySpecials />
   </>
 );

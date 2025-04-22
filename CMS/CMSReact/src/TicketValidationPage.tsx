@@ -28,6 +28,18 @@ const darkTheme = createTheme({
   },
 });
 
+// Global Styles
+const style = document.createElement("style");
+style.textContent = `
+  body {
+    background-color: #0f1827;
+    color: #d5d6d6;
+    margin: 0;
+    padding: 0;
+  }
+`;
+document.head.appendChild(style);
+
 const formatDateTime = (dateTimeString: string) => {
   const date = new Date(dateTimeString);
   return format(date, "yyyy-MM-dd HH:mm");
