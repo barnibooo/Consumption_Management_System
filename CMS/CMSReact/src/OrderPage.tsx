@@ -409,8 +409,20 @@ const Menu: React.FC = () => {
             minWidth: { md: 50 },
             mb: { xs: 2, md: 0 },
             m: 2,
-            height: "90%",
+            height: "82vh",
             backgroundColor: "#202938",
+            overflowY: "auto",
+            overflowX: "hidden",
+            "&::-webkit-scrollbar": {
+              width: "6px",
+            },
+            "&::-webkit-scrollbar-track": {
+              background: "transparent",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              background: "#d5d6d6",
+              borderRadius: "3px",
+            },
           }}
         >
           <Stack direction={{ xs: "row", md: "column" }} spacing={2}>

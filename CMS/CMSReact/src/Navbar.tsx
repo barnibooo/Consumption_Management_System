@@ -254,6 +254,9 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",
+                  "&:hover": {
+                    color: "#d5d6d6",
+                  },
                 }}
               >
                 {window.innerWidth >= 600
