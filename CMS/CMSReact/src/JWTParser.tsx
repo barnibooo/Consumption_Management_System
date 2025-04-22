@@ -22,7 +22,6 @@ function parseJwt(token: string): any {
     // Parse and return the payload
     return JSON.parse(jsonPayload);
   } catch (error) {
-    console.error("Failed to parse JWT:", error);
     return false;
   }
 }

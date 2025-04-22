@@ -14,6 +14,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
+import NoFoodOutlinedIcon from "@mui/icons-material/NoFoodOutlined";
 import axios from "axios";
 import { checkToken } from "./AuthService";
 import { parseJwt } from "./JWTParser";
@@ -82,7 +83,6 @@ function DailySpecials() {
     const validateAndFetchData = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        console.error("No token found. Redirecting to login...");
         setIsUnauthorized(true);
         return;
       }
@@ -90,21 +90,18 @@ function DailySpecials() {
       try {
         const decodedToken = parseJwt(token);
         if (!decodedToken || decodedToken.role !== "Admin") {
-          console.error("Unauthorized access: Admin role required");
           setIsUnauthorized(true);
           return;
         }
 
         const isValidToken = await checkToken();
         if (!isValidToken) {
-          console.error("Invalid token. Redirecting to login...");
           setIsUnauthorized(true);
           return;
         }
 
         await refreshToken();
       } catch (error) {
-        console.error("Error during token validation or data fetching:", error);
         setIsUnauthorized(true);
         setIsLoading(false);
       }
@@ -124,7 +121,6 @@ function DailySpecials() {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        console.error("No token found. Redirecting to login...");
         window.location.href = "/login";
         return;
       }
@@ -194,7 +190,6 @@ function DailySpecials() {
         );
         setKaveOptions(kaveItems.map((item: { name: string }) => item.name));
       } catch (error) {
-        console.error("Error during data fetching:", error);
         setError("Hiba történt az adatok betöltése közben!");
       } finally {
         setIsLoading(false);
@@ -961,7 +956,58 @@ function DailySpecials() {
               }}
               disabled={foodSelections.some((selection) => selection === "")}
             >
-              Kész
+              Napi ajánlat módosítása
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              endIcon={<NoFoodOutlinedIcon />}
+              sx={{
+                m: 2,
+                backgroundColor: "#BFA181",
+                width: { xs: "80%", md: "30%", lg: "20%" },
+                color: "#d5d6d6",
+                "&.Mui-disabled": {
+                  backgroundColor: "#9e9386",
+                  color: "#d5d6d6",
+                },
+              }}
+              onClick={async () => {
+                try {
+                  await axios.delete(
+                    "https://localhost:5000/api/DailySpecials",
+                    {
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem(
+                          "token"
+                        )}`,
+                      },
+                    }
+                  );
+
+                  setFoodSelections(["", "", "", "", "", "", "", ""]);
+
+                  setSuccessSnackbarOpen(true);
+                } catch (error: any) {
+                  if (error.response) {
+                    switch (error.response.status) {
+                      case 500:
+                        setError("Szerver hiba történt!");
+                        break;
+                      default:
+                        setError(
+                          "Hiba történt a napi ajánlat frissítése közben!"
+                        );
+                    }
+                  } else {
+                    setError("Nem sikerült kapcsolódni a szerverhez!");
+                  }
+                  setSuccessSnackbarOpen(false);
+                }
+              }}
+            >
+              Napi ajánlat törlése
             </Button>
           </Box>
         </Box>

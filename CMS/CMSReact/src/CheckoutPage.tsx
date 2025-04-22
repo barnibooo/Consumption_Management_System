@@ -192,7 +192,6 @@ function Checkout() {
     const validateAndFetchData = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        console.error("No token found. Redirecting to login...");
         window.location.href = "/login";
         return;
       }
@@ -211,7 +210,6 @@ function Checkout() {
         const isValidToken = await checkToken();
 
         if (!isValidToken) {
-          console.error("Invalid token. Redirecting to login...");
           window.location.href = "/login";
           return;
         }
@@ -257,7 +255,6 @@ function Checkout() {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Hiba történt:", error);
         if (error.response && error.response.status === 400) {
           setError(
             "Az oldal használatához magasabb jogosultság szükséges vagy a kapcsolat megszakadt!"
@@ -284,7 +281,6 @@ function Checkout() {
         },
       })
       .then((response) => {
-        console.log(response.data);
         if (response.data.message) {
           setCheckoutData({
             consumption: [],
@@ -296,7 +292,6 @@ function Checkout() {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Hiba történt:", error);
         if (error.response && error.response.status === 400) {
           setError(
             "Az oldal használatához magasabb jogosultság szükséges vagy a kapcsolat megszakadt!"
@@ -338,9 +333,8 @@ function Checkout() {
             window.location.reload();
           }, 6000);
         })
-        .catch((error) => {
-          console.error("Error finalizing customer:", error);
-          alert("Failed to finalize customer.");
+        .catch(() => {
+          alert("Hiba történt a kártyaazonosító visszaállításakor!");
         });
     }
   };

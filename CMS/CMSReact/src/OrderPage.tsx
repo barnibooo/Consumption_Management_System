@@ -135,11 +135,7 @@ const Menu: React.FC = () => {
           );
           setDailySpecials(filteredSpecials);
         })
-        .catch((error) => {
-          console.error(
-            "Hiba történt a napi ajánlatok betöltése közben:",
-            error
-          );
+        .catch(() => {
           setDailySpecials([]);
         });
     }
@@ -214,7 +210,6 @@ const Menu: React.FC = () => {
               },
             })
             .then((response) => {
-              console.log(response.data);
               if (response.status === 201) {
                 setOrderSuccess(true);
                 setOrders([]);
@@ -234,7 +229,6 @@ const Menu: React.FC = () => {
         }
       })
       .catch((error) => {
-        console.error("Hiba történt az adatok betöltése közben:", error);
         setDataLoadError(error);
       });
   };
@@ -280,7 +274,6 @@ const Menu: React.FC = () => {
     const validateAndFetchData = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        console.error("No token found. Redirecting to login...");
         setIsUnauthorized(true);
         return;
       }
@@ -292,16 +285,12 @@ const Menu: React.FC = () => {
           (decodedToken.role !== "Admin" &&
             decodedToken.role !== "RestaurantAssistant")
         ) {
-          console.error(
-            "Unauthorized access: Admin or RestaurantAssistant role required"
-          );
           setIsUnauthorized(true);
           return;
         }
 
         const isValidToken = await checkToken();
         if (!isValidToken) {
-          console.error("Invalid token. Redirecting to login...");
           setIsUnauthorized(true);
           return;
         }
@@ -341,7 +330,6 @@ const Menu: React.FC = () => {
         setIsUnauthorized(false);
         setLoading(false);
       } catch (error) {
-        console.error("Error during token validation or data fetching:", error);
         setIsUnauthorized(true);
         setLoading(false);
       }

@@ -24,7 +24,6 @@ const Landing = () => {
         // Token Validation
         const token = localStorage.getItem("token");
         if (!token) {
-          console.log("No token found, redirecting to login.");
           window.location.href = "/login";
           return;
         }
@@ -32,7 +31,6 @@ const Landing = () => {
         // Token Checks
         const isValid = await checkToken();
         if (!isValid) {
-          console.log("No valid");
           window.location.href = "/login";
           return;
         }
@@ -40,7 +38,6 @@ const Landing = () => {
         // Token Refresh
         const isRefreshed = await refreshToken();
         if (!isRefreshed) {
-          console.log("No rtoken found, redirecting to login.");
           window.location.href = "/login";
           return;
         }
@@ -58,7 +55,6 @@ const Landing = () => {
           setSnackbarVisible(true);
         }
       } catch (error) {
-        console.error("Authentication error:", error);
         window.location.href = "/login";
       } finally {
         setIsLoading(false);

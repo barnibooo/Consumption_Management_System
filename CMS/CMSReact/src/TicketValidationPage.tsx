@@ -83,7 +83,6 @@ function App() {
     const validateAndFetchData = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        console.error("No token found. Redirecting to login...");
         window.location.href = "/login";
         return;
       }
@@ -102,7 +101,6 @@ function App() {
         const isValidToken = await checkToken();
 
         if (!isValidToken) {
-          console.error("Invalid token. Redirecting to login...");
           window.location.href = "/login";
           return;
         }
@@ -295,7 +293,6 @@ function App() {
           >
             <Alert
               onClose={() => {
-                console.log(error);
                 if (error === "A megadott kártyaazonosító nem található!") {
                   setError(null);
                   window.location.reload();

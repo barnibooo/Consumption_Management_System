@@ -1,4 +1,4 @@
-import "./OrderPage.css";
+import "./index.css";
 import {
   Card,
   CardActionArea,

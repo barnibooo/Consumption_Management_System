@@ -106,9 +106,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
               },
             }
           );
-        } catch (error) {
-          console.error("Logout failed", error);
-        }
+        } catch (error) {}
       }
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");

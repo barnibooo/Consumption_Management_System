@@ -156,7 +156,6 @@ const Dashboard: React.FC = () => {
     const validateAndFetchData = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        console.error("No token found. Redirecting to login...");
         setIsUnauthorized(true);
         return;
       }
@@ -169,16 +168,12 @@ const Dashboard: React.FC = () => {
           (decodedToken.role !== "Admin" &&
             decodedToken.role !== "TicketAssistant")
         ) {
-          console.error(
-            "Unauthorized access: Admin or TicketAssistant role required"
-          );
           setIsUnauthorized(true);
           return;
         }
 
         const isValidToken = await checkToken();
         if (!isValidToken) {
-          console.error("Invalid token. Redirecting to login...");
           setIsUnauthorized(true);
           return;
         }
@@ -209,23 +204,17 @@ const Dashboard: React.FC = () => {
             if (Array.isArray(ticketsResponse.data)) {
               setticketItems(ticketsResponse.data);
             } else {
-              console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
             }
 
             if (Array.isArray(admissionsResponse.data)) {
               setAdmissionItems(admissionsResponse.data);
             } else {
-              console.error(
-                "Hibás API válasz: nem tömb",
-                admissionsResponse.data
-              );
             }
             setIsUnauthorized(false);
             setLoading(false);
           }
         );
       } catch (error) {
-        console.error("Error during token validation or data fetching:", error);
         setIsUnauthorized(true);
         setLoading(false);
       }
@@ -354,7 +343,6 @@ const Dashboard: React.FC = () => {
         handleClick();
       })
       .catch((error) => {
-        console.error("Error creating customer:", error);
         setError(error.message);
       })
       .finally(() => {
