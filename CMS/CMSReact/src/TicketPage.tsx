@@ -368,6 +368,15 @@ const Dashboard: React.FC = () => {
   };
 
   const hasBelepoInOrder = orders.some((item) => item.category === "Belépő");
+  const isFormValid = () => {
+    return (
+      hasBelepoInOrder &&
+      cardId &&
+      cardId.trim() !== "" &&
+      fullName &&
+      fullName.trim() !== ""
+    );
+  };
 
   return (
     <>
@@ -652,7 +661,7 @@ const Dashboard: React.FC = () => {
                   },
                 }}
                 onClick={handleSubmitOrder}
-                disabled={!hasBelepoInOrder}
+                disabled={!isFormValid()} // Update this line
               >
                 Jegyfoglalás
               </Button>
