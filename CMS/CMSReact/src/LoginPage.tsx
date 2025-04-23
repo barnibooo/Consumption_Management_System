@@ -196,7 +196,7 @@ function Login() {
               marginBottom: 2,
             }}
           >
-            Kérjük jelentkezz be!
+            Kérjük jelentkezzen be!
           </Typography>
 
           {/* Login Form */}

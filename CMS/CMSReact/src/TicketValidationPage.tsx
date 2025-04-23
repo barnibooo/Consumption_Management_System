@@ -387,7 +387,7 @@ function App() {
                   fontSize: { xs: "1.5rem", sm: "2rem" },
                 }}
               >
-                {customer ? `Hello ${customer?.name}!` : ""}
+                {customer ? `${customer?.name}` : ""}
               </Typography>
               <Typography
                 variant="h6"
