@@ -1,4 +1,3 @@
-import "./index.css";
 import {
   Card,
   CardActionArea,
@@ -80,6 +79,16 @@ const cardContent = (image: string, text: string, link: string) => (
   </CardActionArea>
 );
 
+const commonBoxStyle = {
+  width: {
+    xs: "100%",
+    sm: "80%",
+    md: "65%",
+    lg: "45%",
+    xl: "35%",
+  },
+};
+
 // Main Component
 function Landing() {
   // State Management
@@ -109,163 +118,109 @@ function Landing() {
   return (
     <>
       <ThemeProvider theme={darkTheme}>
-        {/* Card Grid Container */}
+        {/* Main Container */}
         <Box
-          display="flex"
-          flexWrap="wrap"
-          justifyContent="center"
-          sx={{ mt: 4, mb: 4, width: "100%" }}
+          sx={{
+            width: "100%", // Changed from 100%
+            backgroundColor: "#0f1827",
+            display: "flex", // Added
+            justifyContent: "center", // Added
+            overflowX: "hidden",
+          }}
         >
-          {/* Ticket Sales Card - Admin & TicketAssistant Only */}
-          {role === "Admin" || role === "TicketAssistant" ? (
-            <Box
-              sx={{
-                width: {
-                  xs: "100%",
-                  sm: "80%",
-                  md: "60%",
-                  lg: "45%",
-                  xl: "35%",
-                },
-                p: 1,
-              }}
-            >
-              <Card
-                sx={{
-                  maxWidth: "100%",
-                  height: "auto",
-                }}
-              >
-                {cardContent(
-                  "/img/landing/ticket_temp.png",
-                  "Jegyértékesítés",
-                  "ticket"
-                )}
-              </Card>
-            </Box>
-          ) : null}
+          {/* Card Grid Container */}
+          <Box
+            display="flex"
+            flexWrap="wrap"
+            justifyContent="center"
+            alignItems="flex-start" // Added
+            gap={2} // Increased from 2
+            sx={{
+              width: "100%",
+              maxWidth: "100vw", // Added responsive padding
+              py: 4,
+            }}
+          >
+            {/* Ticket Sales Card - Admin & TicketAssistant Only */}
+            {role === "Admin" || role === "TicketAssistant" ? (
+              <Box sx={commonBoxStyle}>
+                <Card sx={{ height: "100%" }}>
+                  {cardContent(
+                    "/img/landing/ticket_temp.png",
+                    "Jegyértékesítés",
+                    "ticket"
+                  )}
+                </Card>
+              </Box>
+            ) : null}
 
-          {/* Ticket Validation Card - Admin, TicketAssistant & RestaurantAssistant */}
-          {role === "Admin" ||
-          role === "TicketAssistant" ||
-          role === "RestaurantAssistant" ? (
-            <Box
-              sx={{
-                width: {
-                  xs: "100%",
-                  sm: "80%",
-                  md: "60%",
-                  lg: "45%",
-                  xl: "35%",
-                },
-                p: 1,
-              }}
-            >
-              <Card sx={{ maxWidth: "100%", height: "auto" }}>
-                {cardContent(
-                  "/img/landing/ticketcheck_temp.png",
-                  "Jegyellenőrzés",
-                  "ticketValidation"
-                )}
-              </Card>
-            </Box>
-          ) : null}
+            {/* Ticket Validation Card - Admin, TicketAssistant & RestaurantAssistant */}
+            {role === "Admin" ||
+            role === "TicketAssistant" ||
+            role === "RestaurantAssistant" ? (
+              <Box sx={commonBoxStyle}>
+                <Card sx={{ height: "100%" }}>
+                  {cardContent(
+                    "/img/landing/ticketcheck_temp.png",
+                    "Jegyellenőrzés",
+                    "ticketValidation"
+                  )}
+                </Card>
+              </Box>
+            ) : null}
 
-          {/* Registration Card - Admin Only */}
-          {role === "Admin" ? (
-            <Box
-              sx={{
-                width: {
-                  xs: "100%",
-                  sm: "80%",
-                  md: "60%",
-                  lg: "45%",
-                  xl: "35%",
-                },
-                p: 1,
-              }}
-            >
-              <Card sx={{ maxWidth: "100%", height: "auto" }}>
-                {cardContent(
-                  "/img/landing/registration_temp.png",
-                  "Regisztráció",
-                  "registration"
-                )}
-              </Card>
-            </Box>
-          ) : null}
+            {/* Registration Card - Admin Only */}
+            {role === "Admin" ? (
+              <Box sx={commonBoxStyle}>
+                <Card sx={{ height: "100%" }}>
+                  {cardContent(
+                    "/img/landing/registration_temp.png",
+                    "Regisztráció",
+                    "registration"
+                  )}
+                </Card>
+              </Box>
+            ) : null}
 
-          {/* Daily Specials Card - Admin Only */}
-          {role === "Admin" ? (
-            <Box
-              sx={{
-                width: {
-                  xs: "100%",
-                  sm: "80%",
-                  md: "60%",
-                  lg: "45%",
-                  xl: "35%",
-                },
-                p: 1,
-              }}
-            >
-              <Card sx={{ maxWidth: "100%", height: "auto" }}>
-                {cardContent(
-                  "/img/landing/daily_temp.png",
-                  "Napi ajánlat kezelő",
-                  "dailyspecials"
-                )}
-              </Card>
-            </Box>
-          ) : null}
+            {/* Daily Specials Card - Admin Only */}
+            {role === "Admin" ? (
+              <Box sx={commonBoxStyle}>
+                <Card sx={{ height: "100%" }}>
+                  {cardContent(
+                    "/img/landing/daily_temp.png",
+                    "Napi ajánlat kezelő",
+                    "dailyspecials"
+                  )}
+                </Card>
+              </Box>
+            ) : null}
 
-          {/* Restaurant Card - Admin & RestaurantAssistant Only */}
-          {role === "Admin" || role === "RestaurantAssistant" ? (
-            <Box
-              sx={{
-                width: {
-                  xs: "100%",
-                  sm: "80%",
-                  md: "60%",
-                  lg: "45%",
-                  xl: "35%",
-                },
-                p: 1,
-              }}
-            >
-              <Card sx={{ maxWidth: "100%", height: "auto" }}>
-                {cardContent(
-                  "/img/landing/restaurant_temp.png",
-                  "Étterem",
-                  "order"
-                )}
-              </Card>
-            </Box>
-          ) : null}
+            {/* Restaurant Card - Admin & RestaurantAssistant Only */}
+            {role === "Admin" || role === "RestaurantAssistant" ? (
+              <Box sx={commonBoxStyle}>
+                <Card sx={{ height: "100%" }}>
+                  {cardContent(
+                    "/img/landing/restaurant_temp.png",
+                    "Étterem",
+                    "order"
+                  )}
+                </Card>
+              </Box>
+            ) : null}
 
-          {/* Checkout Card - Admin & TicketAssistant Only */}
-          {role === "Admin" || role === "TicketAssistant" ? (
-            <Box
-              sx={{
-                width: {
-                  xs: "100%",
-                  sm: "80%",
-                  md: "60%",
-                  lg: "45%",
-                  xl: "35%",
-                },
-                p: 1,
-              }}
-            >
-              <Card sx={{ maxWidth: "100%", height: "auto" }}>
-                {cardContent(
-                  "/img/landing/checkout_temp.png",
-                  "Véglegesítés",
-                  "checkout"
-                )}
-              </Card>
-            </Box>
-          ) : null}
+            {/* Checkout Card - Admin & TicketAssistant Only */}
+            {role === "Admin" || role === "TicketAssistant" ? (
+              <Box sx={commonBoxStyle}>
+                <Card sx={{ height: "100%" }}>
+                  {cardContent(
+                    "/img/landing/checkout_temp.png",
+                    "Véglegesítés",
+                    "checkout"
+                  )}
+                </Card>
+              </Box>
+            ) : null}
+          </Box>
         </Box>
       </ThemeProvider>
     </>
