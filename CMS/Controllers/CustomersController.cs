@@ -159,7 +159,7 @@ namespace CMS.Controllers
 
             if (existingCustomer != null)
             {
-                return BadRequest(new { message = "A customer with the same CardId and IsActive = true already exists." });
+                return Conflict(new { message = $"A customer with the same CardId and IsActive = true already exists." });
             }
 
             var employeeExists = await _context.Employees.AnyAsync(e => e.EmployeeId == customerpostdto.CreatedBy);

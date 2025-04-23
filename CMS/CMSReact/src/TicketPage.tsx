@@ -259,19 +259,19 @@ const Dashboard: React.FC = () => {
           autoHideDuration={6000}
           onClose={() => {
             setError(null);
-            window.location.href = "/";
+            window.location.href = "/ticket";
           }}
         >
           <Alert
             onClose={() => {
               setError(null);
-              window.location.href = "/";
+              window.location.href = "/ticket";
             }}
             severity="error"
             variant="filled"
             sx={{ width: "100%" }}
           >
-            Hiba történt az adatok betöltése közben!
+            {error}
           </Alert>
         </Snackbar>
       </Box>
@@ -343,7 +343,14 @@ const Dashboard: React.FC = () => {
         handleClick();
       })
       .catch((error) => {
-        setError(error.message);
+        console.log(error);
+        if (error.response?.status === 409) {
+          setError(
+            "Az adott kártya már aktív, így a jegyvásárlás nem lehetséges!"
+          );
+        } else {
+          setError("Hiba történt a rendelés leadása során!");
+        }
       })
       .finally(() => {
         setLoading(false);

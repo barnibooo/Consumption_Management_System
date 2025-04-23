@@ -29,25 +29,5 @@ namespace CMS.Controllers
         {
             return await _context.Admissions.ToListAsync();
         }
-
-
-
-        // POST: api/Admissions
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        [Authorize(Policy = "AdminOnly")]
-        public async Task<ActionResult<Admission>> PostAdmission(Admission admission)
-        {
-            _context.Admissions.Add(admission);
-            await _context.SaveChangesAsync();
-
-            return StatusCode(StatusCodes.Status201Created, admission);
-        }
-
-
-        private bool AdmissionExists(int id)
-        {
-            return _context.Admissions.Any(e => e.AdmissionId == id);
-        }
     }
 }
