@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- https://go.microsoft.com/fwlink/?LinkID=208121. -->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\Users\orbanb\Desktop\ki</_PublishTargetUrl>
+    <History>True|2025-04-23T19:23:16.8325010Z||;True|2025-04-23T20:55:55.1940687+02:00||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="CMSContext">
+      <Value>Data Source=CMS.db</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

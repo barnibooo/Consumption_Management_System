@@ -93,7 +93,6 @@ app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.Run();
-
 // Egyéni middleware osztály a .html kiterjesztés nélküli URL-ek kezeléséhez
 public class HtmlExtensionMiddleware
 {

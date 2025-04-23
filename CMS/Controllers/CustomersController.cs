@@ -22,9 +22,9 @@ namespace CMS.Controllers
             _context = context;
         }
 
-        // GET: api/Customers
-        // GET: api/Customers
-        [HttpGet]
+  
+
+      /*  [HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerGetDto>>> GetCustomers()
         {
             var customers = await _context.Customers
@@ -56,11 +56,8 @@ namespace CMS.Controllers
 
             return customerDtos;
         }
+      */
 
-
-
-
-        // GET: api/Customers/5
         [HttpGet("{cardid}")]
         [Authorize]
         public async Task<ActionResult<CustomerGetIdDto>> GetCustomer(string cardid)
@@ -95,7 +92,7 @@ namespace CMS.Controllers
                 }).ToList()
             };
 
-            return Ok(customerGetIdDto); // 200 OK and the requested data
+            return Ok(customerGetIdDto); 
         }
 
 
@@ -106,7 +103,7 @@ namespace CMS.Controllers
         [Authorize(Policy = "AdminOrTicketOnly")]
         public async Task<IActionResult> PutCustomer(string cardid, [FromBody] CustomerIsActiveDto customerIsActiveDto)
         {
-            // Check if there is an active customer with the same cardId
+     
             var existingCustomer = await _context.Customers
                 .FirstOrDefaultAsync(c => c.CardId == cardid && c.IsActive);
 
@@ -115,7 +112,6 @@ namespace CMS.Controllers
                 return NotFound(new { message = "Active customer with the given cardId not found." });
             }
 
-            // Update the IsActive field of the existing customer to false
             existingCustomer.IsActive = false;
             existingCustomer.CardId = "";
             _context.Entry(existingCustomer).State = EntityState.Modified;
@@ -196,7 +192,7 @@ namespace CMS.Controllers
                 Name = customerpostdto.Name,
                 CreatedBy = customerpostdto.CreatedBy,
                 CreatedAt = DateTime.Now,
-                IsActive = customerpostdto.IsActive, // Ensure IsActive is set correctly
+                IsActive = customerpostdto.IsActive, 
                 CustomerTickets = new List<CustomerTicket>(),
                 CustomerAdmissions = new List<CustomerAdmission>()
             };
@@ -224,14 +220,6 @@ namespace CMS.Controllers
 
             return Ok(new { message = "Customer created successfully.", CustomerId = customer.CustomerId });
         }
-
-
-
-
-
-
-
-
         private bool CustomerExists(int id)
         {
             return _context.Customers.Any(e => e.CustomerId == id);
