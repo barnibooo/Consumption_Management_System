@@ -1,0 +1,6 @@
+CMS/.vs/
+CMS/bin/
+CMS/obj/
+CMS/*.db-shm
+CMS/*.db-wal
+CMS/CMSReact/node_modules
