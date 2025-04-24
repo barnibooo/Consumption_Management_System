@@ -1,9 +1,21 @@
 # Consumption Management System (CMS)
 
-A modern, RFID-alapú fogyasztáskezelő rendszer szállodák, fürdők és egyéb szolgáltatóhelyek számára. A rendszer célja a vendégek kényelmes, egy karszalagos azonosításon alapuló fogyasztásának nyomon követése és kezelése.
+![Logo](ReadmeImages/Logo.png)
 
-## Képek
+Modern, RFID-alapú fogyasztáskezelő rendszer szállodák, fürdők és egyéb szolgáltatóhelyek számára. A rendszer célja a vendégek kényelmes, egy karszalagos azonosításon alapuló fogyasztásának nyomon követése és kezelése.
+
+## 🖼️ Képek
+### Login Page
 ![LoginPage](ReadmeImages/LoginPage.PNG)
+
+### Landing Page
+![LandingPage](ReadmeImages/LandingPage.PNG)
+
+### Order Page
+![OrdernPage](ReadmeImages/OrderPage.PNG)
+
+### Daily Specials Page
+![DailySpecialsPage](ReadmeImages/DailySpecialsPage.PNG)
 
 
 ## 📁 Főbb jellemzők
@@ -15,7 +27,7 @@ A modern, RFID-alapú fogyasztáskezelő rendszer szállodák, fürdők és egy�
 - Rendelés, jegyvásárlás, napi ajánlat, és fogyasztás-véglegesítés funkciók
 - Modern, reszponzív felhasználói felület
 
-## 🧑‍💻 Fejlesztői eszközök
+## 💻 Fejlesztői eszközök
 
 - Visual Studio 2022 (.NET backend)
 - Visual Studio Code (React frontend)
@@ -49,7 +61,7 @@ Ez a projekt kizárólag vizsgaremek célokra készült. Nem kereskedelmi forgal
 
 ---
 
-Created by:  
+🤝 Created by:  
 **Dobosi Gábor**  
 **Mák Luca**  
 **Orbán Barnabás**
