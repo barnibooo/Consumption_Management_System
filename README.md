@@ -101,7 +101,7 @@ A fejlesztői mód lehetővé teszi a rendszer különálló backend és fronten
 
 ## 📄 License
 
-Ez a projekt kizárólag vizsgaremek célokra készült. Kereskedelmi forgalomba nem hozható.
+Ez a projekt kizárólag vizsgaremek célokra készült. Kereskedelmi forgalomba nem hozható!
 
 ---
 
