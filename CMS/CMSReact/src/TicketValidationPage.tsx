@@ -91,7 +91,8 @@ function App() {
       if (
         !decodedToken ||
         (decodedToken.role !== "Admin" &&
-          decodedToken.role !== "TicketAssistant")
+          decodedToken.role !== "TicketAssistant" &&
+          decodedToken.role !== "RestaurantAssistant")
       ) {
         setIsUnauthorized(true);
         return;
