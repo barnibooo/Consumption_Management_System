@@ -3,7 +3,7 @@
 A modern, RFID-alapú fogyasztáskezelő rendszer szállodák, fürdők és egyéb szolgáltatóhelyek számára. A rendszer célja a vendégek kényelmes, egy karszalagos azonosításon alapuló fogyasztásának nyomon követése és kezelése.
 
 ## Képek
-![LoginPage]([ReadmeImages/LoginPage.PNG](https://github.com/barnibooo/Consumption_Management_System/blob/main/ReadmeImages/LoginPage.PNG))
+![LoginPage]([ReadmeImages/LoginPage.PNG](https://github.com/barnibooo/Consumption_Management_System/raw/main/ReadmeImages/LoginPage.PNG))
 
 
 ## 📁 Főbb jellemzők
