@@ -105,7 +105,7 @@ Ez a projekt kizárólag vizsgaremek célokra készült. Kereskedelmi forgalomba
 
 ---
 
-🤝 Created by:  
+## 🤝 Created by  
 - [Dobosi Gábor](https://github.com/dobosig) 
 - [Mák Luca](https://github.com/makluca)
 - [Orban Barnabás](https://github.com/barnibooo)
