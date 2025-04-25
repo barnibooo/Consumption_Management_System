@@ -5,9 +5,13 @@ import {
   View,
   StyleSheet,
   PDFViewer,
+  Font,
 } from "@react-pdf/renderer";
 import { ConsumptionItem } from "./CheckoutPage";
-
+Font.register({
+  family: "Montserrat",
+  src: "/fonts/Montserrat-Regular.ttf", // Replace with the actual path to your Arial font file
+});
 // PDF Styles
 const styles = StyleSheet.create({
   // Viewer Styles
@@ -36,25 +40,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
     textAlign: "center",
+    fontFamily: "Montserrat", 
   },
   header: {
     fontSize: 12,
     marginBottom: 8,
+    fontFamily: "Montserrat", 
   },
   text: {
     fontSize: 8,
     marginBottom: 3,
+    fontFamily: "Montserrat", 
   },
   total: {
     marginTop: 10,
     fontSize: 12,
     fontWeight: "bold",
+    fontFamily: "Montserrat", 
   },
   // Content Containers
   item: {
     marginBottom: 6,
     padding: 6,
     borderBottom: "1 solid #CCCCCC",
+    fontFamily: "Montserrat", 
   },
 });
 
