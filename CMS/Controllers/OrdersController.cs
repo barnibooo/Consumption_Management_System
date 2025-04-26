@@ -22,26 +22,6 @@ namespace CMS.Controllers
             _context = context;
         }
 
-     /*
-       [HttpGet]
-        public async Task<ActionResult<IEnumerable<Object>>> GetOrders()
-        {
-            return await _context.Orders.Select(order => new
-            {
-                OrderId = order.OrderId,
-                CustomerId = order.CustomerId,
-                EmployeeId = order.EmployeeId,
-                CreatedAt = order.CreatedAt,
-                MenuItems = order.MenuItemOrders.Select(mio => new
-                {
-                    mio.MenuItems.ItemId,
-                    mio.Quantity
-                }).ToList()
-            }).ToListAsync();
-        }
-
-        */
-
         
         [HttpPost]
         [Authorize(Policy = "AdminOrRestaurantOnly")]

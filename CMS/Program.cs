@@ -15,11 +15,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// SQLite
 builder.Services.AddDbContext<CMSContext>(
     db => db.UseSqlite(builder.Configuration.GetConnectionString("CMSContext")));
 
-// CORS policy hozzáadása
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
@@ -61,7 +59,6 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-// CORS middleware használata
 app.UseCors("AllowAllOrigins");
 
 if (app.Environment.IsDevelopment())
@@ -76,10 +73,8 @@ app.UseAuthorization();
 
 string currentDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
 
-// Egyéni middleware a .html kiterjesztés nélküli fájlok kezeléséhez
 app.UseMiddleware<HtmlExtensionMiddleware>();
 
-// Statikus fájlok kiszolgálása
 app.UseDefaultFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
@@ -89,11 +84,9 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.MapControllers();
 
-// Végsõ fallback az index.html-re
 app.MapFallbackToFile("index.html");
 
 app.Run();
-// Egyéni middleware osztály a .html kiterjesztés nélküli URL-ek kezeléséhez
 public class HtmlExtensionMiddleware
 {
     private readonly RequestDelegate _next;
@@ -109,25 +102,20 @@ public class HtmlExtensionMiddleware
     {
         var path = context.Request.Path.Value?.TrimStart('/');
 
-        // Ha nincs kiterjesztés és nem végzõdik /-re
         if (!string.IsNullOrEmpty(path) && !Path.HasExtension(path) && !path.EndsWith("/"))
         {
             var htmlFilePath = Path.Combine(_rootPath, path + ".html");
 
-            // Ellenõrizzük, hogy létezik-e a .html fájl
             if (File.Exists(htmlFilePath))
             {
-                // Beállítjuk a megfelelõ fejléceket
                 context.Response.ContentType = "text/html";
                 context.Response.Headers[HeaderNames.CacheControl] = "no-cache";
 
-                // Közvetlenül kiszolgáljuk a fájlt
                 await context.Response.SendFileAsync(htmlFilePath);
                 return;
             }
         }
 
-        // Ha nem találtunk megfelelõ .html fájlt, folytatjuk a pipeline-t
         await _next(context);
     }
 }

@@ -22,42 +22,6 @@ namespace CMS.Controllers
             _context = context;
         }
 
-  
-
-      /*  [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerGetDto>>> GetCustomers()
-        {
-            var customers = await _context.Customers
-                .Include(c => c.CustomerTickets)
-                .ThenInclude(ct => ct.Tickets)
-                .Include(c => c.CustomerAdmissions)
-                .ThenInclude(ca => ca.Admissions)
-                .ToListAsync();
-
-            var customerDtos = customers.Select(customer => new CustomerGetDto
-            {
-                CustomerId = customer.CustomerId,
-                CardId = customer.CardId,
-                Name = customer.Name,
-                CreatedAt = customer.CreatedAt,
-                CreatedBy = customer.CreatedBy,
-                IsActive = customer.IsActive,
-                Tickets = customer.CustomerTickets.Select(ct => new CustomerTicketsDto
-                {
-                    TicketId = ct.TicketId,
-                    TicketName = ct.Tickets.TicketName
-                }).ToList(),
-                Admissions = customer.CustomerAdmissions.Select(ca => new CustomerAdmissionDto
-                {
-                    AdmissionId = ca.AdmissionId,
-                    AdmissionName = ca.Admissions.AdmissionName
-                }).ToList()
-            }).ToList();
-
-            return customerDtos;
-        }
-      */
-
         [HttpGet("{cardid}")]
         [Authorize]
         public async Task<ActionResult<CustomerGetIdDto>> GetCustomer(string cardid)
