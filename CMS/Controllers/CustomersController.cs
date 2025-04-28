@@ -22,45 +22,6 @@ namespace CMS.Controllers
             _context = context;
         }
 
-        // GET: api/Customers
-        // GET: api/Customers
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerGetDto>>> GetCustomers()
-        {
-            var customers = await _context.Customers
-                .Include(c => c.CustomerTickets)
-                .ThenInclude(ct => ct.Tickets)
-                .Include(c => c.CustomerAdmissions)
-                .ThenInclude(ca => ca.Admissions)
-                .ToListAsync();
-
-            var customerDtos = customers.Select(customer => new CustomerGetDto
-            {
-                CustomerId = customer.CustomerId,
-                CardId = customer.CardId,
-                Name = customer.Name,
-                CreatedAt = customer.CreatedAt,
-                CreatedBy = customer.CreatedBy,
-                IsActive = customer.IsActive,
-                Tickets = customer.CustomerTickets.Select(ct => new CustomerTicketsDto
-                {
-                    TicketId = ct.TicketId,
-                    TicketName = ct.Tickets.TicketName
-                }).ToList(),
-                Admissions = customer.CustomerAdmissions.Select(ca => new CustomerAdmissionDto
-                {
-                    AdmissionId = ca.AdmissionId,
-                    AdmissionName = ca.Admissions.AdmissionName
-                }).ToList()
-            }).ToList();
-
-            return customerDtos;
-        }
-
-
-
-
-        // GET: api/Customers/5
         [HttpGet("{cardid}")]
         [Authorize]
         public async Task<ActionResult<CustomerGetIdDto>> GetCustomer(string cardid)
@@ -95,7 +56,7 @@ namespace CMS.Controllers
                 }).ToList()
             };
 
-            return Ok(customerGetIdDto); // 200 OK and the requested data
+            return Ok(customerGetIdDto); 
         }
 
 
@@ -106,7 +67,7 @@ namespace CMS.Controllers
         [Authorize(Policy = "AdminOrTicketOnly")]
         public async Task<IActionResult> PutCustomer(string cardid, [FromBody] CustomerIsActiveDto customerIsActiveDto)
         {
-            // Check if there is an active customer with the same cardId
+     
             var existingCustomer = await _context.Customers
                 .FirstOrDefaultAsync(c => c.CardId == cardid && c.IsActive);
 
@@ -115,7 +76,6 @@ namespace CMS.Controllers
                 return NotFound(new { message = "Active customer with the given cardId not found." });
             }
 
-            // Update the IsActive field of the existing customer to false
             existingCustomer.IsActive = false;
             existingCustomer.CardId = "";
             _context.Entry(existingCustomer).State = EntityState.Modified;
@@ -159,7 +119,7 @@ namespace CMS.Controllers
 
             if (existingCustomer != null)
             {
-                return BadRequest(new { message = "A customer with the same CardId and IsActive = true already exists." });
+                return Conflict(new { message = $"A customer with the same CardId and IsActive = true already exists." });
             }
 
             var employeeExists = await _context.Employees.AnyAsync(e => e.EmployeeId == customerpostdto.CreatedBy);
@@ -196,7 +156,7 @@ namespace CMS.Controllers
                 Name = customerpostdto.Name,
                 CreatedBy = customerpostdto.CreatedBy,
                 CreatedAt = DateTime.Now,
-                IsActive = customerpostdto.IsActive, // Ensure IsActive is set correctly
+                IsActive = customerpostdto.IsActive, 
                 CustomerTickets = new List<CustomerTicket>(),
                 CustomerAdmissions = new List<CustomerAdmission>()
             };
@@ -224,14 +184,6 @@ namespace CMS.Controllers
 
             return Ok(new { message = "Customer created successfully.", CustomerId = customer.CustomerId });
         }
-
-
-
-
-
-
-
-
         private bool CustomerExists(int id)
         {
             return _context.Customers.Any(e => e.CustomerId == id);

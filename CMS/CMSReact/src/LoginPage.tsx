@@ -7,17 +7,30 @@ import Typography from "@mui/material/Typography";
 import LoginIcon from "@mui/icons-material/Login";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Button, TextField, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  TextField,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { checkToken } from "./AuthService";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-function MediaCard() {
+function Login() {
+  // State management
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("lg"));
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
+  // Authentication Check Effect
   useEffect(() => {
     const validateToken = async () => {
       const isValid = await checkToken();
@@ -29,43 +42,56 @@ function MediaCard() {
     validateToken();
   }, []);
 
+  // Form Submit Handler
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!userName || !password) {
       setError("Minden mezőt ki kell tölteni!");
       return;
     }
-    setIsLoading(true);
+
+    setIsChecking(true);
+    setError("");
+    setStatusMessage("Adatok ellenőrzése folyamatban...");
+
     axios
       .post("https://localhost:5000/api/Auth/login", {
         userName,
         password,
       })
       .then((response) => {
-        console.log(response);
         if (response.data.token && response.data.refreshToken) {
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("refreshToken", response.data.refreshToken);
-          setError("");
+          setIsChecking(false);
+          setIsLoading(true);
+          setStatusMessage("Sikeres belépés! Átirányítás folyamatban...");
           setTimeout(() => {
             window.location.href = "/";
-          }, 0);
+          }, 1500);
         } else {
           setError("Hiba történt: Érvénytelen válasz a szervertől.");
-          setIsLoading(false);
+          setIsChecking(false);
+          setStatusMessage("");
         }
       })
       .catch((error) => {
+        setIsChecking(false);
+        setIsLoading(false);
+        setStatusMessage("");
         if (error.response && error.response.status === 401) {
           setError("Hibás felhasználónév vagy jelszó.");
         } else {
-          setError("Hiba történt: Sikertelen bejelentkezés.");
+          setError(
+            "Sikertelen kapcsolódás a kiszolgálószerverrel! Próbálja újra később!"
+          );
         }
-        setIsLoading(false);
       });
   };
 
+  // Component Render
   return (
+    // Main Container
     <Box
       sx={{
         backgroundColor: "#0F1827",
@@ -76,21 +102,24 @@ function MediaCard() {
         minHeight: "100vh",
       }}
     >
+      {/* Login Card */}
       <Card
         sx={{
           color: "#d5d6d6",
           backgroundColor: "#202938",
           width: {
-            xs: "90%",
-            sm: "70%",
+            xs: "95%",
+            sm: "85%",
             md: "55%",
             lg: "60%",
           },
           height: "auto",
           display: "flex",
           flexDirection: isSmallScreen ? "column" : "row",
+          maxHeight: { xs: "100vh", sm: "none" },
         }}
       >
+        {/* Login Image - Desktop Only */}
         {!isSmallScreen && (
           <CardMedia
             component="img"
@@ -104,6 +133,8 @@ function MediaCard() {
             alt="Login sample"
           />
         )}
+
+        {/* Login Form Container */}
         <CardContent
           sx={{
             display: "flex",
@@ -112,8 +143,12 @@ function MediaCard() {
             alignItems: "center",
             width: isSmallScreen ? "100%" : "60%",
             flex: 1,
+            padding: { xs: 0, sm: 3, md: 4 },
+            paddingBottom: { xs: 2, sm: 3, md: 4 },
+            paddingTop: { xs: 2, sm: 3, md: 4 },
           }}
         >
+          {/* Header Section */}
           <Typography
             gutterBottom
             variant="h5"
@@ -125,6 +160,8 @@ function MediaCard() {
               color: "#d5d6d6",
               textDecoration: "none",
               marginBottom: 2,
+              fontSize: { xs: "1.2rem", sm: "1.5rem" },
+              textAlign: "center",
             }}
           >
             Consumption Management System
@@ -140,6 +177,8 @@ function MediaCard() {
               color: "#d5d6d6",
               textDecoration: "none",
               marginBottom: 2,
+              fontSize: { xs: "2rem", sm: "3rem", md: "3.75rem" },
+              textAlign: "center",
             }}
           >
             Üdvözöljük!
@@ -157,8 +196,10 @@ function MediaCard() {
               marginBottom: 2,
             }}
           >
-            Kérjük jelentkezz be!
+            Kérjük jelentkezzen be!
           </Typography>
+
+          {/* Login Form */}
           <form
             onSubmit={handleSubmit}
             style={{
@@ -168,9 +209,10 @@ function MediaCard() {
               alignItems: "center",
             }}
           >
+            {/* Username Field */}
             <TextField
               sx={{
-                width: "70%",
+                width: { xs: "90%", sm: "80%", md: "70%" },
                 height: "Auto",
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": {
@@ -185,6 +227,7 @@ function MediaCard() {
                 },
                 "& .MuiInputLabel-root": {
                   color: "#d5d6d6",
+                  fontSize: { xs: "0.9rem", sm: "1rem" },
                 },
                 "& .MuiInputLabel-root.Mui-focused": {
                   color: "#BFA181",
@@ -192,8 +235,9 @@ function MediaCard() {
                 "& .MuiInputBase-input": {
                   color: "#d5d6d6",
                   caretColor: "#d5d6d6",
+                  padding: { xs: "12px 14px", sm: "16.5px 14px" },
                 },
-                marginBottom: 2,
+                marginBottom: { xs: 1, sm: 2 },
               }}
               required
               id="outlined-search"
@@ -203,9 +247,11 @@ function MediaCard() {
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
             />
+
+            {/* Password Field */}
             <TextField
               sx={{
-                width: "70%",
+                width: { xs: "90%", sm: "80%", md: "70%" },
                 height: "Auto",
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": {
@@ -220,6 +266,7 @@ function MediaCard() {
                 },
                 "& .MuiInputLabel-root": {
                   color: "#d5d6d6",
+                  fontSize: { xs: "0.9rem", sm: "1rem" },
                 },
                 "& .MuiInputLabel-root.Mui-focused": {
                   color: "#BFA181",
@@ -227,45 +274,72 @@ function MediaCard() {
                 "& .MuiInputBase-input": {
                   color: "#d5d6d6",
                   caretColor: "#d5d6d6",
+                  padding: { xs: "12px 14px", sm: "16.5px 14px" },
                 },
-                marginBottom: 2,
+                marginBottom: { xs: 1, sm: 2 },
               }}
               required
               id="outlined-password-input"
               label="Jelszó"
-              type="password"
+              type={showPassword ? "text" : "password"}
               autoComplete="current-password"
               margin="dense"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                    sx={{ color: "#d5d6d6" }}
+                  >
+                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  </IconButton>
+                ),
+              }}
             />
+
+            {/* Error Message */}
             {error && (
               <Typography
                 variant="body2"
                 color="error"
-                sx={{ marginBottom: 2 }}
+                sx={{ marginBottom: 2, textAlign: "center" }}
               >
                 {error}
               </Typography>
             )}
-            {isLoading ? (
+
+            {/* Loading State */}
+            {(isChecking || isLoading) && (
               <>
                 <Typography
                   variant="body2"
-                  color="success"
-                  sx={{ marginBottom: 2 }}
+                  color={isLoading ? "success" : "primary"}
+                  sx={{ marginBottom: 2, textAlign: "center" }}
                 >
-                  Sikeres belépés, átirányítás...
+                  {statusMessage}
                 </Typography>
-                <CircularProgress sx={{ marginBottom: 2 }} />
+                <CircularProgress
+                  sx={{ marginBottom: 2 }}
+                  color={isLoading ? "success" : "primary"}
+                />
               </>
-            ) : (
+            )}
+
+            {/* Submit Button */}
+            {!isChecking && !isLoading && (
               <Button
                 sx={{
-                  width: "70%",
+                  width: { xs: "90%", sm: "80%", md: "70%" },
                   height: "Auto",
                   backgroundColor: "#BFA181",
-                  marginBottom: 2,
+                  marginBottom: { xs: 1, sm: 2 },
+                  padding: { xs: "8px", sm: "12px" },
+                  fontSize: { xs: "0.9rem", sm: "1rem" },
+                  "&:hover": {
+                    backgroundColor: "#9e9386",
+                  },
                 }}
                 variant="contained"
                 endIcon={<LoginIcon />}
@@ -281,4 +355,4 @@ function MediaCard() {
   );
 }
 
-export default MediaCard;
+export default Login;

@@ -20,7 +20,6 @@ export const Getrolefortocken = async () => {
 
     const data = response.data;
 
-    console.log("Role received successfully");
     return data.Role;
   } catch (error) {
     return false;

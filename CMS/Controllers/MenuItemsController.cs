@@ -32,66 +32,6 @@ namespace CMS.Controllers
             return await _context.MenuItems.ToListAsync();
         }
         
-        // PUT: api/MenuItems/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-       /* [HttpPut("{id}")]
-        public async Task<IActionResult> PutMenuItem(int id, MenuItem menuItem)
-        {
-            if (id != menuItem.ItemId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(menuItem).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MenuItemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/MenuItems
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<IActionResult> CreateMenuItem([FromBody] MenuItemPostDto MenuItemPostDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState); // 400-as válasz, ha a DTO nem érvényes
-            }
-
-            var menuItem = new MenuItem
-            {
-                Name = MenuItemPostDto.Name,
-                Category = MenuItemPostDto.Category,
-                Price = MenuItemPostDto.Price,
-                Description = MenuItemPostDto.Description,
-                IsAvailable = MenuItemPostDto.IsAvailable,
-                ImagePath = MenuItemPostDto.ImagePath
-            };
-
-            _context.MenuItems.Add(menuItem);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(CreateMenuItem), new { id = menuItem.ItemId }, new
-            {
-                message = "Item created successfully.",
-            });
-        }*/
-
         private bool MenuItemExists(int id)
         {
             return _context.MenuItems.Any(e => e.ItemId == id);

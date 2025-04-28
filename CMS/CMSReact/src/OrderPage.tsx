@@ -42,6 +42,7 @@ import { checkToken } from "./AuthService";
 import { refreshToken } from "./RefreshService";
 import { parseJwt } from "./JWTParser";
 
+// Types & Interfaces
 interface MenuItem {
   quantity: number;
   imagePath: string | undefined;
@@ -53,6 +54,7 @@ interface MenuItem {
   isAvailable: boolean;
 }
 
+// Styles
 const iconStyle = {
   fontSize: 35,
   color: "#d5d6d6",
@@ -61,6 +63,19 @@ const iconStyle = {
   },
 };
 
+// Global Styles
+const style = document.createElement("style");
+style.textContent = `
+  body {
+    background-color: #0f1827;
+    color: #d5d6d6;
+    margin: 0;
+    padding: 0;
+  }
+`;
+document.head.appendChild(style);
+
+// Category Icon Mapping
 const categoryIcons: { [key: string]: React.ReactElement } = {
   Leves: <RamenDiningOutlined sx={iconStyle} />,
   Előétel: <BakeryDiningOutlinedIcon sx={iconStyle} />,
@@ -75,7 +90,12 @@ const categoryIcons: { [key: string]: React.ReactElement } = {
   "Napi ajánlat": <CalendarTodayOutlinedIcon sx={iconStyle} />,
 };
 
-const Dashboard: React.FC = () => {
+/**
+ * Menu Component
+ * Handles menu display, order management, and cart functionality
+ */
+const Menu: React.FC = () => {
+  // State Management
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -85,7 +105,9 @@ const Dashboard: React.FC = () => {
   const [dailySpecials, setDailySpecials] = useState<any | null>(null);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [errorSnackbar, setErrorSnackbar] = useState(false);
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
 
+  // Event Handlers
   const handleCategoryClick = (category: string | null) => {
     setSelectedCategory(category);
     if (category === "Napi ajánlat") {
@@ -113,11 +135,7 @@ const Dashboard: React.FC = () => {
           );
           setDailySpecials(filteredSpecials);
         })
-        .catch((error) => {
-          console.error(
-            "Hiba történt a napi ajánlatok betöltése közben:",
-            error
-          );
+        .catch(() => {
           setDailySpecials([]);
         });
     }
@@ -158,99 +176,6 @@ const Dashboard: React.FC = () => {
     );
   };
 
-  const calculateTotalPrice = () => {
-    return orders.reduce(
-      (total, orderItem) => total + orderItem.price * orderItem.quantity,
-      0
-    );
-  };
-
-  const [isUnauthorized, setIsUnauthorized] = useState(false); // Új állapot
-
-  useEffect(() => {
-    const validateAndFetchData = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("No token found. Redirecting to login...");
-        setIsUnauthorized(true);
-        return;
-      }
-
-      try {
-        // Check for Admin or RestaurantAssistant role
-        const decodedToken = parseJwt(token);
-        if (
-          !decodedToken ||
-          (decodedToken.role !== "Admin" &&
-            decodedToken.role !== "RestaurantAssistant")
-        ) {
-          console.error(
-            "Unauthorized access: Admin or RestaurantAssistant role required"
-          );
-          setIsUnauthorized(true);
-          return;
-        }
-
-        const isValidToken = await checkToken();
-        if (!isValidToken) {
-          console.error("Invalid token. Redirecting to login...");
-          setIsUnauthorized(true);
-          return;
-        }
-
-        await refreshToken();
-
-        const newToken = localStorage.getItem("token");
-        if (!newToken) {
-          throw new Error("Token refresh failed");
-        }
-
-        const menuResponse = await axios.get(
-          "https://localhost:5000/api/MenuItems",
-          {
-            headers: {
-              Authorization: `Bearer ${newToken}`,
-            },
-          }
-        );
-
-        if (Array.isArray(menuResponse.data)) {
-          setMenuItems(menuResponse.data);
-        }
-
-        // Fetch daily specials with new token
-        const dailySpecialsResponse = await axios.get(
-          "https://localhost:5000/api/DailySpecials",
-          {
-            headers: {
-              Authorization: `Bearer ${newToken}`,
-            },
-          }
-        );
-
-        if (dailySpecialsResponse.data) {
-          setDailySpecials(dailySpecialsResponse.data);
-        }
-
-        setIsUnauthorized(false);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error during token validation or data fetching:", error);
-        setIsUnauthorized(true);
-        setLoading(false);
-      }
-    };
-
-    validateAndFetchData();
-  }, []);
-
-  // Handle unauthorized access
-  if (isUnauthorized) {
-    localStorage.setItem("isUnauthorizedRedirect", "true");
-    window.location.href = "/";
-    return null;
-  }
-
   const handleSubmitOrder = () => {
     if (!cardId || orders.length === 0) {
       return;
@@ -285,7 +210,6 @@ const Dashboard: React.FC = () => {
               },
             })
             .then((response) => {
-              console.log(response.data);
               if (response.status === 201) {
                 setOrderSuccess(true);
                 setOrders([]);
@@ -305,11 +229,123 @@ const Dashboard: React.FC = () => {
         }
       })
       .catch((error) => {
-        console.error("Hiba történt az adatok betöltése közben:", error);
         setDataLoadError(error);
       });
   };
 
+  // Utility Functions
+  const calculateTotalPrice = () => {
+    return orders.reduce(
+      (total, orderItem) => total + orderItem.price * orderItem.quantity,
+      0
+    );
+  };
+
+  var l = menuItems.length;
+
+  const getUniqueCategories = () => {
+    const categories: string[] = [];
+
+    for (let i = 0; i < l; i++) {
+      const category = menuItems[i].category;
+      if (!categories.includes(category)) {
+        categories.push(category);
+      }
+    }
+    return categories;
+  };
+
+  const uniqueCategories = getUniqueCategories();
+
+  const filteredCategories = uniqueCategories.filter(
+    (category) => category !== "Egyéb"
+  );
+
+  filteredCategories.unshift("Napi ajánlat"); // A "Napi ajánlat" kategória hozzáadása az elejére
+
+  const hasEgyebItems = menuItems.some((item) => item.category === "Egyéb");
+
+  const filteredMenuItems = selectedCategory
+    ? menuItems.filter((item) => item.category === selectedCategory)
+    : menuItems;
+
+  // Authentication & Data Fetching
+  useEffect(() => {
+    const validateAndFetchData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setIsUnauthorized(true);
+        return;
+      }
+
+      try {
+        const decodedToken = parseJwt(token);
+        if (
+          !decodedToken ||
+          (decodedToken.role !== "Admin" &&
+            decodedToken.role !== "RestaurantAssistant")
+        ) {
+          setIsUnauthorized(true);
+          return;
+        }
+
+        const isValidToken = await checkToken();
+        if (!isValidToken) {
+          setIsUnauthorized(true);
+          return;
+        }
+
+        await refreshToken();
+
+        const newToken = localStorage.getItem("token");
+        if (!newToken) {
+          throw new Error("Token refresh failed");
+        }
+
+        const menuResponse = await axios.get(
+          "https://localhost:5000/api/MenuItems",
+          {
+            headers: {
+              Authorization: `Bearer ${newToken}`,
+            },
+          }
+        );
+
+        if (Array.isArray(menuResponse.data)) {
+          setMenuItems(menuResponse.data);
+        }
+        const dailySpecialsResponse = await axios.get(
+          "https://localhost:5000/api/DailySpecials",
+          {
+            headers: {
+              Authorization: `Bearer ${newToken}`,
+            },
+          }
+        );
+
+        if (dailySpecialsResponse.data) {
+          setDailySpecials(dailySpecialsResponse.data);
+        }
+
+        setIsUnauthorized(false);
+        setLoading(false);
+      } catch (error) {
+        setIsUnauthorized(true);
+        setLoading(false);
+      }
+    };
+
+    validateAndFetchData();
+  }, []);
+
+  // Handle unauthorized access
+  if (isUnauthorized) {
+    localStorage.setItem("isUnauthorizedRedirect", "true");
+    window.location.href = "/";
+    return null;
+  }
+
+  // Conditional Renders
   if (loading)
     return (
       <Box
@@ -353,34 +389,7 @@ const Dashboard: React.FC = () => {
       </Box>
     );
 
-  var l = menuItems.length;
-
-  const getUniqueCategories = () => {
-    const categories: string[] = [];
-
-    for (let i = 0; i < l; i++) {
-      const category = menuItems[i].category;
-      if (!categories.includes(category)) {
-        categories.push(category);
-      }
-    }
-    return categories;
-  };
-
-  const uniqueCategories = getUniqueCategories();
-
-  const filteredCategories = uniqueCategories.filter(
-    (category) => category !== "Egyéb"
-  );
-
-  filteredCategories.unshift("Napi ajánlat"); // A "Napi ajánlat" kategória hozzáadása az elejére
-
-  const hasEgyebItems = menuItems.some((item) => item.category === "Egyéb");
-
-  const filteredMenuItems = selectedCategory
-    ? menuItems.filter((item) => item.category === selectedCategory)
-    : menuItems;
-
+  // Main Component Render
   return (
     <>
       <Box
@@ -388,7 +397,7 @@ const Dashboard: React.FC = () => {
         height="calc(100vh - 64px)"
         flexDirection={{ xs: "column", md: "row" }}
       >
-        {/* Oldalsáv */}
+        {/* Sidebar - Category Navigation */}
         <Box
           sx={{
             display: { xs: "none", sm: "none", md: "none", lg: "flex" },
@@ -400,8 +409,20 @@ const Dashboard: React.FC = () => {
             minWidth: { md: 50 },
             mb: { xs: 2, md: 0 },
             m: 2,
-            height: "90%",
+            height: "82vh",
             backgroundColor: "#202938",
+            overflowY: "auto",
+            overflowX: "hidden",
+            "&::-webkit-scrollbar": {
+              width: "6px",
+            },
+            "&::-webkit-scrollbar-track": {
+              background: "transparent",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              background: "#d5d6d6",
+              borderRadius: "3px",
+            },
           }}
         >
           <Stack direction={{ xs: "row", md: "column" }} spacing={2}>
@@ -447,7 +468,7 @@ const Dashboard: React.FC = () => {
           </Stack>
         </Box>
 
-        {/* Rendelés szekció */}
+        {/* Order Section - Cart */}
         <Box
           mb={{ xs: 2, md: 3 }}
           width={{ xs: "90%", md: "70%", lg: "40%", xl: "30%" }}
@@ -493,6 +514,9 @@ const Dashboard: React.FC = () => {
                         },
                         "& .MuiInputLabel-root": {
                           color: "#d5d6d6",
+                          "&.Mui-focused": {
+                            color: "#d5d6d6",
+                          },
                         },
                         "& .MuiInput-underline:before": {
                           borderBottomColor: "#d5d6d6",
@@ -512,6 +536,7 @@ const Dashboard: React.FC = () => {
                         "& .Mui-focused .MuiInput-underline:after": {
                           borderBottomColor: "#d5d6d6 !important",
                         },
+                        marginTop: 2,
                       }}
                     />
                   </Box>
@@ -526,7 +551,6 @@ const Dashboard: React.FC = () => {
                 },
               }}
             />
-            {/* Görgethető lista konténer */}
             <Box
               sx={{
                 flex: 1,
@@ -568,7 +592,6 @@ const Dashboard: React.FC = () => {
                 ))}
               </List>
             </Box>
-            {/* Gomb a rendelés leadására */}
             <CardActions
               disableSpacing
               sx={{ mt: "auto", justifyContent: "center", paddingBottom: 2 }}
@@ -622,7 +645,7 @@ const Dashboard: React.FC = () => {
           </Card>
         </Box>
 
-        {/* Fő tartalom */}
+        {/* Main Content - Menu Items */}
         <Box
           display="flex"
           flexDirection="column"
@@ -630,6 +653,7 @@ const Dashboard: React.FC = () => {
           ml={{ md: 3 }}
           width="100%"
         >
+          {/* Daily Specials Section */}
           {selectedCategory === "Napi ajánlat" ? (
             dailySpecials && dailySpecials.length > 0 ? (
               <Box sx={{ height: "100%", overflowY: "scroll" }}>
@@ -742,6 +766,7 @@ const Dashboard: React.FC = () => {
               </Typography>
             )
           ) : (
+            // Regular Menu Items Section
             <Box sx={{ height: "100%", overflowY: "scroll" }}>
               <Stack
                 direction="row"
@@ -853,4 +878,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default Menu;

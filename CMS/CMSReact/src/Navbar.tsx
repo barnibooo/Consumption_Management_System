@@ -19,15 +19,51 @@ import { createTheme } from "@mui/material/styles";
 import { parseJwt } from "./JWTParser";
 import CountdownTimer from "./CountdownTimer";
 
+// Types
 interface NavbarProps {
   role: string | null;
 }
 
+// Theme Configuration
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    background: {
+      default: "#0f1827",
+      paper: "#0f1827",
+    },
+  },
+  typography: {
+    fontFamily: "Roboto, Arial, sans-serif",
+  },
+});
+
+// Navigation Configuration
+const pages = [
+  {
+    name: "Főoldal",
+    roles: ["Admin", "TicketAssistant", "RestaurantAssistant"],
+  },
+  { name: "Jegyértékesítés", roles: ["Admin", "TicketAssistant"] },
+  {
+    name: "Jegyellenőrzés",
+    roles: ["Admin", "TicketAssistant", "RestaurantAssistant"],
+  },
+  { name: "Éttermi rendelés", roles: ["Admin", "RestaurantAssistant"] },
+  { name: "Regisztráció", roles: ["Admin"] },
+  { name: "Napi ajánlat kezelő", roles: ["Admin"] },
+  { name: "Véglegesítés", roles: ["Admin", "TicketAssistant"] },
+];
+
+const settings = ["Profil", "Kijelentkezés"];
+
 const Navbar: React.FC<NavbarProps> = ({ role }) => {
+  // State Management
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [monogram, setMonogram] = useState<string | null>(null);
 
+  // User Data Effect
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -38,6 +74,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
     }
   }, []);
 
+  // Event Handlers
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -53,7 +90,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
   const handleCloseUserMenu = async (setting: string) => {
     setAnchorElUser(null);
     if (setting === "Profil") {
-      window.location.href = "/profileEmployee";
+      window.location.href = "/employeeProfile";
     }
     if (setting === "Kijelentkezés") {
       const token = localStorage.getItem("token");
@@ -69,13 +106,10 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
               },
             }
           );
-        } catch (error) {
-          console.error("Logout failed", error);
-        }
+        } catch (error) {}
       }
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
-      localStorage.removeItem("monogram");
       window.location.href = "/login";
     }
   };
@@ -85,13 +119,13 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
     if (page === "Főoldal") {
       window.location.href = "/";
     } else if (page === "Jegyértékesítés") {
-      window.location.href = "/tickets";
+      window.location.href = "/ticket";
     } else if (page === "Jegyellenőrzés") {
-      window.location.href = "/ticketvalidation";
+      window.location.href = "/ticketValidation";
     } else if (page === "Éttermi rendelés") {
-      window.location.href = "/restaurant";
+      window.location.href = "/order";
     } else if (page === "Véglegesítés") {
-      window.location.href = "/customercheckout";
+      window.location.href = "/checkout";
     } else if (page === "Regisztráció") {
       window.location.href = "/registration";
     } else if (page === "Napi ajánlat kezelő") {
@@ -99,67 +133,47 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
     }
   };
 
-  const darkTheme = createTheme({
-    palette: {
-      mode: "dark",
-      background: {
-        default: "#0f1827",
-        paper: "#0f1827",
-      },
-    },
-    typography: {
-      fontFamily: "Roboto, Arial, sans-serif",
-    },
-  });
-
-  const pages = [
-    {
-      name: "Főoldal",
-      roles: ["Admin", "TicketAssistant", "RestaurantAssistant"],
-    },
-    { name: "Jegyértékesítés", roles: ["Admin", "TicketAssistant"] },
-    {
-      name: "Jegyellenőrzés",
-      roles: ["Admin", "TicketAssistant", "RestaurantAssistant"],
-    },
-    { name: "Éttermi rendelés", roles: ["Admin", "RestaurantAssistant"] },
-    { name: "Regisztráció", roles: ["Admin"] },
-    { name: "Napi ajánlat kezelő", roles: ["Admin"] },
-    { name: "Véglegesítés", roles: ["Admin", "TicketAssistant"] },
-  ];
-
-  const settings = ["Profil", "Kijelentkezés"];
-
+  // Component Render
   return (
     <ThemeProvider theme={darkTheme}>
-      {}
-      <AppBar position="static">
-        <Container maxWidth={false}>
+      <AppBar
+        position="static"
+        sx={{
+          maxWidth: "100vw",
+          overflow: "hidden",
+        }}
+      >
+        <Container
+          maxWidth={false}
+          sx={{
+            px: { xs: 0.5, sm: 1 },
+            overflowX: "hidden",
+          }}
+        >
           <Toolbar
             disableGutters
             sx={{
               justifyContent: "space-between",
-              padding: { xs: "0 16px", xl: "0 24px" },
+              minHeight: { xs: 48, sm: 56 },
+              px: { xs: 0.5, sm: 1 },
             }}
           >
-            {/* BarChart Icon for Navigation */}
+            {/* Navigation Menu Section */}
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <IconButton
                 size="large"
-                aria-label="menu"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
                 onClick={handleOpenNavMenu}
                 color="inherit"
                 sx={{
-                  marginRight: { xs: 0, md: 2 },
-                  "&:hover": {
-                    color: "#BFA181",
-                  },
+                  mr: { xs: 0.5, sm: 2 },
+                  p: { xs: 1, sm: 1.5 },
+                  "&:hover": { color: "#BFA181" },
                 }}
               >
-                <MenuIcon sx={{ fontSize: 35 }} />
+                <MenuIcon sx={{ fontSize: { xs: 24, sm: 28 } }} />
               </IconButton>
+
+              {/* Navigation Menu */}
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorElNav}
@@ -174,6 +188,16 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
                 }}
                 open={Boolean(anchorElNav)}
                 onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: "block" },
+                  "& .MuiPaper-root": {
+                    width: { xs: "100%", sm: "auto" },
+                    maxHeight: "80vh",
+                    overflowY: "auto",
+                    backgroundColor: "#202938",
+                    mt: 1,
+                  },
+                }}
               >
                 {pages
                   .filter((page) => page.roles.includes(role || ""))
@@ -182,16 +206,15 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
                       key={page.name}
                       onClick={() => handlePageNavigation(page.name)}
                       sx={{
-                        "&:hover": {
-                          backgroundColor: "#37404f",
-                        },
+                        py: { xs: 1.5, sm: 1 },
+                        px: { xs: 2, sm: 2 },
+                        "&:hover": { backgroundColor: "#37404f" },
                       }}
                     >
                       <Typography
                         sx={{
-                          textAlign: "center",
                           color: "#d5d6d6",
-                          fontSize: "1.2rem",
+                          fontSize: { xs: "1rem", sm: "1.2rem" },
                         }}
                       >
                         {page.name}
@@ -201,20 +224,20 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
               </Menu>
             </Box>
 
-            {/* Title and BarChartIcon in the Center */}
+            {/* Logo Section */}
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
-                flexGrow: 1,
                 justifyContent: "center",
+                flexGrow: 1,
               }}
             >
               <BarChartIcon
                 sx={{
-                  marginRight: 1,
+                  mr: { xs: 0.5, sm: 1 },
                   color: "#d5d6d6",
-                  fontSize: { xs: 24, md: 30 },
+                  fontSize: { xs: 22, sm: 24, md: 30 },
                 }}
               />
               <Typography
@@ -226,25 +249,53 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
                   fontWeight: 700,
                   color: "#d5d6d6",
                   textDecoration: "none",
-                  fontSize: { xs: "1.2rem", md: "1.5rem" },
+                  fontSize: { xs: "0.8rem", sm: "1rem", md: "1.2rem" },
+                  maxWidth: { xs: "120px", sm: "none" },
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  "&:hover": {
+                    color: "#d5d6d6",
+                  },
                 }}
               >
-                {window.innerWidth >= 1200
+                {window.innerWidth >= 600
                   ? "Consumption Management System"
                   : "CMS"}
               </Typography>
             </Box>
 
-            {/* User Avatar on the Edge */}
-            <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
-              <Box sx={{ mr: 2 }}>
+            {/* User Menu Section */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: { xs: 1, sm: 2 },
+              }}
+            >
+              {/* Timer Component */}
+              <Box
+                sx={{
+                  display: { xs: "none", sm: "block" },
+                  mr: { xs: 1, sm: 2 },
+                }}
+              >
                 <CountdownTimer />
               </Box>
+
+              {/* User Avatar & Menu */}
               <Tooltip title="Menü megnyitása">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <IconButton
+                  onClick={handleOpenUserMenu}
+                  sx={{
+                    p: { xs: 0.5, sm: 1 },
+                  }}
+                >
                   <Avatar
                     sx={{
-                      fontSize: 18,
+                      width: { xs: 28, sm: 32 },
+                      height: { xs: 28, sm: 32 },
+                      fontSize: { xs: 14, sm: 16 },
                       color: "#d5d6d6",
                       bgcolor: "#bfa181",
                     }}
@@ -253,10 +304,16 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
                   </Avatar>
                 </IconButton>
               </Tooltip>
+
+              {/* User Settings Menu */}
               <Menu
                 sx={{
                   mt: "45px",
+                  "& .MuiPaper-root": {
+                    width: { xs: "200px", sm: "auto" },
+                  },
                   "& .MuiMenuItem-root": {
+                    py: { xs: 1.5, sm: 1 },
                     color: "#d5d6d6",
                     "&:hover": {
                       backgroundColor: "#37404f",

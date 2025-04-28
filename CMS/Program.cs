@@ -6,22 +6,18 @@ using Microsoft.IdentityModel.Tokens;
 using System.Data;
 using System.Diagnostics;
 using System.Text;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Net.Http.Headers;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
-//RunBuildScript();
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//MSSQL-es
-//builder.Services.AddDbContext<CMSContext>(db => db.UseSqlServer(
-//builder.Configuration.GetConnectionString("CMSContext")));
 
-// SQLite
 builder.Services.AddDbContext<CMSContext>(
     db => db.UseSqlite(builder.Configuration.GetConnectionString("CMSContext")));
 
-// CORS policy hozzáadása
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
@@ -52,26 +48,17 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
 builder.Services.AddAuthorization(options =>
 {
-
     options.AddPolicy("AdminOnly", policy => policy.RequireRole(nameof(Roles.Admin)));
-
     options.AddPolicy("RestaurantOnly", policy => policy.RequireRole(nameof(Roles.RestaurantAssistant)));
     options.AddPolicy("TicketOnly", policy => policy.RequireRole(nameof(Roles.TicketAssistant)));
     options.AddPolicy("AdminOrRestaurantOnly", policy => policy.RequireRole(nameof(Roles.Admin), nameof(Roles.RestaurantAssistant)));
     options.AddPolicy("AdminOrTicketOnly", policy => policy.RequireRole(nameof(Roles.Admin), nameof(Roles.TicketAssistant)));
-
 });
 
 var app = builder.Build();
 
-app.UseAuthentication();
-
-app.UseAuthorization();
-
-// CORS middleware használata
 app.UseCors("AllowAllOrigins");
 
 if (app.Environment.IsDevelopment())
@@ -80,49 +67,55 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-
-
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
 
-#region Static frontend serving
-app.UseDefaultFiles(); // Serve the index.html file by default
 string currentDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+
+app.UseMiddleware<HtmlExtensionMiddleware>();
+
+app.UseDefaultFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(currentDir),
     RequestPath = ""
 });
-#endregion 
 
+app.MapControllers();
+
+app.MapFallbackToFile("index.html");
 
 app.Run();
-//Script for build
-void RunBuildScript()
+public class HtmlExtensionMiddleware
 {
-    try
+    private readonly RequestDelegate _next;
+    private readonly string _rootPath;
+
+    public HtmlExtensionMiddleware(RequestDelegate next, IWebHostEnvironment env)
     {
-        var processInfo = new ProcessStartInfo
-        {
-            FileName = "cmd.exe",
-            Arguments = "/c builder.cmd",
-            WorkingDirectory = Directory.GetCurrentDirectory(),
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-
-        var process = new Process { StartInfo = processInfo };
-        process.Start();
-        process.WaitForExit();
-
-        Console.WriteLine("React build sikeresen lefutott.");
+        _next = next;
+        _rootPath = Path.Combine(env.ContentRootPath, "wwwroot");
     }
-    catch (Exception ex)
+
+    public async Task InvokeAsync(HttpContext context)
     {
-        Console.WriteLine($"Hiba történt a React build során: {ex.Message}");
+        var path = context.Request.Path.Value?.TrimStart('/');
+
+        if (!string.IsNullOrEmpty(path) && !Path.HasExtension(path) && !path.EndsWith("/"))
+        {
+            var htmlFilePath = Path.Combine(_rootPath, path + ".html");
+
+            if (File.Exists(htmlFilePath))
+            {
+                context.Response.ContentType = "text/html";
+                context.Response.Headers[HeaderNames.CacheControl] = "no-cache";
+
+                await context.Response.SendFileAsync(htmlFilePath);
+                return;
+            }
+        }
+
+        await _next(context);
     }
 }

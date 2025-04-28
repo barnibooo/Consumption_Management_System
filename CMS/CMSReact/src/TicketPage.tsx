@@ -64,6 +64,18 @@ const iconStyle = {
   },
 };
 
+// Global Styles
+const style = document.createElement("style");
+style.textContent = `
+  body {
+    background-color: #0f1827;
+    color: #d5d6d6;
+    margin: 0;
+    padding: 0;
+  }
+`;
+document.head.appendChild(style);
+
 const categoryIcons: { [key: string]: React.ReactElement } = {
   Belépő: <ConfirmationNumberOutlinedIcon sx={iconStyle} />,
   Kiegészítő: <ExtensionOutlinedIcon sx={iconStyle} />,
@@ -145,7 +157,6 @@ const Dashboard: React.FC = () => {
     const validateAndFetchData = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        console.error("No token found. Redirecting to login...");
         setIsUnauthorized(true);
         return;
       }
@@ -158,16 +169,12 @@ const Dashboard: React.FC = () => {
           (decodedToken.role !== "Admin" &&
             decodedToken.role !== "TicketAssistant")
         ) {
-          console.error(
-            "Unauthorized access: Admin or TicketAssistant role required"
-          );
           setIsUnauthorized(true);
           return;
         }
 
         const isValidToken = await checkToken();
         if (!isValidToken) {
-          console.error("Invalid token. Redirecting to login...");
           setIsUnauthorized(true);
           return;
         }
@@ -197,23 +204,17 @@ const Dashboard: React.FC = () => {
             if (Array.isArray(ticketsResponse.data)) {
               setticketItems(ticketsResponse.data);
             } else {
-              console.error("Hibás API válasz: nem tömb", ticketsResponse.data);
             }
 
             if (Array.isArray(admissionsResponse.data)) {
               setAdmissionItems(admissionsResponse.data);
             } else {
-              console.error(
-                "Hibás API válasz: nem tömb",
-                admissionsResponse.data
-              );
             }
             setIsUnauthorized(false);
             setLoading(false);
           }
         );
       } catch (error) {
-        console.error("Error during token validation or data fetching:", error);
         setIsUnauthorized(true);
         setLoading(false);
       }
@@ -314,19 +315,19 @@ const Dashboard: React.FC = () => {
           autoHideDuration={6000}
           onClose={() => {
             setError(null);
-            window.location.href = "/";
+            window.location.href = "/ticket";
           }}
         >
           <Alert
             onClose={() => {
               setError(null);
-              window.location.href = "/";
+              window.location.href = "/ticket";
             }}
             severity="error"
             variant="filled"
             sx={{ width: "100%" }}
           >
-            Hiba történt az adatok betöltése közben!
+            {error}
           </Alert>
         </Snackbar>
       </Box>
@@ -396,8 +397,14 @@ const Dashboard: React.FC = () => {
         },
       })
       .catch((error) => {
-        console.error("Error creating customer:", error);
-        setError(error.message);
+        console.log(error);
+        if (error.response?.status === 409) {
+          setError(
+            "Az adott kártya már aktív, így a jegyvásárlás nem lehetséges!"
+          );
+        } else {
+          setError("Hiba történt a rendelés leadása során!");
+        }
       })
       .finally(() => {
         setLoading(false);
@@ -419,6 +426,15 @@ const Dashboard: React.FC = () => {
   };
 
   const hasBelepoInOrder = orders.some((item) => item.category === "Belépő");
+  const isFormValid = () => {
+    return (
+      hasBelepoInOrder &&
+      cardId &&
+      cardId.trim() !== "" &&
+      fullName &&
+      fullName.trim() !== ""
+    );
+  };
 
   return (
     <>
@@ -530,6 +546,9 @@ const Dashboard: React.FC = () => {
                         },
                         "& .MuiInputLabel-root": {
                           color: "#d5d6d6",
+                          "&.Mui-focused": {
+                            color: "#d5d6d6",
+                          },
                         },
                         "& .MuiInput-underline:before": {
                           borderBottomColor: "#d5d6d6",
@@ -549,6 +568,7 @@ const Dashboard: React.FC = () => {
                         "& .Mui-focused .MuiInput-underline:after": {
                           borderBottomColor: "#d5d6d6 !important",
                         },
+                        marginTop: 2,
                       }}
                     />
                   </Box>
@@ -572,6 +592,9 @@ const Dashboard: React.FC = () => {
                         },
                         "& .MuiInputLabel-root": {
                           color: "#d5d6d6",
+                          "&.Mui-focused": {
+                            color: "#d5d6d6",
+                          },
                         },
                         "& .MuiInput-underline:before": {
                           borderBottomColor: "#d5d6d6",
@@ -591,6 +614,7 @@ const Dashboard: React.FC = () => {
                         "& .Mui-focused .MuiInput-underline:after": {
                           borderBottomColor: "#d5d6d6 !important",
                         },
+                        marginTop: 2,
                       }}
                     />
                   </Box>
@@ -695,7 +719,7 @@ const Dashboard: React.FC = () => {
                   },
                 }}
                 onClick={handleSubmitOrder}
-                disabled={!hasBelepoInOrder}
+                disabled={!isFormValid()} // Update this line
               >
                 Jegyfoglalás
               </Button>

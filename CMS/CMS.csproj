@@ -37,6 +37,12 @@
 		</PackageReference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="CMS.db">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 
 
 </Project>

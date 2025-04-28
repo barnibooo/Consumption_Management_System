@@ -5,49 +5,69 @@ import {
   View,
   StyleSheet,
   PDFViewer,
+  Font,
 } from "@react-pdf/renderer";
-import { ConsumptionItem } from "./CustomerCheckout";
-
+import { ConsumptionItem } from "./CheckoutPage";
+Font.register({
+  family: "Montserrat",
+  src: "/fonts/Montserrat-Regular.ttf", // Replace with the actual path to your Arial font file
+});
+// PDF Styles
 const styles = StyleSheet.create({
-  page: {
-    flexDirection: "column",
-    backgroundColor: "#FFFFFF",
-    padding: 30,
-  },
-  section: {
-    margin: 10,
-    padding: 10,
-    flexGrow: 1,
-  },
+  // Viewer Styles
   viewer: {
     width: "100%",
     height: "100%",
+    border: "none",
+    maxWidth: "100vw",
+    maxHeight: "100vh",
   },
+
+  // Page Layout
+  page: {
+    flexDirection: "column",
+    backgroundColor: "#FFFFFF",
+    padding: 10,
+  },
+  section: {
+    margin: 3,
+    padding: 3,
+    flexGrow: 1,
+  },
+
+  // Typography
   title: {
-    fontSize: 24,
-    marginBottom: 20,
+    fontSize: 16,
+    marginBottom: 10,
     textAlign: "center",
+    fontFamily: "Montserrat", 
   },
   header: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
-  item: {
-    marginBottom: 10,
-    padding: 10,
-    borderBottom: "1 solid #CCCCCC",
+    fontSize: 12,
+    marginBottom: 8,
+    fontFamily: "Montserrat", 
   },
   text: {
-    fontSize: 12,
-    marginBottom: 5,
+    fontSize: 8,
+    marginBottom: 3,
+    fontFamily: "Montserrat", 
   },
   total: {
-    marginTop: 20,
-    fontSize: 16,
+    marginTop: 10,
+    fontSize: 12,
     fontWeight: "bold",
+    fontFamily: "Montserrat", 
+  },
+  // Content Containers
+  item: {
+    marginBottom: 6,
+    padding: 6,
+    borderBottom: "1 solid #CCCCCC",
+    fontFamily: "Montserrat", 
   },
 });
 
+// Component Props Interface
 interface ConsumptionPDFProps {
   customer: {
     name: string;
@@ -57,6 +77,10 @@ interface ConsumptionPDFProps {
   totalAmount: number;
 }
 
+/**
+ * ConsumptionPDF Component
+ * Generates a PDF receipt for customer consumption
+ */
 const ConsumptionPDF = ({
   customer,
   consumption,

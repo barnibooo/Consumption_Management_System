@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -15,38 +16,54 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { checkToken } from "./AuthService";
 import { refreshToken } from "./RefreshService";
 import axios from "axios";
-import { useState, useEffect } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
+// Global Styles
+const style = document.createElement("style");
+style.textContent = `
+  body {
+    background-color: #0f1827;
+    color: #d5d6d6;
+    margin: 0;
+    padding: 0;
+  }
+`;
+document.head.appendChild(style);
+
 function RegistrationCard() {
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("lg"));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [roles, setRoles] = useState<string[]>([]);
   const [role, setRole] = useState<string>("");
-  const [username, setUsername] = useState<string | null>(null);
-  const [firstName, setFirstName] = useState<string | null>(null);
-  const [lastName, setLastName] = useState<string | null>(null);
-  const [password, setPassword] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>("");
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [touched, setTouched] = useState({
+    username: false,
+    firstName: false,
+    lastName: false,
+    password: false,
+    role: false,
+  });
 
   useEffect(() => {
     const validateAndFetchData = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        console.error("No token found. Redirecting to login...");
-        setIsUnauthorized(true); // Itt jelenik meg a hiba
+        setIsUnauthorized(true);
         return;
       }
 
       try {
         const isValidToken = await checkToken();
         if (!isValidToken) {
-          console.error("Invalid token. Redirecting to login...");
           setIsUnauthorized(true);
           return;
         }
@@ -62,10 +79,8 @@ function RegistrationCard() {
           }
         );
         setRoles(response.data);
-
         setIsUnauthorized(false);
       } catch (error) {
-        console.error("Error during token validation or data fetching:", error);
         setIsUnauthorized(true);
       }
     };
@@ -75,12 +90,24 @@ function RegistrationCard() {
 
   if (isUnauthorized) {
     localStorage.setItem("isUnauthorizedRedirect", "true");
-    return setTimeout(() => {
-      window.location.href = "/";
-    }, 0);
+    window.location.href = "/";
+    return null;
   }
 
   const handleRegister = async () => {
+    // Mark all fields as touched
+    setTouched({
+      username: true,
+      firstName: true,
+      lastName: true,
+      password: true,
+      role: true,
+    });
+
+    if (!isFormValid()) {
+      return;
+    }
+
     try {
       const employeeData = {
         username,
@@ -92,7 +119,7 @@ function RegistrationCard() {
 
       await axios.post(
         "https://localhost:5000/api/Auth/register",
-        employeeData,
+        [employeeData],
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -102,15 +129,23 @@ function RegistrationCard() {
 
       setOpenSuccessSnackbar(true);
       setError(null);
+
+      // Reset form
+      setUsername("");
+      setFirstName("");
+      setLastName("");
+      setPassword("");
+      setRole("");
+      setTouched({
+        username: false,
+        firstName: false,
+        lastName: false,
+        password: false,
+        role: false,
+      });
     } catch (error: any) {
       if (error.response) {
-        switch (error.response.status) {
-          case 500:
-            setError("Hiba történt a regisztráció során!");
-            break;
-          default:
-            setError("Hiba történt a regisztráció során!");
-        }
+        setError("Hiba történt a regisztráció során!");
       } else {
         setError("Nem sikerült kapcsolódni a szerverhez!");
       }
@@ -120,12 +155,44 @@ function RegistrationCard() {
 
   const isFormValid = () => {
     return (
-      username?.trim() !== "" &&
-      firstName?.trim() !== "" &&
-      lastName?.trim() !== "" &&
-      password?.trim() !== "" &&
+      username.trim() !== "" &&
+      firstName.trim() !== "" &&
+      lastName.trim() !== "" &&
+      password.trim() !== "" &&
       role.trim() !== ""
     );
+  };
+
+  const handleBlur = (field: keyof typeof touched) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+  };
+
+  const textFieldStyle = {
+    width: { xs: "90%", sm: "80%", md: "70%" },
+    mb: 2,
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "#d5d6d6",
+      },
+      "&:hover fieldset": {
+        borderColor: "#d5d6d6",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#BFA181",
+      },
+    },
+    "& .MuiInputLabel-root": {
+      color: "#d5d6d6",
+      fontSize: { xs: "0.9rem", sm: "1rem" },
+    },
+    "& .MuiInputLabel-root.Mui-focused": {
+      color: "#BFA181",
+    },
+    "& .MuiInputBase-input": {
+      color: "#d5d6d6",
+      caretColor: "#d5d6d6",
+      padding: { xs: "12px", sm: "14px" },
+    },
   };
 
   return (
@@ -134,276 +201,137 @@ function RegistrationCard() {
         backgroundColor: "#0F1827",
         display: "flex",
         justifyContent: "center",
-        alignItems: "center",
-        width: "100vw",
+        alignItems: "flex-start",
+        width: "100%",
         minHeight: "100vh",
-        padding: 4,
+        padding: { xs: 1, sm: 2, md: 4 },
+        paddingTop: { xs: 3, sm: 4 },
         boxSizing: "border-box",
-        overflowY: "auto",
+        overflowX: "hidden",
       }}
     >
       <Card
         sx={{
           color: "#d5d6d6",
           backgroundColor: "#202938",
-          width: {
-            xs: "90%",
-            sm: "70%",
-            md: "55%",
-            lg: "60%",
-          },
+          width: { xs: "95%", sm: "85%", md: "70%", lg: "60%" },
           height: "auto",
           display: "flex",
-          flexDirection: isSmallScreen ? "column" : "row",
+          flexDirection: "column",
         }}
       >
-        <CardMedia
-          component="img"
-          sx={{
-            width: isSmallScreen ? "0%" : "40%",
-            height: isSmallScreen ? "0%" : "auto",
-            objectFit: "cover",
-            objectPosition: "left",
-          }}
-          image="/img/main/login_sample.png"
-          alt="Registration sample"
-        />
+        {!isSmallScreen && (
+          <CardMedia
+            component="img"
+            sx={{
+              width: "100%",
+              height: 200,
+              objectFit: "cover",
+              objectPosition: "center",
+            }}
+            image="/img/main/login_sample.png"
+            alt="Registration sample"
+          />
+        )}
+
         <CardContent
           sx={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            width: isSmallScreen ? "100%" : "50%",
-            flex: 1,
+            width: "100%",
+            p: { xs: 0, sm: 3 },
+            paddingBottom: { xs: 2, sm: 3 },
+            paddingTop: { xs: 2, sm: 3 },
           }}
         >
           <Typography
-            gutterBottom
-            variant="h6"
-            component="div"
-            sx={{
-              mr: 2,
-              display: { md: "flex" },
-              fontWeight: 400,
-              color: "#d5d6d6",
-              textDecoration: "none",
-              marginBottom: 2,
-              fontSize: { xs: 20, sm: 20, md: 20, lg: 22, xl: 30 },
-            }}
-          ></Typography>
-          <Typography
-            gutterBottom
             variant="h4"
-            component="div"
             sx={{
-              mr: 2,
-              display: { md: "flex" },
-              fontWeight: 300,
               color: "#d5d6d6",
-              textDecoration: "none",
-              marginBottom: 2,
+              fontSize: { xs: "1.2rem", sm: "2rem" },
+              textAlign: "center",
+              mb: 3,
+              fontWeight: 300,
             }}
           >
-            Új munkaválláló regisztrációja
+            Új munkavállaló regisztrációja
           </Typography>
-          <Typography
-            gutterBottom
-            variant="h6"
-            component="div"
-            sx={{
-              mr: 2,
-              display: { md: "flex" },
-              fontWeight: 300,
-              color: "#d5d6d6",
-              textDecoration: "none",
-              marginBottom: 2,
-            }}
-          ></Typography>
+
           <TextField
-            sx={{
-              width: "70%",
-              height: "Auto",
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#d5d6d6",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#d5d6d6",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#BFA181",
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "#d5d6d6",
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "#BFA181",
-              },
-              "& .MuiInputBase-input": {
-                color: "#d5d6d6",
-                caretColor: "#d5d6d6",
-              },
-              marginBottom: 2,
-            }}
+            sx={textFieldStyle}
             required
-            id="outlined-username"
             label="Felhasználónév"
-            type="text"
-            margin="dense"
-            value={username || ""}
+            value={username}
             onChange={(e) => setUsername(e.target.value)}
+            onBlur={() => handleBlur("username")}
+            error={touched.username && username.trim() === ""}
+            helperText={
+              touched.username && username.trim() === "" ? "Kötelező mező" : ""
+            }
           />
+
           <TextField
-            sx={{
-              width: "70%",
-              height: "Auto",
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#d5d6d6",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#d5d6d6",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#BFA181",
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "#d5d6d6",
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "#BFA181",
-              },
-              "& .MuiInputBase-input": {
-                color: "#d5d6d6",
-                caretColor: "#d5d6d6",
-              },
-              marginBottom: 2,
-            }}
+            sx={textFieldStyle}
             required
-            id="outlined-firstname"
             label="Keresztnév"
-            type="text"
-            margin="dense"
-            value={firstName || ""}
+            value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
+            onBlur={() => handleBlur("firstName")}
+            error={touched.firstName && firstName.trim() === ""}
+            helperText={
+              touched.firstName && firstName.trim() === ""
+                ? "Kötelező mező"
+                : ""
+            }
           />
+
           <TextField
-            sx={{
-              width: "70%",
-              height: "Auto",
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#d5d6d6",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#d5d6d6",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#BFA181",
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "#d5d6d6",
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "#BFA181",
-              },
-              "& .MuiInputBase-input": {
-                color: "#d5d6d6",
-                caretColor: "#d5d6d6",
-              },
-              marginBottom: 2,
-            }}
+            sx={textFieldStyle}
             required
-            id="outlined-lastname"
             label="Vezetéknév"
-            type="text"
-            margin="dense"
-            value={lastName || ""}
+            value={lastName}
             onChange={(e) => setLastName(e.target.value)}
+            onBlur={() => handleBlur("lastName")}
+            error={touched.lastName && lastName.trim() === ""}
+            helperText={
+              touched.lastName && lastName.trim() === "" ? "Kötelező mező" : ""
+            }
           />
+
           <TextField
-            sx={{
-              width: "70%",
-              height: "Auto",
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#d5d6d6",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#d5d6d6",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#BFA181",
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "#d5d6d6",
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "#BFA181",
-              },
-              "& .MuiInputBase-input": {
-                color: "#d5d6d6",
-                caretColor: "#d5d6d6",
-              },
-              marginBottom: 2,
-            }}
+            sx={textFieldStyle}
             required
-            id="outlined-password"
             label="Jelszó"
             type="password"
             autoComplete="new-password"
-            margin="dense"
-            value={password || ""}
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onBlur={() => handleBlur("password")}
+            error={touched.password && password.trim() === ""}
+            helperText={
+              touched.password && password.trim() === "" ? "Kötelező mező" : ""
+            }
           />
+
           <FormControl
-            sx={{
-              width: "70%",
-              marginBottom: 2,
-              marginTop: 1,
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#d5d6d6",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#d5d6d6",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#BFA181",
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "#d5d6d6",
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "#BFA181",
-              },
-              "& .MuiInputBase-input": {
-                color: "#d5d6d6",
-              },
-              "& .MuiSelect-icon": {
-                color: "#d5d6d6",
-              },
-              "& .Mui-focused .MuiSelect-icon": {
-                color: "#BFA181",
-              },
-            }}
+            sx={{ ...textFieldStyle, mt: 1 }}
+            error={touched.role && role === ""}
           >
-            <InputLabel id="role-select-label">Munkakör</InputLabel>
+            <InputLabel required>Munkakör</InputLabel>
             <Select
-              required
-              labelId="role-select-label"
-              id="role-select"
               value={role}
               label="Munkakör"
               onChange={(event: SelectChangeEvent) =>
                 setRole(event.target.value)
               }
+              onBlur={() => handleBlur("role")}
+              sx={{
+                "& .MuiSelect-icon": {
+                  color: "#d5d6d6",
+                },
+              }}
               MenuProps={{
                 PaperProps: {
                   sx: {
@@ -425,14 +353,20 @@ function RegistrationCard() {
               ))}
             </Select>
           </FormControl>
+
           <Button
             sx={{
-              m: 2,
+              width: { xs: "90%", sm: "80%", md: "70%" },
               backgroundColor: "#BFA181",
-              width: "80%",
+              py: { xs: 1.5, sm: 2 },
+              mt: 2,
+              mb: 2,
               "&.Mui-disabled": {
                 backgroundColor: "#9e9386",
                 color: "#d5d6d6",
+              },
+              "&:hover": {
+                backgroundColor: "#8B7355",
               },
             }}
             variant="contained"
@@ -442,38 +376,28 @@ function RegistrationCard() {
           >
             Regisztráció
           </Button>
-          <Snackbar open={openSuccessSnackbar} autoHideDuration={6000}>
-            <Alert
-              onClose={() => {
-                setOpenSuccessSnackbar(false);
-                window.location.reload();
-              }}
-              severity="success"
-              variant="filled"
-              sx={{ width: "100%" }}
-            >
+
+          <Snackbar
+            open={openSuccessSnackbar}
+            autoHideDuration={3000}
+            onClose={() => {
+              setOpenSuccessSnackbar(false);
+              window.location.reload();
+            }}
+          >
+            <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
               Sikeres regisztráció!
             </Alert>
           </Snackbar>
 
-          {/* Error Snackbar */}
           <Snackbar
             open={Boolean(error)}
-            autoHideDuration={6000}
             onClose={() => {
               setError(null);
-              window.location.href = "/"; // Redirect to landing page on error
+              window.location.href = "/";
             }}
           >
-            <Alert
-              onClose={() => {
-                setError(null);
-                window.location.href = "/"; // Redirect to landing page on error
-              }}
-              severity="error"
-              variant="filled"
-              sx={{ width: "100%" }}
-            >
+            <Alert severity="error" variant="filled" sx={{ width: "100%" }}>
               {error}
             </Alert>
           </Snackbar>

@@ -22,54 +22,7 @@ namespace CMS.Controllers
             _context = context;
         }
 
-        // GET: api/Orders
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Object>>> GetOrders()
-        {
-            return await _context.Orders.Select(order => new
-            {
-                OrderId = order.OrderId,
-                CustomerId = order.CustomerId,
-                EmployeeId = order.EmployeeId,
-                CreatedAt = order.CreatedAt,
-                MenuItems = order.MenuItemOrders.Select(mio => new
-                {
-                    mio.MenuItems.ItemId,
-                    mio.Quantity
-                }).ToList()
-            }).ToListAsync();
-        }
-
-
-
-        // GET: api/Orders/5
-       /* [HttpGet("{id}")]
-        public async Task<ActionResult<OrderGetDto>> GetOrder(int id)
-        {
-            var order = await _context.Orders.FindAsync(id);
-
-            if (order == null)
-            {
-                return NotFound();
-            }
-            var orderdto = new OrderGetDto
-            {
-                Id = order.OrderId,
-                CustomerId = order.CustomerId,
-                EmployeeId = order.EmployeeId,
-                CreatedAt = order.CreatedAt,
-                MenuItemIds = order.MenuItems.Select(mio => 
-                
-                    mio.ItemId
-                ).ToList()
-
-            };
-
-            return orderdto;
-        }*/
-
-        // POST: api/Orders
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        
         [HttpPost]
         [Authorize(Policy = "AdminOrRestaurantOnly")]
         public async Task<IActionResult> CreateOrder([FromBody] OrderPostDto orderPostDto)
