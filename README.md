@@ -8,8 +8,10 @@ Modern, RFID-alapú fogyasztáskezelő rendszer szállodák, fürdők és egyéb
 
 ## ▶️ Rendszer futtatása (.exe build esetén)
 
+
 A rendszer használatához nincs szükség külön fejlesztői környezetre vagy telepítési folyamatra.  
 A végleges verzió egyetlen futtatható `.exe` fájlként lett elkészítve, amely tartalmazza mind a backend (szerveroldali), mind a frontend (kliensoldali) komponenseket.
+Az ehhez szükséges fájlok a `main` branch-en találhatók.
 
 ### Indítás lépései
 
@@ -27,6 +29,7 @@ A végleges verzió egyetlen futtatható `.exe` fájlként lett elkészítve, am
 ## 💻 Rendszer futtatása fejlesztői módban (React + .NET)
 
 A fejlesztői mód lehetővé teszi a rendszer különálló backend és frontend komponenseinek futtatását lokális környezetben.
+A fejlesztéshez szükséges forráskódok, valamint a külön futtatható backend és frontend komponensek a `development` branch-en találhatók.
 
 ### 🖥️ Backend indítása (ASP.NET Core)
 
