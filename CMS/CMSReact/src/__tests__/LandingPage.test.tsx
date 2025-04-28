@@ -1,4 +1,3 @@
-import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import axios from "axios";
 import "@testing-library/jest-dom";
@@ -26,7 +25,7 @@ describe("MediaCard Component", () => {
       screen.getByText("Consumption Management System")
     ).toBeInTheDocument();
     expect(screen.getByText("Üdvözöljük!")).toBeInTheDocument();
-    expect(screen.getByText("Kérjük jelentkezz be!")).toBeInTheDocument();
+    expect(screen.getByText("Kérjük jelentkezzen be!")).toBeInTheDocument();
   });
 
   test("shows error on failed login", async () => {

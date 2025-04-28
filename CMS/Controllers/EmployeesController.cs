@@ -22,12 +22,12 @@ namespace CMS.Controllers
         }
 
         // GET: api/Employees 
-       /* [HttpGet]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
         {
             return await _context.Employees.ToListAsync();
         }
-       */
+       
         [HttpGet("roles")]
         [Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult<IEnumerable<string>>> GetRoles()
